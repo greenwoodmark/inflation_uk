@@ -1,7 +1,7 @@
 {
   "generated_at_utc": "2026-07-19T19:30:25+00:00",
   "latest_model_date": "2026-06-11",
-  "status": "barclays_teacher",
+  "status": "broker_marks",
   "model_version": "uscpi_zc_factor_v1",
   "warning": "Insufficient historical snapshots for all requested offsets"
 }
