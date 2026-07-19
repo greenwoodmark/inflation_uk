@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US CPURNSA Inflation Curve</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: system-ui, sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 18px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; }
+    .subtitle, .meta { color: #475569; }
+    #chart { width: 100%; min-height: 600px; }
+    #warning { display: none; margin: 14px 0; padding: 10px 12px; border-radius: 7px; background: #fef3c7; color: #92400e; }
+    #error { color: #b91c1c; }
+    a { color: #075985; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">← UK inflation page</a></p>
+    <h1>US CPURNSA Inflation Curve</h1>
+    <p class="subtitle">One-year zero-coupon inflation rates by reference CPI month</p>
+    <div class="card">
+      <div id="warning"></div>
+      <div id="chart"></div>
+      <p id="meta" class="meta"></p>
+      <p id="error"></p>
+    </div>
+  </main>
+  <script>
+    async function loadCurve() {
+      const response = await fetch('data/cpurnsa_curve_history.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error(`Curve data request failed: ${response.status}`);
+      return response.json();
+    }
+    function render(payload) {
+      const snapshots = payload.snapshots || [];
+      if (!snapshots.length) throw new Error('No curve snapshots are available');
+      const traces = snapshots.map(snapshot => ({
+        x: snapshot.reference_month,
+        y: snapshot.yoy_rate_percent,
+        mode: 'lines+markers',
+        name: `${snapshot.label} — ${snapshot.model_date}`,
+        customdata: snapshot.node_status,
+        hovertemplate: '%{x}<br>Rate: %{y:.3f}%<br>Status: %{customdata}<extra>' + snapshot.label + '</extra>'
+      }));
+      const latest = snapshots[0];
+      traces.push({
+        x: latest.reference_month.concat([...latest.reference_month].reverse()),
+        y: latest.upper_percent.concat([...latest.lower_percent].reverse()),
+        fill: 'toself', fillcolor: 'rgba(14, 116, 144, 0.14)',
+        line: { color: 'rgba(14, 116, 144, 0)' },
+        name: `${latest.label} ± 1 SD`, hoverinfo: 'skip'
+      });
+      Plotly.newPlot('chart', traces, {
+        title: `CPURNSA curve — latest model date ${payload.latest_model_date}`,
+        xaxis: { title: 'Reference CPI month', type: 'date' },
+        yaxis: { title: 'Y/Y inflation rate (%)', ticksuffix: '%' },
+        hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 },
+        margin: { t: 72, r: 25, b: 105, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
+      }, { responsive: true, displaylogo: false });
+      if (payload.warning) { const warning = document.getElementById('warning'); warning.textContent = payload.warning; warning.style.display = 'block'; }
+      document.getElementById('meta').textContent = `Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | Published: ${payload.generated_at_utc}`;
+    }
+    loadCurve().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
+  </script>
+</body>
+</html>

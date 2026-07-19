@@ -1,0 +1,57 @@
+name: Update CPURNSA curve data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub Actions cron is UTC. Run hourly Tuesday-Saturday and gate below
+    # to 06:00 America/New_York so EST/EDT transitions are handled correctly.
+    - cron: "0 * * * 2-6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cpurnsa-data-update
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Check New York schedule window
+        id: schedule
+        run: |
+          weekday="$(TZ=America/New_York date +%u)"
+          hour="$(TZ=America/New_York date +%H)"
+          if [ "$weekday" -ge 2 ] && [ "$weekday" -le 6 ] && [ "$hour" = "06" ]; then
+            echo "run_now=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_now=false" >> "$GITHUB_OUTPUT"
+            echo "Outside Tuesday-Saturday 06:00 America/New_York window"
+          fi
+
+      - name: Set up Python
+        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rebuild public CPURNSA JSON
+        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+        run: python tools/publish_cpurnsa.py --input-dir data/cpurnsa_snapshots --output-dir data
+
+      - name: Commit changed public data
+        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/cpurnsa_curve_history.json data/health.json; then
+            echo "No public CPURNSA data changes"
+            exit 0
+          fi
+          git add data/cpurnsa_curve_history.json data/health.json
+          git commit -m "Update CPURNSA curve data"
+          git push
