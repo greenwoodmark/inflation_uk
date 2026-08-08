@@ -45,13 +45,20 @@
         hovertemplate: '%{x}<br>Rate: %{y:.3f}%<br>Status: %{customdata}<extra>' + snapshot.label + '</extra>'
       }));
       const latest = snapshots[0];
-      traces.push({
-        x: latest.reference_month.concat([...latest.reference_month].reverse()),
-        y: latest.upper_percent.concat([...latest.lower_percent].reverse()),
-        fill: 'toself', fillcolor: 'rgba(14, 116, 144, 0.14)',
-        line: { color: 'rgba(14, 116, 144, 0)' },
-        name: `${latest.label} ± 1 SD`, hoverinfo: 'skip'
-      });
+      const dailyMoveSd = latest.daily_move_sd_bp || [];
+      const hasUncertaintyBand = dailyMoveSd.length === latest.yoy_rate_percent.length
+        && dailyMoveSd.every(value => Number.isFinite(value));
+      if (hasUncertaintyBand) {
+        const lower = latest.yoy_rate_percent.map((rate, index) => rate - dailyMoveSd[index] / 100.0);
+        const upper = latest.yoy_rate_percent.map((rate, index) => rate + dailyMoveSd[index] / 100.0);
+        traces.push({
+          x: latest.reference_month.concat([...latest.reference_month].reverse()),
+          y: upper.concat([...lower].reverse()),
+          fill: 'toself', fillcolor: 'rgba(14, 116, 144, 0.14)',
+          line: { color: 'rgba(14, 116, 144, 0)' },
+          name: 'Latest ± 1σ daily move', hoverinfo: 'skip'
+        });
+      }
       Plotly.newPlot('chart', traces, {
         title: `CPURNSA curve — latest model date ${payload.latest_model_date}`,
         xaxis: { title: 'Reference CPI month', type: 'date' },
@@ -60,7 +67,10 @@
         margin: { t: 72, r: 25, b: 105, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
       }, { responsive: true, displaylogo: false });
       if (payload.warning) { const warning = document.getElementById('warning'); warning.textContent = payload.warning; warning.style.display = 'block'; }
-      document.getElementById('meta').textContent = `Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | Published: ${payload.generated_at_utc}`;
+      const uncertainty = latest.uncertainty_status === 'available'
+        ? `Uncertainty: ±1σ historical model moves over ${latest.uncertainty_window} observations`
+        : 'Uncertainty: unavailable until sufficient model history exists';
+      document.getElementById('meta').textContent = `Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | ${uncertainty} | Published: ${payload.generated_at_utc}`;
     }
     loadCurve().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
   </script>

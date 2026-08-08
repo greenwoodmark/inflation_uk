@@ -1,7 +1,9 @@
 {
-  "generated_at_utc": "2026-07-19T19:30:25+00:00",
+  "generated_at_utc": "2026-08-08T16:32:46+00:00",
   "latest_model_date": "2026-06-11",
   "status": "broker_marks",
   "model_version": "uscpi_zc_factor_v1",
-  "warning": "Insufficient historical snapshots for all requested offsets"
+  "uncertainty_status": "insufficient_history",
+  "uncertainty_source": "historical_model_implied_moves",
+  "warning": "Insufficient historical snapshots for all requested offsets; Daily move uncertainty unavailable until at least 20 valid moves per reference month"
 }
