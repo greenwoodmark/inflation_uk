@@ -217,7 +217,12 @@ def publish(input_dir: Path, output_dir: Path) -> None:
     warning = "; ".join(warnings) or None
     output_dir.mkdir(parents=True, exist_ok=True)
     target = output_dir / "cpurnsa_curve_history.json"
-    previous = json.loads(target.read_text()) if target.exists() else None
+    previous = None
+    if target.exists():
+        try:
+            previous = json.loads(target.read_text())
+        except json.JSONDecodeError:
+            previous = None
     stable_payload = {
         "snapshots": selected,
         "warning": warning,
