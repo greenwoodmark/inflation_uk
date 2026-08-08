@@ -104,16 +104,33 @@ def _rate_for_reference(snapshot: dict, reference_month: str) -> float | None:
     return _number(snapshot["yoy_rate_percent"][index])
 
 
-def _move_uncertainty(snapshot: dict, history: list[dict]) -> dict:
+FALLBACK_UNCERTAINTY_SOURCE = "historical_barclays_curve_moves"
+
+
+def _calculate_move_uncertainty(
+    snapshot: dict,
+    history: list[dict],
+    *,
+    by_reference_month: bool,
+    same_frame_only: bool,
+) -> dict:
     standard_deviations: list[float | None] = []
     observation_counts: list[int] = []
-    for reference_month in snapshot["reference_month"]:
+    series_count = len(snapshot["reference_month"])
+    for series_index in range(series_count):
         points: list[float] = []
         previous: float | None = None
         for candidate in history:
-            if not _eligible_for_moves(candidate) or not _same_frame(candidate, snapshot):
+            if not _eligible_for_moves(candidate):
                 continue
-            rate = _rate_for_reference(candidate, reference_month)
+            if same_frame_only and not _same_frame(candidate, snapshot):
+                continue
+            if by_reference_month:
+                rate = _rate_for_reference(candidate, snapshot["reference_month"][series_index])
+            elif series_index >= len(candidate["yoy_rate_percent"]):
+                rate = None
+            else:
+                rate = _number(candidate["yoy_rate_percent"][series_index])
             if rate is None:
                 continue
             if previous is not None:
@@ -128,15 +145,32 @@ def _move_uncertainty(snapshot: dict, history: list[dict]) -> dict:
         variance = sum((move - mean) ** 2 for move in moves_bp) / (len(moves_bp) - 1)
         standard_deviations.append(math.sqrt(variance))
     available = sum(value is not None for value in standard_deviations)
-    status = "available" if available == len(standard_deviations) else "insufficient_history"
     return {
         "daily_move_sd_bp": standard_deviations,
         "daily_move_observation_count": observation_counts,
         "uncertainty_source": UNCERTAINTY_SOURCE,
         "uncertainty_window": MOVE_WINDOW,
         "uncertainty_min_observations": MIN_MOVE_OBSERVATIONS,
-        "uncertainty_status": status,
+        "uncertainty_status": "available" if available == len(standard_deviations) else "insufficient_history",
     }
+
+
+def _move_uncertainty(snapshot: dict, history: list[dict]) -> dict:
+    same_month = _calculate_move_uncertainty(
+        snapshot, history, by_reference_month=True, same_frame_only=True
+    )
+    if same_month["uncertainty_status"] == "available":
+        same_month["uncertainty_alignment"] = "same_reference_month"
+        return same_month
+    node_position = _calculate_move_uncertainty(
+        snapshot, history, by_reference_month=False, same_frame_only=False
+    )
+    if node_position["uncertainty_status"] == "available":
+        node_position["uncertainty_source"] = FALLBACK_UNCERTAINTY_SOURCE
+        node_position["uncertainty_alignment"] = "node_position"
+        return node_position
+    same_month["uncertainty_alignment"] = "same_reference_month"
+    return same_month
 
 
 def _decorate_snapshots(snapshots: list[dict]) -> list[dict]:
@@ -195,7 +229,7 @@ def publish(input_dir: Path, output_dir: Path) -> None:
         "latest_model_date": latest["model_date"],
         "available_snapshot_count": len(snapshots),
         "requested_labels": list(LABELS),
-        "uncertainty_definition": "One-standard-deviation rolling moves in basis points for the same reference month across valid model dates",
+        "uncertainty_definition": "One-standard-deviation rolling moves in basis points, using same reference months when available and otherwise relative curve-node positions",
         "snapshots": selected,
         "warning": warning,
     }
@@ -206,7 +240,8 @@ def publish(input_dir: Path, output_dir: Path) -> None:
         "status": latest["status"],
         "model_version": latest["model_version"],
         "uncertainty_status": latest["uncertainty_status"],
-        "uncertainty_source": UNCERTAINTY_SOURCE,
+        "uncertainty_source": latest["uncertainty_source"],
+        "uncertainty_alignment": latest["uncertainty_alignment"],
         "warning": warning,
     }, indent=2) + "\n", encoding="utf-8")
 

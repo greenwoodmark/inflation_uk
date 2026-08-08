@@ -68,7 +68,7 @@
       }, { responsive: true, displaylogo: false });
       if (payload.warning) { const warning = document.getElementById('warning'); warning.textContent = payload.warning; warning.style.display = 'block'; }
       const uncertainty = latest.uncertainty_status === 'available'
-        ? `Uncertainty: ±1σ historical model moves over ${latest.uncertainty_window} observations`
+        ? `Uncertainty: ±1σ historical ${latest.uncertainty_alignment === 'node_position' ? 'curve-node' : 'same-reference-month'} moves over ${latest.uncertainty_window} observations`
         : 'Uncertainty: unavailable until sufficient model history exists';
       document.getElementById('meta').textContent = `Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | ${uncertainty} | Published: ${payload.generated_at_utc}`;
     }

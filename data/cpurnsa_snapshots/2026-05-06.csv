@@ -1,0 +1,13 @@
+as_of_date,reference_month,implied_zc_rate,node_status,fit_status,model_version,matrix_version,base_month,training_cutoff,source_trade_count
+2026-05-06,2026-04-01,0.037360307984849905,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-05-01,0.041419750206087791,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-06-01,0.040113342902582838,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-07-01,0.038545355488967648,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-08-01,0.036434797639331329,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-09-01,0.035190886699507429,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-10-01,0.032204764069237557,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-11-01,0.035258328654025339,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2026-12-01,0.035382991723601709,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2027-01-01,0.035289560094941885,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2027-02-01,0.034010128983888332,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
+2026-05-06,2027-03-01,0.028030392504232005,broker_marks,unknown,uscpi_zc_factor_v1,legacy_barclays_curve_archive,2026-03-01,2026-05-06,0
