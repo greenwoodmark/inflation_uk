@@ -1,8 +1,14 @@
 {
   "schema_version": "cpurnsa_curve_history_v2",
+<<<<<<< HEAD
   "generated_at_utc": "2026-08-08T16:38:19+00:00",
   "latest_model_date": "2026-06-11",
   "available_snapshot_count": 61,
+=======
+  "generated_at_utc": "2026-08-08T16:50:46+00:00",
+  "latest_model_date": "2026-08-07",
+  "available_snapshot_count": 62,
+>>>>>>> b1734a7 (curve to latest data)
   "requested_labels": [
     "t",
     "t-1",
@@ -13,9 +19,97 @@
   "uncertainty_definition": "One-standard-deviation rolling moves in basis points, using same reference months when available and otherwise relative curve-node positions",
   "snapshots": [
     {
+      "model_date": "2026-08-07",
+      "status": "shadow_posterior",
+      "fit_status": "shadow_posterior",
+      "curve_kind": "shadow_posterior",
+      "model_version": "uscpi_six_driver_v1",
+      "matrix_version": "uscpi_monthly_bucket_matrix_v2",
+      "base_month": "2026-06-01",
+      "training_cutoff": "2026-08-07",
+      "source_trade_count": 4,
+      "reference_month": [
+        "2026-07-01",
+        "2026-08-01",
+        "2026-09-01",
+        "2026-10-01",
+        "2026-11-01",
+        "2026-12-01",
+        "2027-01-01",
+        "2027-02-01",
+        "2027-03-01",
+        "2027-04-01",
+        "2027-05-01",
+        "2027-06-01"
+      ],
+      "yoy_rate_percent": [
+        3.421499978451803,
+        2.9500595973976695,
+        3.1642712721304145,
+        3.7131126346203525,
+        4.003778124326485,
+        3.183892423188772,
+        2.8483525147409594,
+        3.0695759079497176,
+        2.5386192109066785,
+        2.0825094944354694,
+        1.7438703840039205,
+        2.3163298489443873
+      ],
+      "node_status": [
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior",
+        "shadow_posterior"
+      ],
+      "daily_move_sd_bp": [
+        11.202713701262677,
+        8.021518984408221,
+        8.951702066183728,
+        8.787066967428038,
+        9.578275382321996,
+        9.581734802106064,
+        10.030636899486513,
+        9.13535835700931,
+        8.138080314569526,
+        11.277368590510415,
+        12.074347879723291,
+        12.601556071478925
+      ],
+      "daily_move_observation_count": [
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60
+      ],
+      "uncertainty_source": "historical_barclays_curve_moves",
+      "uncertainty_window": 60,
+      "uncertainty_min_observations": 20,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "label": "t"
+    },
+    {
       "model_date": "2026-06-11",
       "status": "broker_marks",
       "fit_status": "unknown",
+      "curve_kind": "historical_broker_marks",
       "model_version": "uscpi_zc_factor_v1",
       "matrix_version": "legacy_barclays_curve_archive",
       "base_month": "2026-05-01",
@@ -96,12 +190,20 @@
       "uncertainty_min_observations": 20,
       "uncertainty_status": "available",
       "uncertainty_alignment": "node_position",
+<<<<<<< HEAD
       "label": "t"
+=======
+      "label": "t-1"
+>>>>>>> b1734a7 (curve to latest data)
     },
     {
       "model_date": "2026-06-10",
       "status": "broker_marks",
       "fit_status": "unknown",
+<<<<<<< HEAD
+=======
+      "curve_kind": "historical_broker_marks",
+>>>>>>> b1734a7 (curve to latest data)
       "model_version": "uscpi_zc_factor_v1",
       "matrix_version": "legacy_barclays_curve_archive",
       "base_month": "2026-05-01",
@@ -182,6 +284,7 @@
       "uncertainty_min_observations": 20,
       "uncertainty_status": "available",
       "uncertainty_alignment": "node_position",
+<<<<<<< HEAD
       "label": "t-1"
     },
     {
@@ -278,6 +381,19 @@
       "matrix_version": "legacy_barclays_curve_archive",
       "base_month": "2026-04-01",
       "training_cutoff": "2026-06-02",
+=======
+      "label": "t-2"
+    },
+    {
+      "model_date": "2026-06-03",
+      "status": "broker_marks",
+      "fit_status": "unknown",
+      "curve_kind": "historical_broker_marks",
+      "model_version": "uscpi_zc_factor_v1",
+      "matrix_version": "legacy_barclays_curve_archive",
+      "base_month": "2026-04-01",
+      "training_cutoff": "2026-06-03",
+>>>>>>> b1734a7 (curve to latest data)
       "source_trade_count": 0,
       "reference_month": [
         "2026-05-01",
@@ -294,6 +410,7 @@
         "2027-04-01"
       ],
       "yoy_rate_percent": [
+<<<<<<< HEAD
         4.288180672857078,
         4.060937311082258,
         3.9443054902057906,
@@ -306,6 +423,20 @@
         3.7795492449163914,
         3.1564475050952057,
         2.647288451144081
+=======
+        4.266405362947756,
+        4.033035611868763,
+        3.9752606423813175,
+        3.86571844828012,
+        3.817733990147776,
+        3.546025233105232,
+        3.88680805375754,
+        3.95489640615454,
+        3.9655405654692277,
+        3.8695166546812043,
+        3.2485092955153005,
+        2.738574259804216
+>>>>>>> b1734a7 (curve to latest data)
       ],
       "node_status": [
         "broker_marks",
@@ -322,6 +453,7 @@
         "broker_marks"
       ],
       "daily_move_sd_bp": [
+<<<<<<< HEAD
         10.881993515991182,
         8.318985950301522,
         9.225456095687997,
@@ -348,6 +480,34 @@
         53,
         53,
         53
+=======
+        10.79255399038054,
+        8.253451444359053,
+        9.146146908839519,
+        9.070190649435458,
+        9.199159194352328,
+        8.77588364031489,
+        10.411888276755635,
+        9.450103979084135,
+        8.227525890901621,
+        7.94919289549923,
+        10.349320378973443,
+        12.2286805007915
+      ],
+      "daily_move_observation_count": [
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54,
+        54
+>>>>>>> b1734a7 (curve to latest data)
       ],
       "uncertainty_source": "historical_barclays_curve_moves",
       "uncertainty_window": 60,
@@ -357,6 +517,7 @@
       "label": "t-7"
     },
     {
+<<<<<<< HEAD
       "model_date": "2026-04-29",
       "status": "broker_marks",
       "fit_status": "unknown",
@@ -364,6 +525,16 @@
       "matrix_version": "legacy_barclays_curve_archive",
       "base_month": "2026-03-01",
       "training_cutoff": "2026-04-29",
+=======
+      "model_date": "2026-04-30",
+      "status": "broker_marks",
+      "fit_status": "unknown",
+      "curve_kind": "historical_broker_marks",
+      "model_version": "uscpi_zc_factor_v1",
+      "matrix_version": "legacy_barclays_curve_archive",
+      "base_month": "2026-03-01",
+      "training_cutoff": "2026-04-30",
+>>>>>>> b1734a7 (curve to latest data)
       "source_trade_count": 0,
       "reference_month": [
         "2026-04-01",
@@ -380,6 +551,7 @@
         "2027-03-01"
       ],
       "yoy_rate_percent": [
+<<<<<<< HEAD
         3.7173272650758316,
         4.160639571959623,
         4.095039387898725,
@@ -392,6 +564,20 @@
         3.6528599362955383,
         3.5399421638079964,
         2.933258230293778
+=======
+        3.7235617762122253,
+        4.169971847635057,
+        4.085738821494234,
+        3.935018944553126,
+        3.72373262216954,
+        3.5991379310344795,
+        3.3003280057984696,
+        3.6060495739258736,
+        3.618532713683531,
+        3.6227294528550225,
+        3.50383279526294,
+        2.898735058886226
+>>>>>>> b1734a7 (curve to latest data)
       ],
       "node_status": [
         "broker_marks",
@@ -408,6 +594,7 @@
         "broker_marks"
       ],
       "daily_move_sd_bp": [
+<<<<<<< HEAD
         8.576593550786523,
         9.290799754918709,
         10.400160925995756,
@@ -434,6 +621,34 @@
         30,
         30,
         30
+=======
+        8.433340826203194,
+        9.135184348843728,
+        10.231009522221859,
+        10.215178191888839,
+        10.495338535336264,
+        9.479301151929828,
+        9.316890127253274,
+        10.550605236144216,
+        8.742238238244767,
+        8.583357098528738,
+        8.73168540972302,
+        13.809071771085241
+      ],
+      "daily_move_observation_count": [
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31
+>>>>>>> b1734a7 (curve to latest data)
       ],
       "uncertainty_source": "historical_barclays_curve_moves",
       "uncertainty_window": 60,

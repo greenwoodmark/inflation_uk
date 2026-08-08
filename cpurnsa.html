@@ -33,6 +33,13 @@
       if (!response.ok) throw new Error(`Curve data request failed: ${response.status}`);
       return response.json();
     }
+    function curveKindLabel(snapshot) {
+      return snapshot.curve_kind === 'shadow_posterior'
+        ? 'shadow/posterior estimate'
+        : snapshot.curve_kind === 'canonical_deterministic'
+          ? 'canonical deterministic fit'
+          : snapshot.curve_kind || 'historical curve';
+    }
     function render(payload) {
       const snapshots = payload.snapshots || [];
       if (!snapshots.length) throw new Error('No curve snapshots are available');
@@ -40,7 +47,7 @@
         x: snapshot.reference_month,
         y: snapshot.yoy_rate_percent,
         mode: 'lines+markers',
-        name: `${snapshot.label} — ${snapshot.model_date}`,
+        name: `${snapshot.label} — ${snapshot.model_date} (${curveKindLabel(snapshot)})`,
         customdata: snapshot.node_status,
         hovertemplate: '%{x}<br>Rate: %{y:.3f}%<br>Status: %{customdata}<extra>' + snapshot.label + '</extra>'
       }));
@@ -60,7 +67,7 @@
         });
       }
       Plotly.newPlot('chart', traces, {
-        title: `CPURNSA curve — latest model date ${payload.latest_model_date}`,
+        title: `CPURNSA curve — latest ${curveKindLabel(latest)} ${payload.latest_model_date}`,
         xaxis: { title: 'Reference CPI month', type: 'date' },
         yaxis: { title: 'Y/Y inflation rate (%)', ticksuffix: '%' },
         hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 },
@@ -70,7 +77,7 @@
       const uncertainty = latest.uncertainty_status === 'available'
         ? `Uncertainty: ±1σ historical ${latest.uncertainty_alignment === 'node_position' ? 'curve-node' : 'same-reference-month'} moves over ${latest.uncertainty_window} observations`
         : 'Uncertainty: unavailable until sufficient model history exists';
-      document.getElementById('meta').textContent = `Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | ${uncertainty} | Published: ${payload.generated_at_utc}`;
+      document.getElementById('meta').textContent = `Curve: ${curveKindLabel(latest)} | Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | ${uncertainty} | Published: ${payload.generated_at_utc}`;
     }
     loadCurve().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
   </script>

@@ -67,11 +67,16 @@ def read_snapshot(path: Path) -> dict:
         if (row["as_of_date"] or date) != date:
             raise ValueError(f"{path} contains multiple as_of_date values")
     source_count = _number(rows[0].get("source_trade_count", rows[0].get("observation_count", 0)))
+    model_version = rows[0].get("model_version", "unknown")
+    curve_kind = rows[0].get("curve_kind") or (
+        "canonical_deterministic" if model_version == "uscpi_six_driver_v1" else "historical_broker_marks"
+    )
     return {
         "model_date": date,
         "status": rows[0].get("node_status", "unknown"),
         "fit_status": rows[0].get("fit_status", "unknown"),
-        "model_version": rows[0].get("model_version", "unknown"),
+        "curve_kind": curve_kind,
+        "model_version": model_version,
         "matrix_version": rows[0].get("matrix_version", "unknown"),
         "base_month": rows[0].get("base_month", "unknown"),
         "training_cutoff": rows[0].get("training_cutoff", date),

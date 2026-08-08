@@ -1,8 +1,15 @@
 {
+<<<<<<< HEAD
   "generated_at_utc": "2026-08-08T16:38:19+00:00",
   "latest_model_date": "2026-06-11",
   "status": "broker_marks",
   "model_version": "uscpi_zc_factor_v1",
+=======
+  "generated_at_utc": "2026-08-08T16:50:46+00:00",
+  "latest_model_date": "2026-08-07",
+  "status": "shadow_posterior",
+  "model_version": "uscpi_six_driver_v1",
+>>>>>>> b1734a7 (curve to latest data)
   "uncertainty_status": "available",
   "uncertainty_source": "historical_barclays_curve_moves",
   "uncertainty_alignment": "node_position",
