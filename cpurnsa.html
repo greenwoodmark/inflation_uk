@@ -18,13 +18,11 @@
 </head>
 <body>
   <main>
-    <h1>US CPURNSA Inflation Curve</h1>
-    <p class="subtitle">One-year zero-coupon inflation rates by reference CPI month</p>
-    <p><a href="pca.html">View six-driver PCA diagnostics →</a></p>
     <div class="card">
       <div id="warning"></div>
       <div id="chart"></div>
       <p id="meta" class="meta"></p>
+      <p><a href="pca.html">View six-driver PCA diagnostics →</a></p>
       <p id="error"></p>
     </div>
   </main>
@@ -68,7 +66,11 @@
         });
       }
       Plotly.newPlot('chart', traces, {
-        title: `CPURNSA curve — latest ${curveKindLabel(latest)} ${payload.latest_model_date}`,
+        title: {
+          text: 'US CPURNSA Inflation Curve<br><sup>One-year zero-coupon inflation rates by reference CPI month</sup>',
+          x: 0.5,
+          xanchor: 'center'
+        },
         xaxis: { title: 'Reference CPI month', type: 'date' },
         yaxis: { title: 'Y/Y inflation rate (%)', ticksuffix: '%' },
         hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 },
