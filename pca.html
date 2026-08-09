@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US CPURNSA PCA Diagnostics</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: system-ui, sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 18px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin: 16px 0; }
+    .subtitle, .meta, .note { color: #475569; }
+    .note { font-size: 0.94rem; line-height: 1.5; }
+    .chart { width: 100%; min-height: 420px; }
+    #error { color: #b91c1c; }
+    a { color: #075985; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.94rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #e0f2fe; color: #075985; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="cpurnsa.html">← Back to US CPURNSA inflation curve</a></p>
+    <h1>US CPURNSA PCA Diagnostics</h1>
+    <p class="subtitle">How many empirical principal components explain variation in the six shadow-posterior drivers?</p>
+    <div class="card">
+      <p class="note"><strong>Frame-aware analysis.</strong> The July 14 publication reseed changes the meaning of the relative driver buckets. PCA is therefore calculated separately within each coordinate frame; the cross-reseed transition is not treated as a market move.</p>
+      <p id="meta" class="meta"></p>
+      <p id="error"></p>
+    </div>
+    <div class="card">
+      <h2>Current frame: explained variance</h2>
+      <p class="note">Natural units are the primary measure. Standardized units give each driver equal marginal volatility before PCA.</p>
+      <div id="current-chart" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Current-frame expanding history</h2>
+      <p class="note">Each point recomputes PCA using all available posterior states in the current frame up to that date. The series starts after enough states exist for a six-driver covariance estimate.</p>
+      <div id="history-chart" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Frame comparison</h2>
+      <div id="frame-table"></div>
+    </div>
+    <div class="card">
+      <h2>Method and limitations</h2>
+      <ul id="limitations"></ul>
+      <p class="note">PCA is a linear variance-concentration diagnostic, not a causal model and not posterior uncertainty. Independent-component analysis (ICA) is not used here: with short, correlated posterior paths it is unstable and does not provide a comparable “variance explained” measure.</p>
+    </div>
+  </main>
+  <script>
+    async function loadDiagnostics() {
+      const response = await fetch('data/cpurnsa_pca_diagnostics.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error(`PCA data request failed: ${response.status}`);
+      return response.json();
+    }
+    function percent(value) { return `${(value * 100).toFixed(2)}%`; }
+    function components(value) { return value == null ? '—' : String(value); }
+    function renderCurrent(frame) {
+      const natural = frame.natural_units;
+      const standardized = frame.standardized_units;
+      const labels = natural.explained_variance_ratio.map((_, index) => `PC${index + 1}`);
+      const traces = [
+        { x: labels, y: natural.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Natural units (%)', marker: { color: '#0e7490' } },
+        { x: labels, y: natural.cumulative_explained_variance.map(value => value * 100), mode: 'lines+markers', name: 'Natural cumulative (%)', yaxis: 'y2', line: { color: '#c2410c', width: 3 } },
+        { x: labels, y: standardized.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Standardized units (%)', marker: { color: '#94a3b8' }, visible: 'legendonly' }
+      ];
+      Plotly.newPlot('current-chart', traces, {
+        barmode: 'group', xaxis: { title: 'Principal component' },
+        yaxis: { title: 'Individual variance explained (%)', rangemode: 'tozero' },
+        yaxis2: { title: 'Cumulative variance (%)', overlaying: 'y', side: 'right', range: [0, 105] },
+        legend: { orientation: 'h', y: -0.2 }, margin: { t: 20, r: 70, b: 85, l: 70 },
+        paper_bgcolor: 'white', plot_bgcolor: 'white'
+      }, { responsive: true, displaylogo: false });
+    }
+    function renderHistory(frame) {
+      const history = frame.expanding_history || [];
+      const dates = history.map(item => item.date);
+      const traces = [
+        { x: dates, y: history.map(item => item.pc1 * 100), mode: 'lines+markers', name: 'PC1 (%)' },
+        { x: dates, y: history.map(item => item.cumulative_pc2 * 100), mode: 'lines+markers', name: 'PC1 + PC2 (%)' },
+        { x: dates, y: history.map(item => item.cumulative_pc3 * 100), mode: 'lines+markers', name: 'PC1 + PC2 + PC3 (%)' }
+      ];
+      Plotly.newPlot('history-chart', traces, {
+        xaxis: { title: 'Posterior date', type: 'date' }, yaxis: { title: 'Cumulative variance (%)', range: [0, 105] },
+        hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 }, margin: { t: 20, r: 25, b: 85, l: 70 },
+        paper_bgcolor: 'white', plot_bgcolor: 'white'
+      }, { responsive: true, displaylogo: false });
+    }
+    function renderTable(frames) {
+      const rows = frames.map(frame => {
+        const natural = frame.natural_units;
+        const standardized = frame.standardized_units;
+        return `<tr><td>${frame.frame_id}</td><td>${frame.first_state_date} → ${frame.last_state_date}</td><td>${frame.state_count}</td><td>${percent(natural.explained_variance_ratio[0])}</td><td>${percent(natural.cumulative_explained_variance[1])}</td><td>${components(natural.components_to_threshold['0.95'])}</td><td>${percent(standardized.explained_variance_ratio[0])}</td><td>${components(standardized.components_to_threshold['0.95'])}</td></tr>`;
+      }).join('');
+      document.getElementById('frame-table').innerHTML = `<table><thead><tr><th>Frame</th><th>Dates</th><th>N</th><th>Natural PC1</th><th>Natural PC1–2</th><th>Natural PCs to 95%</th><th>Standardized PC1</th><th>Standardized PCs to 95%</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+    function render(payload) {
+      const current = payload.current_frame;
+      renderCurrent(current); renderHistory(current); renderTable(payload.frames);
+      document.getElementById('meta').innerHTML = `<span class="badge">${current.frame_id}</span> | Dates: ${payload.analysis_start} → ${payload.analysis_end} | States: ${payload.state_count} | Drivers: ${payload.driver_names.join(', ')} | Reseed boundary: ${payload.frame_policy.reseed_dates.join(', ') || 'none'} | Generated: ${payload.generated_at_utc}`;
+      document.getElementById('limitations').innerHTML = payload.limitations.map(item => `<li>${item}</li>`).join('');
+    }
+    loadDiagnostics().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
+  </script>
+</body>
+</html>
