@@ -1,27 +1,21 @@
-name: Update CPURNSA curve and PCA data
+name: Validate and publish CPURNSA curve and PCA data
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/cpurnsa_snapshots/**"
+      - "data/cpurnsa_pca_diagnostics.json"
+      - "data/uscpi_release_manifest.json"
   workflow_dispatch:
-  schedule:
-    # GitHub Actions cron is UTC. Run hourly Tuesday-Saturday and gate below
-    # to 06:00 America/New_York so EST/EDT transitions are handled correctly.
-    - cron: "0 * * * 2-6"
 
 permissions:
   contents: write
-  id-token: write
 
 concurrency:
   group: cpurnsa-data-update
   cancel-in-progress: true
-
-env:
-  # Keep disabled until the GCP Workload Identity variables and sanitized
-  # release prefix have been configured in this repository.
-  USCPI_RELEASE_ENABLED: ${{ vars.USCPI_RELEASE_ENABLED || '0' }}
-  USCPI_RELEASE_BASE: ${{ vars.USCPI_RELEASE_BASE || 'gs://systematicpositiveskew/uscpi_public' }}
-  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || '' }}
-  GCP_RELEASE_READER_SERVICE_ACCOUNT: ${{ vars.GCP_RELEASE_READER_SERVICE_ACCOUNT || '' }}
 
 jobs:
   update:
@@ -30,101 +24,42 @@ jobs:
       - name: Check out website
         uses: actions/checkout@v4
 
-      - name: Check New York schedule window
-        id: schedule
-        run: |
-          weekday="$(TZ=America/New_York date +%u)"
-          hour="$(TZ=America/New_York date +%H)"
-          if [ "$weekday" -ge 2 ] && [ "$weekday" -le 6 ] && [ "$hour" = "06" ]; then
-            echo "run_now=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run_now=false" >> "$GITHUB_OUTPUT"
-            echo "Outside Tuesday-Saturday 06:00 America/New_York window"
-          fi
-
       - name: Set up Python
-        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Authenticate to GCP release bucket
-        if: (steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch') && env.USCPI_RELEASE_ENABLED == '1'
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.GCP_RELEASE_READER_SERVICE_ACCOUNT }}
-
-      - name: Set up gcloud
-        if: (steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch') && env.USCPI_RELEASE_ENABLED == '1'
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Fetch and verify sanitized model release
-        if: (steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch') && env.USCPI_RELEASE_ENABLED == '1'
-        run: python tools/fetch_uscpi_release.py --release-base "$USCPI_RELEASE_BASE" --output-dir .uscpi-release
-
-      - name: Prepare release snapshot input
-        if: (steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch') && env.USCPI_RELEASE_ENABLED == '1'
+      - name: Validate committed sanitized model handoff
         run: |
-          set -euo pipefail
-          rm -rf .published-snapshots
-          mkdir -p .published-snapshots
-          cp data/cpurnsa_snapshots/*.csv .published-snapshots/
-          cp .uscpi-release/snapshots/*.csv .published-snapshots/
-          cp .uscpi-release/cpurnsa_pca_diagnostics.json data/cpurnsa_pca_diagnostics.json
+          python tools/validate_uscpi_public_data.py \
+            --snapshot-dir data/cpurnsa_snapshots \
+            --pca-path data/cpurnsa_pca_diagnostics.json \
+            --manifest-path data/uscpi_release_manifest.json \
+            --curve-path data/cpurnsa_curve_history.json
 
-      - name: Rebuild public CPURNSA and PCA JSON
-        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+      - name: Rebuild public CPURNSA JSON
         run: |
-          set -euo pipefail
-          input_dir="data/cpurnsa_snapshots"
-          if [ "$USCPI_RELEASE_ENABLED" = "1" ]; then
-            input_dir=".published-snapshots"
-          fi
-          python tools/publish_cpurnsa.py --input-dir "$input_dir" --output-dir data
+          python tools/publish_cpurnsa.py \
+            --input-dir data/cpurnsa_snapshots \
+            --output-dir data
 
-      - name: Validate public data
-        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+      - name: Validate rebuilt public data
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
+          python tools/validate_uscpi_public_data.py \
+            --snapshot-dir data/cpurnsa_snapshots \
+            --pca-path data/cpurnsa_pca_diagnostics.json \
+            --manifest-path data/uscpi_release_manifest.json \
+            --curve-path data/cpurnsa_curve_history.json
 
-          curve = json.loads(Path('data/cpurnsa_curve_history.json').read_text())
-          assert curve['snapshots'], 'No curve snapshots published'
-          for snapshot in curve['snapshots']:
-              assert len(snapshot['reference_month']) == 12
-              assert len(snapshot['yoy_rate_percent']) == 12
-              assert all(value is None or isinstance(value, (int, float)) for value in snapshot['yoy_rate_percent'])
-
-          pca_path = Path('data/cpurnsa_pca_diagnostics.json')
-          pca = json.loads(pca_path.read_text())
-          assert pca['schema_version'] == 'cpurnsa_pca_diagnostics_v1'
-          assert pca['diagnostic_kind'] == 'uscpi_shadow_posterior_driver_pca'
-          assert pca['frame_policy']['cross_reseed_transition_included'] is False
-          assert pca['current_frame']['state_count'] >= 2
-          forbidden = {
-              'posterior_mean', 'prior_mean', 'posterior_covariance',
-              'prior_covariance', 'source_uri', 'source_generation',
-              'run_id', 'raw_observations', 'dissemination_id',
-          }
-          text = pca_path.read_text()
-          leaked = [field for field in forbidden if f'"{field}"' in text]
-          assert not leaked, f'Private fields in PCA JSON: {leaked}'
-          print('Validated curve snapshots:', curve['available_snapshot_count'])
-          print('Validated PCA current frame:', pca['current_frame_id'])
-          PY
-
-      - name: Commit changed public data
-        if: steps.schedule.outputs.run_now == 'true' || github.event_name == 'workflow_dispatch'
+      - name: Commit generated public data
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- data/cpurnsa_curve_history.json data/health.json data/cpurnsa_pca_diagnostics.json; then
-            echo "No public CPURNSA curve/PCA data changes"
+          if git diff --quiet -- data/cpurnsa_curve_history.json data/health.json; then
+            echo "No generated public curve changes"
             exit 0
           fi
-          git add data/cpurnsa_curve_history.json data/health.json data/cpurnsa_pca_diagnostics.json
-          git commit -m "Update CPURNSA curve and PCA data"
+          git add data/cpurnsa_curve_history.json data/health.json
+          git commit -m "Update CPURNSA curve data"
           git push
