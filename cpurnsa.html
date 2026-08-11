@@ -13,6 +13,16 @@
     #chart { width: 100%; min-height: 600px; }
     #warning { display: none; margin: 14px 0; padding: 10px 12px; border-radius: 7px; background: #fef3c7; color: #92400e; }
     #error { color: #b91c1c; }
+    #commentary { margin-top: 18px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+    #commentary h2 { margin: 0 0 8px; font-size: 1.15rem; }
+    #commentary p { margin: 8px 0; line-height: 1.5; }
+    #commentary dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 14px 0 0; }
+    #commentary dt { color: #475569; font-weight: 600; }
+    #commentary dd { margin: 0; }
+    #commentary table { width: 100%; border-collapse: collapse; margin-top: 14px; font-variant-numeric: tabular-nums; }
+    #commentary th, #commentary td { border-bottom: 1px solid #e2e8f0; padding: 6px 8px; text-align: right; }
+    #commentary th:first-child, #commentary td:first-child { text-align: left; }
+    .commentary-muted { color: #64748b; }
     a { color: #075985; }
   </style>
 </head>
@@ -22,15 +32,25 @@
       <div id="warning"></div>
       <div id="chart"></div>
       <p id="meta" class="meta"></p>
+      <section id="commentary" hidden>
+        <h2 id="commentary-title">Daily curve commentary</h2>
+        <p id="commentary-summary"></p>
+        <dl id="commentary-details"></dl>
+        <div id="commentary-moves"></div>
+      </section>
       <p><a href="pca.html">View six-driver PCA diagnostics →</a></p>
       <p id="error"></p>
     </div>
   </main>
   <script>
-    async function loadCurve() {
-      const response = await fetch('data/cpurnsa_curve_history.json', { cache: 'no-store' });
-      if (!response.ok) throw new Error(`Curve data request failed: ${response.status}`);
-      return response.json();
+    async function loadData() {
+      const [curveResponse, commentaryResponse] = await Promise.all([
+        fetch('data/cpurnsa_curve_history.json', { cache: 'no-store' }),
+        fetch('data/cpurnsa_daily_commentary.json', { cache: 'no-store' })
+      ]);
+      if (!curveResponse.ok) throw new Error(`Curve data request failed: ${curveResponse.status}`);
+      if (!commentaryResponse.ok) throw new Error(`Commentary request failed: ${commentaryResponse.status}`);
+      return { curve: await curveResponse.json(), commentary: await commentaryResponse.json() };
     }
     function curveKindLabel(snapshot) {
       return snapshot.curve_kind === 'shadow_posterior'
@@ -39,7 +59,72 @@
           ? 'canonical deterministic fit'
           : snapshot.curve_kind || 'historical curve';
     }
-    function render(payload) {
+    function formatMove(value) {
+      if (!Number.isFinite(value)) return '—';
+      return `${value >= 0 ? '+' : ''}${value.toFixed(2)} bp`;
+    }
+    function addDetail(details, label, value) {
+      const term = document.createElement('dt');
+      term.textContent = label;
+      const description = document.createElement('dd');
+      description.textContent = value;
+      details.append(term, description);
+    }
+    function renderCommentary(entry) {
+      const panel = document.getElementById('commentary');
+      const title = document.getElementById('commentary-title');
+      const summary = document.getElementById('commentary-summary');
+      const details = document.getElementById('commentary-details');
+      const moves = document.getElementById('commentary-moves');
+      panel.hidden = false;
+      details.replaceChildren();
+      moves.replaceChildren();
+      if (!entry) {
+        title.textContent = 'Daily curve commentary';
+        summary.textContent = 'Commentary is unavailable for this trace because no compatible prior snapshot exists.';
+        summary.className = 'commentary-muted';
+        return;
+      }
+      title.textContent = `Daily curve commentary — ${entry.model_date}`;
+      summary.textContent = entry.summary;
+      summary.className = '';
+      addDetail(details, 'Compared with', entry.prior_model_date || 'No prior snapshot');
+      addDetail(details, 'Comparison status', entry.comparison_status);
+      addDetail(details, 'Curve status', `${entry.curve_kind} / ${entry.fit_status}`);
+      addDetail(details, 'Published observations', String(entry.source_trade_count));
+      if (entry.source_trade_count_delta !== null) {
+        addDetail(details, 'Observation change', `${entry.source_trade_count_delta >= 0 ? '+' : ''}${entry.source_trade_count_delta}`);
+      }
+      if (entry.max_abs_move_bp !== null) {
+        addDetail(details, 'Largest absolute move', `${entry.max_abs_move_bp.toFixed(2)} bp at ${entry.max_abs_move_reference_month}`);
+        addDetail(details, 'Nodes up / down / unchanged', `${entry.up_nodes} / ${entry.down_nodes} / ${entry.unchanged_nodes}`);
+      }
+      if (entry.comparison_status !== 'available') return;
+      const table = document.createElement('table');
+      const head = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      ['Reference CPI month', 'Move'].forEach(label => {
+        const cell = document.createElement('th');
+        cell.textContent = label;
+        headerRow.appendChild(cell);
+      });
+      head.appendChild(headerRow);
+      const body = document.createElement('tbody');
+      entry.reference_month.forEach((month, index) => {
+        const row = document.createElement('tr');
+        const monthCell = document.createElement('td');
+        monthCell.textContent = month;
+        const moveCell = document.createElement('td');
+        moveCell.textContent = formatMove(entry.move_bp[index]);
+        row.append(monthCell, moveCell);
+        body.appendChild(row);
+      });
+      table.append(head, body);
+      moves.appendChild(table);
+    }
+    function render(data) {
+      const payload = data.curve;
+      const commentary = data.commentary;
       const snapshots = payload.snapshots || [];
       if (!snapshots.length) throw new Error('No curve snapshots are available');
       const traces = snapshots.map(snapshot => ({
@@ -47,6 +132,7 @@
         y: snapshot.yoy_rate_percent,
         mode: 'lines+markers',
         name: `${snapshot.label} — ${snapshot.model_date} (${curveKindLabel(snapshot)})`,
+        meta: { trace_id: snapshot.model_date, trace_kind: 'curve', model_date: snapshot.model_date },
         customdata: snapshot.node_status,
         hovertemplate: '%{x}<br>Rate: %{y:.3f}%<br>Status: %{customdata}<extra>' + snapshot.label + '</extra>'
       }));
@@ -62,7 +148,8 @@
           y: upper.concat([...lower].reverse()),
           fill: 'toself', fillcolor: 'rgba(14, 116, 144, 0.14)',
           line: { color: 'rgba(14, 116, 144, 0)' },
-          name: 'Latest ± 1σ daily move', hoverinfo: 'skip'
+          name: 'Latest ± 1σ daily move', hoverinfo: 'skip',
+          meta: { trace_kind: 'uncertainty_band' }
         });
       }
       Plotly.newPlot('chart', traces, {
@@ -75,14 +162,23 @@
         yaxis: { title: 'Y/Y inflation rate (%)', ticksuffix: '%' },
         hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 },
         margin: { t: 72, r: 25, b: 105, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
-      }, { responsive: true, displaylogo: false });
+      }, { responsive: true, displaylogo: false }).then(() => {
+        const chart = document.getElementById('chart');
+        chart.on('plotly_click', event => {
+          const point = event.points && event.points[0];
+          const meta = point && point.data && point.data.meta;
+          if (!meta || meta.trace_kind !== 'curve') return;
+          renderCommentary((commentary.entries || {})[meta.trace_id]);
+        });
+        renderCommentary((commentary.entries || {})[latest.model_date]);
+      });
       if (payload.warning) { const warning = document.getElementById('warning'); warning.textContent = payload.warning; warning.style.display = 'block'; }
       const uncertainty = latest.uncertainty_status === 'available'
         ? `Uncertainty: ±1σ historical ${latest.uncertainty_alignment === 'node_position' ? 'curve-node' : 'same-reference-month'} moves over ${latest.uncertainty_window} observations`
         : 'Uncertainty: unavailable until sufficient model history exists';
       document.getElementById('meta').textContent = `Curve: ${curveKindLabel(latest)} | Latest status: ${latest.status} | Model: ${latest.model_version} | Training cutoff: ${latest.training_cutoff} | Source trades: ${latest.source_trade_count} | ${uncertainty} | Published: ${payload.generated_at_utc}`;
     }
-    loadCurve().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
+    loadData().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
   </script>
 </body>
 </html>

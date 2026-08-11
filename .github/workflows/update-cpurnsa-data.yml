@@ -49,17 +49,24 @@ jobs:
             --snapshot-dir data/cpurnsa_snapshots \
             --pca-path data/cpurnsa_pca_diagnostics.json \
             --manifest-path data/uscpi_release_manifest.json \
-            --curve-path data/cpurnsa_curve_history.json
+            --curve-path data/cpurnsa_curve_history.json \
+            --commentary-path data/cpurnsa_daily_commentary.json
 
       - name: Commit generated public data
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- data/cpurnsa_curve_history.json data/health.json; then
+          if git diff --quiet -- \
+            data/cpurnsa_curve_history.json \
+            data/cpurnsa_daily_commentary.json \
+            data/health.json; then
             echo "No generated public curve changes"
             exit 0
           fi
-          git add data/cpurnsa_curve_history.json data/health.json
+          git add \
+            data/cpurnsa_curve_history.json \
+            data/cpurnsa_daily_commentary.json \
+            data/health.json
           git commit -m "Update CPURNSA curve data"
           git push

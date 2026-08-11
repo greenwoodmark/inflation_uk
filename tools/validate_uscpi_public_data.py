@@ -21,6 +21,7 @@ FORBIDDEN_FIELDS = {
     "dissemination_id",
 }
 PCA_SCHEMA = "cpurnsa_pca_diagnostics_v1"
+COMMENTARY_SCHEMA = "cpurnsa_daily_commentary_v1"
 MANIFEST_SCHEMA = "uscpi_public_release_manifest_v1"
 SNAPSHOT_REQUIRED = {"as_of_date", "reference_month", "implied_zc_rate", "model_version"}
 
@@ -114,12 +115,63 @@ def _validate_manifest(
     return payload
 
 
+def _validate_commentary(path: Path, snapshot_dir: Path) -> dict[str, object]:
+    text = path.read_text(encoding="utf-8")
+    leaked = sorted(field for field in FORBIDDEN_FIELDS if f'"{field}"' in text)
+    if leaked:
+        raise ValueError(f"private fields present in commentary JSON: {leaked}")
+    payload = json.loads(text)
+    if payload.get("schema_version") != COMMENTARY_SCHEMA:
+        raise ValueError("commentary schema is incompatible")
+    entries = payload.get("entries")
+    if not isinstance(entries, dict) or not entries:
+        raise ValueError("commentary contains no entries")
+    snapshot_dates = {item.stem for item in snapshot_dir.glob("*.csv")}
+    if payload.get("latest_model_date") not in entries:
+        raise ValueError("commentary latest_model_date is missing from entries")
+    for date, entry in entries.items():
+        if date not in snapshot_dates:
+            raise ValueError(f"commentary has no matching public snapshot: {date}")
+        if not isinstance(entry, dict) or entry.get("trace_id") != date:
+            raise ValueError(f"commentary trace_id does not match date: {date}")
+        references = entry.get("reference_month")
+        moves = entry.get("move_bp")
+        if not isinstance(references, list) or not isinstance(moves, list):
+            raise ValueError(f"commentary move arrays are missing: {date}")
+        if len(references) != len(moves):
+            raise ValueError(f"commentary move arrays are misaligned: {date}")
+        for move in moves:
+            if move is not None and (not isinstance(move, (int, float)) or not math.isfinite(move)):
+                raise ValueError(f"commentary contains a non-finite move: {date}")
+        max_move = entry.get("max_abs_move_bp")
+        finite_moves = [abs(move) for move in moves if move is not None]
+        if max_move is not None:
+            if not isinstance(max_move, (int, float)) or not math.isfinite(max_move):
+                raise ValueError(f"commentary max move is not finite: {date}")
+            if not finite_moves or not math.isclose(max_move, max(finite_moves), rel_tol=1e-9, abs_tol=1e-9):
+                raise ValueError(f"commentary max move is inconsistent: {date}")
+        status = entry.get("comparison_status")
+        if status not in {
+            "available",
+            "no_prior_snapshot",
+            "unavailable_frame_boundary",
+            "insufficient_valid_nodes",
+        }:
+            raise ValueError(f"unknown commentary comparison status: {date}")
+    return {
+        "schema_version": payload["schema_version"],
+        "entry_count": len(entries),
+        "latest_model_date": payload["latest_model_date"],
+    }
+
+
 def validate_public_data(
     *,
     snapshot_dir: Path,
     pca_path: Path,
     manifest_path: Path,
     curve_path: Path | None = None,
+    commentary_path: Path | None = None,
 ) -> dict[str, object]:
     snapshots = sorted(snapshot_dir.glob("*.csv"))
     if not snapshots:
@@ -137,11 +189,15 @@ def validate_public_data(
                 raise ValueError("public curve snapshot does not contain 12 reference months")
             if len(snapshot.get("yoy_rate_percent", [])) != 12:
                 raise ValueError("public curve snapshot does not contain 12 rates")
+    commentary = None
+    if commentary_path is not None:
+        commentary = _validate_commentary(commentary_path, snapshot_dir)
     return {
         "snapshot_count": len(snapshots),
         "release_snapshot_count": manifest.get("snapshot_count"),
         "latest_model_date": manifest.get("latest_model_date"),
         "pca_current_frame_id": pca.get("current_frame_id"),
+        "commentary": commentary,
     }
 
 
@@ -151,12 +207,14 @@ def main() -> int:
     parser.add_argument("--pca-path", type=Path, default=Path("data/cpurnsa_pca_diagnostics.json"))
     parser.add_argument("--manifest-path", type=Path, default=Path("data/uscpi_release_manifest.json"))
     parser.add_argument("--curve-path", type=Path, default=Path("data/cpurnsa_curve_history.json"))
+    parser.add_argument("--commentary-path", type=Path)
     args = parser.parse_args()
     result = validate_public_data(
         snapshot_dir=args.snapshot_dir,
         pca_path=args.pca_path,
         manifest_path=args.manifest_path,
         curve_path=args.curve_path,
+        commentary_path=args.commentary_path,
     )
     print(json.dumps(result, indent=2))
     return 0

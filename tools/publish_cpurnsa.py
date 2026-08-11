@@ -207,9 +207,107 @@ def select_history(snapshots: list[dict]) -> list[dict]:
     return selected
 
 
+def _commentary_pair_compatible(current: dict, previous: dict) -> bool:
+    """Allow comparisons only within the same public curve/model frame."""
+
+    for field in ("curve_kind", "model_version", "matrix_version", "base_month"):
+        current_value = current.get(field, "unknown")
+        previous_value = previous.get(field, "unknown")
+        if current_value != "unknown" and previous_value != "unknown" and current_value != previous_value:
+            return False
+    return True
+
+
+def _build_daily_commentary(snapshots: list[dict]) -> dict:
+    """Build public-safe explanations from sanitized curve snapshots only."""
+
+    entries: dict[str, dict] = {}
+    for index, current in enumerate(snapshots):
+        entry = {
+            "trace_id": current["model_date"],
+            "model_date": current["model_date"],
+            "curve_kind": current["curve_kind"],
+            "fit_status": current["fit_status"],
+            "source_trade_count": current["source_trade_count"],
+            "comparison_status": "no_prior_snapshot",
+            "prior_model_date": None,
+            "reference_month": list(current["reference_month"]),
+            "move_bp": [None] * len(current["reference_month"]),
+            "max_abs_move_bp": None,
+            "max_abs_move_reference_month": None,
+            "up_nodes": 0,
+            "down_nodes": 0,
+            "unchanged_nodes": 0,
+            "source_trade_count_delta": None,
+            "summary": "No compatible prior curve is available for comparison.",
+        }
+        if index > 0:
+            previous = snapshots[index - 1]
+            entry["prior_model_date"] = previous["model_date"]
+            if not _commentary_pair_compatible(current, previous):
+                entry["comparison_status"] = "unavailable_frame_boundary"
+                entry["summary"] = "Comparison unavailable because the public model frame changed."
+            else:
+                previous_rates = {
+                    month: rate
+                    for month, rate in zip(
+                        previous["reference_month"], previous["yoy_rate_percent"], strict=True
+                    )
+                    if rate is not None
+                }
+                moves: list[float | None] = []
+                for month, rate in zip(
+                    current["reference_month"], current["yoy_rate_percent"], strict=True
+                ):
+                    prior_rate = previous_rates.get(month)
+                    moves.append(None if rate is None or prior_rate is None else rate - prior_rate)
+                valid_moves = [move for move in moves if move is not None]
+                if valid_moves:
+                    moves_bp = [None if move is None else move * 100.0 for move in moves]
+                    entry["comparison_status"] = "available"
+                    entry["move_bp"] = moves_bp
+                    entry["source_trade_count_delta"] = (
+                        current["source_trade_count"] - previous["source_trade_count"]
+                    )
+                    entry["up_nodes"] = sum(move > 0.00005 for move in valid_moves)
+                    entry["down_nodes"] = sum(move < -0.00005 for move in valid_moves)
+                    entry["unchanged_nodes"] = len(valid_moves) - entry["up_nodes"] - entry["down_nodes"]
+                    largest_index = max(
+                        range(len(moves_bp)),
+                        key=lambda item: abs(moves_bp[item] or 0.0),
+                    )
+                    entry["max_abs_move_bp"] = abs(moves_bp[largest_index] or 0.0)
+                    entry["max_abs_move_reference_month"] = current["reference_month"][largest_index]
+                    direction = "higher" if sum(valid_moves) > 0 else "lower"
+                    previous_date = previous["model_date"]
+                    up_nodes = entry["up_nodes"]
+                    down_nodes = entry["down_nodes"]
+                    max_move = entry["max_abs_move_bp"]
+                    max_move_month = entry["max_abs_move_reference_month"]
+                    entry["summary"] = (
+                        f"The curve moved modestly {direction} versus {previous_date}. "
+                        f"{up_nodes} nodes rose and {down_nodes} fell; "
+                        f"the largest absolute move was {max_move:.2f} bp "
+                        f"at {max_move_month}."
+                    )
+                else:
+                    entry["comparison_status"] = "insufficient_valid_nodes"
+                    entry["summary"] = "Comparison unavailable because no aligned finite curve nodes exist."
+        entries[current["model_date"]] = entry
+
+    latest_model_date = snapshots[-1]["model_date"] if snapshots else None
+    return {
+        "schema_version": "cpurnsa_daily_commentary_v1",
+        "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "latest_model_date": latest_model_date,
+        "entries": entries,
+    }
+
+
 def publish(input_dir: Path, output_dir: Path) -> None:
     snapshots = discover_snapshots(input_dir)
     selected = select_history(snapshots)
+    commentary = _build_daily_commentary(snapshots)
     history_warning = None if len(selected) == len(LABELS) else "Insufficient historical snapshots for all requested offsets"
     latest = snapshots[-1]
     uncertainty_warning = None if latest["uncertainty_status"] == "available" else "Daily move uncertainty unavailable until at least 20 valid moves per reference month"
@@ -244,6 +342,9 @@ def publish(input_dir: Path, output_dir: Path) -> None:
         "warning": warning,
     }
     target.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    (output_dir / "cpurnsa_daily_commentary.json").write_text(
+        json.dumps(commentary, indent=2) + "\n", encoding="utf-8"
+    )
     (output_dir / "health.json").write_text(json.dumps({
         "generated_at_utc": payload["generated_at_utc"],
         "latest_model_date": payload["latest_model_date"],
