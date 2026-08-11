@@ -235,6 +235,11 @@ def _build_daily_commentary(snapshots: list[dict]) -> dict:
             "move_bp": [None] * len(current["reference_month"]),
             "max_abs_move_bp": None,
             "max_abs_move_reference_month": None,
+            "uncertainty_sd_bp": None,
+            "uncertainty_ratio": None,
+            "uncertainty_status": current.get("uncertainty_status", "unavailable"),
+            "uncertainty_alignment": current.get("uncertainty_alignment", "unknown"),
+            "magnitude_class": "unavailable",
             "up_nodes": 0,
             "down_nodes": 0,
             "unchanged_nodes": 0,
@@ -278,15 +283,40 @@ def _build_daily_commentary(snapshots: list[dict]) -> dict:
                     )
                     entry["max_abs_move_bp"] = abs(moves_bp[largest_index] or 0.0)
                     entry["max_abs_move_reference_month"] = current["reference_month"][largest_index]
+                    uncertainty_series = current.get("daily_move_sd_bp") or []
+                    uncertainty_sd = (
+                        uncertainty_series[largest_index]
+                        if largest_index < len(uncertainty_series)
+                        else None
+                    )
+                    entry["uncertainty_sd_bp"] = uncertainty_sd
+                    if uncertainty_sd is not None and uncertainty_sd > 0:
+                        ratio = entry["max_abs_move_bp"] / uncertainty_sd
+                        entry["uncertainty_ratio"] = ratio
+                        if ratio < 0.5:
+                            entry["magnitude_class"] = "within_historical_range"
+                        elif ratio < 1.0:
+                            entry["magnitude_class"] = "modest"
+                        elif ratio < 2.0:
+                            entry["magnitude_class"] = "meaningful"
+                        else:
+                            entry["magnitude_class"] = "sharp"
                     direction = "higher" if sum(valid_moves) > 0 else "lower"
                     previous_date = previous["model_date"]
                     up_nodes = entry["up_nodes"]
                     down_nodes = entry["down_nodes"]
                     max_move = entry["max_abs_move_bp"]
                     max_move_month = entry["max_abs_move_reference_month"]
+                    magnitude_class = entry["magnitude_class"]
+                    if magnitude_class == "within_historical_range":
+                        magnitude_text = f"The move was within its usual historical range"
+                    elif magnitude_class == "unavailable":
+                        magnitude_text = "Historical magnitude was unavailable"
+                    else:
+                        magnitude_text = f"The move was {magnitude_class}"
                     entry["summary"] = (
-                        f"The curve moved modestly {direction} versus {previous_date}. "
-                        f"{up_nodes} nodes rose and {down_nodes} fell; "
+                        f"The curve moved {direction} versus {previous_date}. "
+                        f"{magnitude_text}; {up_nodes} nodes rose and {down_nodes} fell; "
                         f"the largest absolute move was {max_move:.2f} bp "
                         f"at {max_move_month}."
                     )

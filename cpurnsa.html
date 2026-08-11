@@ -98,6 +98,10 @@
       if (entry.max_abs_move_bp !== null) {
         addDetail(details, 'Largest absolute move', `${entry.max_abs_move_bp.toFixed(2)} bp at ${entry.max_abs_move_reference_month}`);
         addDetail(details, 'Nodes up / down / unchanged', `${entry.up_nodes} / ${entry.down_nodes} / ${entry.unchanged_nodes}`);
+        const historicalContext = entry.uncertainty_ratio === null
+          ? 'Unavailable'
+          : `${entry.magnitude_class.replaceAll('_', ' ')} (${entry.uncertainty_ratio.toFixed(2)}× historical 1σ)`;
+        addDetail(details, 'Historical move context', historicalContext);
       }
       if (entry.comparison_status !== 'available') return;
       const table = document.createElement('table');

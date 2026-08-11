@@ -150,6 +150,18 @@ def _validate_commentary(path: Path, snapshot_dir: Path) -> dict[str, object]:
                 raise ValueError(f"commentary max move is not finite: {date}")
             if not finite_moves or not math.isclose(max_move, max(finite_moves), rel_tol=1e-9, abs_tol=1e-9):
                 raise ValueError(f"commentary max move is inconsistent: {date}")
+        for field in ("uncertainty_sd_bp", "uncertainty_ratio"):
+            value = entry.get(field)
+            if value is not None and (not isinstance(value, (int, float)) or not math.isfinite(value)):
+                raise ValueError(f"commentary {field} is not finite: {date}")
+        if entry.get("magnitude_class") not in {
+            "unavailable",
+            "within_historical_range",
+            "modest",
+            "meaningful",
+            "sharp",
+        }:
+            raise ValueError(f"unknown commentary magnitude class: {date}")
         status = entry.get("comparison_status")
         if status not in {
             "available",

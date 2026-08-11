@@ -1,6 +1,6 @@
 {
   "schema_version": "cpurnsa_daily_commentary_v1",
-  "generated_at_utc": "2026-08-11T10:00:26+00:00",
+  "generated_at_utc": "2026-08-11T10:57:21+00:00",
   "latest_model_date": "2026-08-10",
   "entries": {
     "2026-03-18": {
@@ -41,6 +41,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -85,11 +90,16 @@
       ],
       "max_abs_move_bp": 8.054213186692305,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-18. 12 nodes rose and 0 fell; the largest absolute move was 8.05 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-03-18. Historical magnitude was unavailable; 12 nodes rose and 0 fell; the largest absolute move was 8.05 bp at 2026-12-01."
     },
     "2026-03-20": {
       "trace_id": "2026-03-20",
@@ -129,11 +139,16 @@
       ],
       "max_abs_move_bp": 14.027650056891439,
       "max_abs_move_reference_month": "2026-04-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-19. 11 nodes rose and 0 fell; the largest absolute move was 14.03 bp at 2026-04-01."
+      "summary": "The curve moved higher versus 2026-03-19. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 14.03 bp at 2026-04-01."
     },
     "2026-03-23": {
       "trace_id": "2026-03-23",
@@ -173,11 +188,16 @@
       ],
       "max_abs_move_bp": 27.85963695797422,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 11,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-03-20. 0 nodes rose and 11 fell; the largest absolute move was 27.86 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-03-20. Historical magnitude was unavailable; 0 nodes rose and 11 fell; the largest absolute move was 27.86 bp at 2026-07-01."
     },
     "2026-03-24": {
       "trace_id": "2026-03-24",
@@ -217,11 +237,16 @@
       ],
       "max_abs_move_bp": 9.61058528464287,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-23. 11 nodes rose and 0 fell; the largest absolute move was 9.61 bp at 2026-06-01."
+      "summary": "The curve moved higher versus 2026-03-23. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 9.61 bp at 2026-06-01."
     },
     "2026-03-25": {
       "trace_id": "2026-03-25",
@@ -261,11 +286,16 @@
       ],
       "max_abs_move_bp": 13.5751352885638,
       "max_abs_move_reference_month": "2026-11-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-03-24. 0 nodes rose and 12 fell; the largest absolute move was 13.58 bp at 2026-11-01."
+      "summary": "The curve moved lower versus 2026-03-24. Historical magnitude was unavailable; 0 nodes rose and 12 fell; the largest absolute move was 13.58 bp at 2026-11-01."
     },
     "2026-03-26": {
       "trace_id": "2026-03-26",
@@ -305,11 +335,16 @@
       ],
       "max_abs_move_bp": 12.400755205992375,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-25. 11 nodes rose and 0 fell; the largest absolute move was 12.40 bp at 2026-06-01."
+      "summary": "The curve moved higher versus 2026-03-25. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 12.40 bp at 2026-06-01."
     },
     "2026-03-27": {
       "trace_id": "2026-03-27",
@@ -349,11 +384,16 @@
       ],
       "max_abs_move_bp": 4.752294370691246,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-26. 11 nodes rose and 1 fell; the largest absolute move was 4.75 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-03-26. Historical magnitude was unavailable; 11 nodes rose and 1 fell; the largest absolute move was 4.75 bp at 2026-12-01."
     },
     "2026-03-30": {
       "trace_id": "2026-03-30",
@@ -393,11 +433,16 @@
       ],
       "max_abs_move_bp": 7.79313892049327,
       "max_abs_move_reference_month": "2026-04-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-03-27. 12 nodes rose and 0 fell; the largest absolute move was 7.79 bp at 2026-04-01."
+      "summary": "The curve moved higher versus 2026-03-27. Historical magnitude was unavailable; 12 nodes rose and 0 fell; the largest absolute move was 7.79 bp at 2026-04-01."
     },
     "2026-03-31": {
       "trace_id": "2026-03-31",
@@ -437,11 +482,16 @@
       ],
       "max_abs_move_bp": 9.8841746102174,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 11,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-03-30. 0 nodes rose and 11 fell; the largest absolute move was 9.88 bp at 2027-02-01."
+      "summary": "The curve moved lower versus 2026-03-30. Historical magnitude was unavailable; 0 nodes rose and 11 fell; the largest absolute move was 9.88 bp at 2027-02-01."
     },
     "2026-04-01": {
       "trace_id": "2026-04-01",
@@ -481,11 +531,16 @@
       ],
       "max_abs_move_bp": 8.025285823640704,
       "max_abs_move_reference_month": "2026-08-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-03-31. 0 nodes rose and 12 fell; the largest absolute move was 8.03 bp at 2026-08-01."
+      "summary": "The curve moved lower versus 2026-03-31. Historical magnitude was unavailable; 0 nodes rose and 12 fell; the largest absolute move was 8.03 bp at 2026-08-01."
     },
     "2026-04-02": {
       "trace_id": "2026-04-02",
@@ -525,11 +580,16 @@
       ],
       "max_abs_move_bp": 12.754110089743254,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-01. 11 nodes rose and 1 fell; the largest absolute move was 12.75 bp at 2026-05-01."
+      "summary": "The curve moved higher versus 2026-04-01. Historical magnitude was unavailable; 11 nodes rose and 1 fell; the largest absolute move was 12.75 bp at 2026-05-01."
     },
     "2026-04-03": {
       "trace_id": "2026-04-03",
@@ -569,11 +629,16 @@
       ],
       "max_abs_move_bp": 5.5719273915966205,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-02. 11 nodes rose and 0 fell; the largest absolute move was 5.57 bp at 2026-07-01."
+      "summary": "The curve moved higher versus 2026-04-02. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 5.57 bp at 2026-07-01."
     },
     "2026-04-06": {
       "trace_id": "2026-04-06",
@@ -613,11 +678,16 @@
       ],
       "max_abs_move_bp": 2.7901699213495057,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-03. 11 nodes rose and 0 fell; the largest absolute move was 2.79 bp at 2026-06-01."
+      "summary": "The curve moved higher versus 2026-04-03. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 2.79 bp at 2026-06-01."
     },
     "2026-04-07": {
       "trace_id": "2026-04-07",
@@ -657,11 +727,16 @@
       ],
       "max_abs_move_bp": 3.0859054355136806,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-06. 11 nodes rose and 0 fell; the largest absolute move was 3.09 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-04-06. Historical magnitude was unavailable; 11 nodes rose and 0 fell; the largest absolute move was 3.09 bp at 2026-12-01."
     },
     "2026-04-08": {
       "trace_id": "2026-04-08",
@@ -701,11 +776,16 @@
       ],
       "max_abs_move_bp": 21.464234053474307,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 1,
       "down_nodes": 11,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-04-07. 1 nodes rose and 11 fell; the largest absolute move was 21.46 bp at 2026-05-01."
+      "summary": "The curve moved lower versus 2026-04-07. Historical magnitude was unavailable; 1 nodes rose and 11 fell; the largest absolute move was 21.46 bp at 2026-05-01."
     },
     "2026-04-09": {
       "trace_id": "2026-04-09",
@@ -745,11 +825,16 @@
       ],
       "max_abs_move_bp": 4.135113283589842,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-08. 11 nodes rose and 1 fell; the largest absolute move was 4.14 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-04-08. Historical magnitude was unavailable; 11 nodes rose and 1 fell; the largest absolute move was 4.14 bp at 2026-12-01."
     },
     "2026-04-10": {
       "trace_id": "2026-04-10",
@@ -789,6 +874,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -833,11 +923,16 @@
       ],
       "max_abs_move_bp": 8.147528685449323,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-10. 12 nodes rose and 0 fell; the largest absolute move was 8.15 bp at 2027-01-01."
+      "summary": "The curve moved higher versus 2026-04-10. Historical magnitude was unavailable; 12 nodes rose and 0 fell; the largest absolute move was 8.15 bp at 2027-01-01."
     },
     "2026-04-14": {
       "trace_id": "2026-04-14",
@@ -877,11 +972,16 @@
       ],
       "max_abs_move_bp": 4.666137837712192,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "insufficient_history",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-04-13. 0 nodes rose and 12 fell; the largest absolute move was 4.67 bp at 2026-05-01."
+      "summary": "The curve moved lower versus 2026-04-13. Historical magnitude was unavailable; 0 nodes rose and 12 fell; the largest absolute move was 4.67 bp at 2026-05-01."
     },
     "2026-04-15": {
       "trace_id": "2026-04-15",
@@ -921,11 +1021,16 @@
       ],
       "max_abs_move_bp": 3.90656939611711,
       "max_abs_move_reference_month": "2027-03-01",
+      "uncertainty_sd_bp": 16.325331440063938,
+      "uncertainty_ratio": 0.23929495155792133,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 10,
       "down_nodes": 2,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-14. 10 nodes rose and 2 fell; the largest absolute move was 3.91 bp at 2027-03-01."
+      "summary": "The curve moved higher versus 2026-04-14. The move was within its usual historical range; 10 nodes rose and 2 fell; the largest absolute move was 3.91 bp at 2027-03-01."
     },
     "2026-04-16": {
       "trace_id": "2026-04-16",
@@ -965,11 +1070,16 @@
       ],
       "max_abs_move_bp": 2.488606846779984,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": 9.79406909814094,
+      "uncertainty_ratio": 0.25409324988858395,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-15. 12 nodes rose and 0 fell; the largest absolute move was 2.49 bp at 2026-05-01."
+      "summary": "The curve moved higher versus 2026-04-15. The move was within its usual historical range; 12 nodes rose and 0 fell; the largest absolute move was 2.49 bp at 2026-05-01."
     },
     "2026-04-17": {
       "trace_id": "2026-04-17",
@@ -1009,11 +1119,16 @@
       ],
       "max_abs_move_bp": 16.798096215762115,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": 10.25484552468231,
+      "uncertainty_ratio": 1.638064286325026,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-04-16. 0 nodes rose and 12 fell; the largest absolute move was 16.80 bp at 2026-05-01."
+      "summary": "The curve moved lower versus 2026-04-16. The move was meaningful; 0 nodes rose and 12 fell; the largest absolute move was 16.80 bp at 2026-05-01."
     },
     "2026-04-20": {
       "trace_id": "2026-04-20",
@@ -1053,11 +1168,16 @@
       ],
       "max_abs_move_bp": 5.881478913349891,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 11.206391507030139,
+      "uncertainty_ratio": 0.5248325395074985,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-17. 12 nodes rose and 0 fell; the largest absolute move was 5.88 bp at 2026-07-01."
+      "summary": "The curve moved higher versus 2026-04-17. The move was modest; 12 nodes rose and 0 fell; the largest absolute move was 5.88 bp at 2026-07-01."
     },
     "2026-04-21": {
       "trace_id": "2026-04-21",
@@ -1097,11 +1217,16 @@
       ],
       "max_abs_move_bp": 6.79062646615991,
       "max_abs_move_reference_month": "2026-08-01",
+      "uncertainty_sd_bp": 11.305849934142561,
+      "uncertainty_ratio": 0.6006294533994195,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-20. 11 nodes rose and 1 fell; the largest absolute move was 6.79 bp at 2026-08-01."
+      "summary": "The curve moved higher versus 2026-04-20. The move was modest; 11 nodes rose and 1 fell; the largest absolute move was 6.79 bp at 2026-08-01."
     },
     "2026-04-22": {
       "trace_id": "2026-04-22",
@@ -1141,11 +1266,16 @@
       ],
       "max_abs_move_bp": 9.176737747500496,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": 9.846403800877953,
+      "uncertainty_ratio": 0.9319887679888016,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-21. 12 nodes rose and 0 fell; the largest absolute move was 9.18 bp at 2026-05-01."
+      "summary": "The curve moved higher versus 2026-04-21. The move was modest; 12 nodes rose and 0 fell; the largest absolute move was 9.18 bp at 2026-05-01."
     },
     "2026-04-23": {
       "trace_id": "2026-04-23",
@@ -1185,11 +1315,16 @@
       ],
       "max_abs_move_bp": 8.710123963726613,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": 9.778376791919301,
+      "uncertainty_ratio": 0.8907535625876601,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-22. 12 nodes rose and 0 fell; the largest absolute move was 8.71 bp at 2026-05-01."
+      "summary": "The curve moved higher versus 2026-04-22. The move was modest; 12 nodes rose and 0 fell; the largest absolute move was 8.71 bp at 2026-05-01."
     },
     "2026-04-24": {
       "trace_id": "2026-04-24",
@@ -1229,11 +1364,16 @@
       ],
       "max_abs_move_bp": 7.480020471635207,
       "max_abs_move_reference_month": "2027-03-01",
+      "uncertainty_sd_bp": 14.618104234856917,
+      "uncertainty_ratio": 0.5116956584424316,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-23. 11 nodes rose and 1 fell; the largest absolute move was 7.48 bp at 2027-03-01."
+      "summary": "The curve moved higher versus 2026-04-23. The move was modest; 11 nodes rose and 1 fell; the largest absolute move was 7.48 bp at 2027-03-01."
     },
     "2026-04-27": {
       "trace_id": "2026-04-27",
@@ -1273,11 +1413,16 @@
       ],
       "max_abs_move_bp": 7.429236522125127,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 10.518567310769912,
+      "uncertainty_ratio": 0.7062973789708382,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-24. 12 nodes rose and 0 fell; the largest absolute move was 7.43 bp at 2026-07-01."
+      "summary": "The curve moved higher versus 2026-04-24. The move was modest; 12 nodes rose and 0 fell; the largest absolute move was 7.43 bp at 2026-07-01."
     },
     "2026-04-28": {
       "trace_id": "2026-04-28",
@@ -1317,11 +1462,16 @@
       ],
       "max_abs_move_bp": 3.386699507390567,
       "max_abs_move_reference_month": "2026-09-01",
+      "uncertainty_sd_bp": 9.605695077860007,
+      "uncertainty_ratio": 0.35257203980964474,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-27. 12 nodes rose and 0 fell; the largest absolute move was 3.39 bp at 2026-09-01."
+      "summary": "The curve moved higher versus 2026-04-27. The move was within its usual historical range; 12 nodes rose and 0 fell; the largest absolute move was 3.39 bp at 2026-09-01."
     },
     "2026-04-29": {
       "trace_id": "2026-04-29",
@@ -1361,11 +1511,16 @@
       ],
       "max_abs_move_bp": 12.400755205992375,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 10.400160925995756,
+      "uncertainty_ratio": 1.192361858074333,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-28. 12 nodes rose and 0 fell; the largest absolute move was 12.40 bp at 2026-06-01."
+      "summary": "The curve moved higher versus 2026-04-28. The move was meaningful; 12 nodes rose and 0 fell; the largest absolute move was 12.40 bp at 2026-06-01."
     },
     "2026-04-30": {
       "trace_id": "2026-04-30",
@@ -1405,11 +1560,16 @@
       ],
       "max_abs_move_bp": 4.913944546134363,
       "max_abs_move_reference_month": "2026-10-01",
+      "uncertainty_sd_bp": 9.316890127253274,
+      "uncertainty_ratio": 0.5274232580848359,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 2,
       "down_nodes": 10,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-04-29. 2 nodes rose and 10 fell; the largest absolute move was 4.91 bp at 2026-10-01."
+      "summary": "The curve moved lower versus 2026-04-29. The move was modest; 2 nodes rose and 10 fell; the largest absolute move was 4.91 bp at 2026-10-01."
     },
     "2026-05-01": {
       "trace_id": "2026-05-01",
@@ -1449,11 +1609,16 @@
       ],
       "max_abs_move_bp": 3.3944959790654927,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 8.608865538927393,
+      "uncertainty_ratio": 0.3943023576935114,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-04-30. 11 nodes rose and 1 fell; the largest absolute move was 3.39 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-04-30. The move was within its usual historical range; 11 nodes rose and 1 fell; the largest absolute move was 3.39 bp at 2026-12-01."
     },
     "2026-05-04": {
       "trace_id": "2026-05-04",
@@ -1493,11 +1658,16 @@
       ],
       "max_abs_move_bp": 13.889917771685578,
       "max_abs_move_reference_month": "2026-08-01",
+      "uncertainty_sd_bp": 10.422820588916721,
+      "uncertainty_ratio": 1.3326448107967677,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-01. 12 nodes rose and 0 fell; the largest absolute move was 13.89 bp at 2026-08-01."
+      "summary": "The curve moved higher versus 2026-05-01. The move was meaningful; 12 nodes rose and 0 fell; the largest absolute move was 13.89 bp at 2026-08-01."
     },
     "2026-05-05": {
       "trace_id": "2026-05-05",
@@ -1537,11 +1707,16 @@
       ],
       "max_abs_move_bp": 8.660128218860308,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": 8.724476548745992,
+      "uncertainty_ratio": 0.9926243907555768,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 0,
       "down_nodes": 11,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-04. 0 nodes rose and 11 fell; the largest absolute move was 8.66 bp at 2027-02-01."
+      "summary": "The curve moved lower versus 2026-05-04. The move was modest; 0 nodes rose and 11 fell; the largest absolute move was 8.66 bp at 2027-02-01."
     },
     "2026-05-06": {
       "trace_id": "2026-05-06",
@@ -1581,11 +1756,16 @@
       ],
       "max_abs_move_bp": 15.11697293327341,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": 9.017434908430106,
+      "uncertainty_ratio": 1.6764160858140538,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 1,
       "down_nodes": 11,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-05. 1 nodes rose and 11 fell; the largest absolute move was 15.12 bp at 2027-02-01."
+      "summary": "The curve moved lower versus 2026-05-05. The move was meaningful; 1 nodes rose and 11 fell; the largest absolute move was 15.12 bp at 2027-02-01."
     },
     "2026-05-07": {
       "trace_id": "2026-05-07",
@@ -1625,11 +1805,16 @@
       ],
       "max_abs_move_bp": 2.1775309909322083,
       "max_abs_move_reference_month": "2026-05-01",
+      "uncertainty_sd_bp": 8.957370395953047,
+      "uncertainty_ratio": 0.2430993578110848,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 9,
       "down_nodes": 2,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-06. 9 nodes rose and 2 fell; the largest absolute move was 2.18 bp at 2026-05-01."
+      "summary": "The curve moved higher versus 2026-05-06. The move was within its usual historical range; 9 nodes rose and 2 fell; the largest absolute move was 2.18 bp at 2026-05-01."
     },
     "2026-05-08": {
       "trace_id": "2026-05-08",
@@ -1669,11 +1854,16 @@
       ],
       "max_abs_move_bp": 6.302805209497109,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 7.2484297189628775,
+      "uncertainty_ratio": 0.8695407769503667,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "modest",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-07. 11 nodes rose and 0 fell; the largest absolute move was 6.30 bp at 2027-01-01."
+      "summary": "The curve moved higher versus 2026-05-07. The move was modest; 11 nodes rose and 0 fell; the largest absolute move was 6.30 bp at 2027-01-01."
     },
     "2026-05-11": {
       "trace_id": "2026-05-11",
@@ -1713,11 +1903,16 @@
       ],
       "max_abs_move_bp": 12.960802829158347,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 7.321492392785953,
+      "uncertainty_ratio": 1.7702405648784043,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "same_reference_month",
+      "magnitude_class": "meaningful",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-08. 11 nodes rose and 1 fell; the largest absolute move was 12.96 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-05-08. The move was meaningful; 11 nodes rose and 1 fell; the largest absolute move was 12.96 bp at 2026-12-01."
     },
     "2026-05-12": {
       "trace_id": "2026-05-12",
@@ -1757,6 +1952,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -1801,11 +2001,16 @@
       ],
       "max_abs_move_bp": 1.2382060870219647,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 9.80942480458272,
+      "uncertainty_ratio": 0.1262261663337799,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 1,
       "down_nodes": 4,
       "unchanged_nodes": 7,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-12. 1 nodes rose and 4 fell; the largest absolute move was 1.24 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-05-12. The move was within its usual historical range; 1 nodes rose and 4 fell; the largest absolute move was 1.24 bp at 2026-07-01."
     },
     "2026-05-14": {
       "trace_id": "2026-05-14",
@@ -1845,11 +2050,16 @@
       ],
       "max_abs_move_bp": 5.270320962547093,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.601483218528317,
+      "uncertainty_ratio": 0.6127223443503765,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-13. 0 nodes rose and 12 fell; the largest absolute move was 5.27 bp at 2026-06-01."
+      "summary": "The curve moved lower versus 2026-05-13. The move was modest; 0 nodes rose and 12 fell; the largest absolute move was 5.27 bp at 2026-06-01."
     },
     "2026-05-15": {
       "trace_id": "2026-05-15",
@@ -1889,11 +2099,16 @@
       ],
       "max_abs_move_bp": 7.9274518046967835,
       "max_abs_move_reference_month": "2027-04-01",
+      "uncertainty_sd_bp": 13.462253246430791,
+      "uncertainty_ratio": 0.5888651520352707,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-14. 12 nodes rose and 0 fell; the largest absolute move was 7.93 bp at 2027-04-01."
+      "summary": "The curve moved higher versus 2026-05-14. The move was modest; 12 nodes rose and 0 fell; the largest absolute move was 7.93 bp at 2027-04-01."
     },
     "2026-05-18": {
       "trace_id": "2026-05-18",
@@ -1933,11 +2148,16 @@
       ],
       "max_abs_move_bp": 3.4102076816489024,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.45362960675338,
+      "uncertainty_ratio": 0.40340159674426457,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-15. 11 nodes rose and 0 fell; the largest absolute move was 3.41 bp at 2026-06-01."
+      "summary": "The curve moved higher versus 2026-05-15. The move was within its usual historical range; 11 nodes rose and 0 fell; the largest absolute move was 3.41 bp at 2026-06-01."
     },
     "2026-05-19": {
       "trace_id": "2026-05-19",
@@ -1977,11 +2197,16 @@
       ],
       "max_abs_move_bp": 4.340264322095777,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.403182658074247,
+      "uncertainty_ratio": 0.5165024370766722,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 0,
       "down_nodes": 11,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-18. 0 nodes rose and 11 fell; the largest absolute move was 4.34 bp at 2026-06-01."
+      "summary": "The curve moved lower versus 2026-05-18. The move was modest; 0 nodes rose and 11 fell; the largest absolute move was 4.34 bp at 2026-06-01."
     },
     "2026-05-20": {
       "trace_id": "2026-05-20",
@@ -2021,11 +2246,16 @@
       ],
       "max_abs_move_bp": 13.950849606740867,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.620526123242042,
+      "uncertainty_ratio": 1.6183292536087317,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-19. 0 nodes rose and 12 fell; the largest absolute move was 13.95 bp at 2026-06-01."
+      "summary": "The curve moved lower versus 2026-05-19. The move was meaningful; 0 nodes rose and 12 fell; the largest absolute move was 13.95 bp at 2026-06-01."
     },
     "2026-05-21": {
       "trace_id": "2026-05-21",
@@ -2065,11 +2295,16 @@
       ],
       "max_abs_move_bp": 4.340264322100218,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.56264264619537,
+      "uncertainty_ratio": 0.5068837392190743,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-20. 0 nodes rose and 12 fell; the largest absolute move was 4.34 bp at 2026-06-01."
+      "summary": "The curve moved lower versus 2026-05-20. The move was modest; 0 nodes rose and 12 fell; the largest absolute move was 4.34 bp at 2026-06-01."
     },
     "2026-05-22": {
       "trace_id": "2026-05-22",
@@ -2109,11 +2344,16 @@
       ],
       "max_abs_move_bp": 1.8054684272539312,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": 8.232279551395669,
+      "uncertainty_ratio": 0.21931573338612378,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-21. 11 nodes rose and 1 fell; the largest absolute move was 1.81 bp at 2027-02-01."
+      "summary": "The curve moved higher versus 2026-05-21. The move was within its usual historical range; 11 nodes rose and 1 fell; the largest absolute move was 1.81 bp at 2027-02-01."
     },
     "2026-05-26": {
       "trace_id": "2026-05-26",
@@ -2153,11 +2393,16 @@
       ],
       "max_abs_move_bp": 14.260868486890566,
       "max_abs_move_reference_month": "2026-06-01",
+      "uncertainty_sd_bp": 8.66526090039823,
+      "uncertainty_ratio": 1.6457517726021587,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-22. 0 nodes rose and 12 fell; the largest absolute move was 14.26 bp at 2026-06-01."
+      "summary": "The curve moved lower versus 2026-05-22. The move was meaningful; 0 nodes rose and 12 fell; the largest absolute move was 14.26 bp at 2026-06-01."
     },
     "2026-05-27": {
       "trace_id": "2026-05-27",
@@ -2197,11 +2442,16 @@
       ],
       "max_abs_move_bp": 4.643272826327927,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 9.511208956929977,
+      "uncertainty_ratio": 0.488189550598064,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 7,
       "down_nodes": 5,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-26. 7 nodes rose and 5 fell; the largest absolute move was 4.64 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-05-26. The move was within its usual historical range; 7 nodes rose and 5 fell; the largest absolute move was 4.64 bp at 2026-07-01."
     },
     "2026-05-28": {
       "trace_id": "2026-05-28",
@@ -2241,11 +2491,16 @@
       ],
       "max_abs_move_bp": 6.21584289231869,
       "max_abs_move_reference_month": "2027-04-01",
+      "uncertainty_sd_bp": 12.523568060827357,
+      "uncertainty_ratio": 0.4963316254703252,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-27. 12 nodes rose and 0 fell; the largest absolute move was 6.22 bp at 2027-04-01."
+      "summary": "The curve moved higher versus 2026-05-27. The move was within its usual historical range; 12 nodes rose and 0 fell; the largest absolute move was 6.22 bp at 2027-04-01."
     },
     "2026-05-29": {
       "trace_id": "2026-05-29",
@@ -2285,11 +2540,16 @@
       ],
       "max_abs_move_bp": 5.881478913349891,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 9.362108134923194,
+      "uncertainty_ratio": 0.6282216386083371,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-05-28. 0 nodes rose and 12 fell; the largest absolute move was 5.88 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-05-28. The move was modest; 0 nodes rose and 12 fell; the largest absolute move was 5.88 bp at 2026-07-01."
     },
     "2026-06-01": {
       "trace_id": "2026-06-01",
@@ -2329,11 +2589,16 @@
       ],
       "max_abs_move_bp": 8.933627688796353,
       "max_abs_move_reference_month": "2027-03-01",
+      "uncertainty_sd_bp": 10.435279366779048,
+      "uncertainty_ratio": 0.8560985647626035,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 11,
       "down_nodes": 0,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-05-29. 11 nodes rose and 0 fell; the largest absolute move was 8.93 bp at 2027-03-01."
+      "summary": "The curve moved higher versus 2026-05-29. The move was modest; 11 nodes rose and 0 fell; the largest absolute move was 8.93 bp at 2027-03-01."
     },
     "2026-06-02": {
       "trace_id": "2026-06-02",
@@ -2373,11 +2638,16 @@
       ],
       "max_abs_move_bp": 6.763986078488493,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 8.243510190065942,
+      "uncertainty_ratio": 0.8205225592660287,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 11,
       "down_nodes": 1,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-06-01. 11 nodes rose and 1 fell; the largest absolute move was 6.76 bp at 2027-01-01."
+      "summary": "The curve moved higher versus 2026-06-01. The move was modest; 11 nodes rose and 1 fell; the largest absolute move was 6.76 bp at 2027-01-01."
     },
     "2026-06-03": {
       "trace_id": "2026-06-03",
@@ -2417,11 +2687,16 @@
       ],
       "max_abs_move_bp": 9.206179042009488,
       "max_abs_move_reference_month": "2027-03-01",
+      "uncertainty_sd_bp": 10.349320378973443,
+      "uncertainty_ratio": 0.8895443086981385,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 10,
       "down_nodes": 2,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-06-02. 10 nodes rose and 2 fell; the largest absolute move was 9.21 bp at 2027-03-01."
+      "summary": "The curve moved higher versus 2026-06-02. The move was modest; 10 nodes rose and 2 fell; the largest absolute move was 9.21 bp at 2027-03-01."
     },
     "2026-06-04": {
       "trace_id": "2026-06-04",
@@ -2461,11 +2736,16 @@
       ],
       "max_abs_move_bp": 11.453406304946512,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 9.198930075780183,
+      "uncertainty_ratio": 1.2450802659215912,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-06-03. 0 nodes rose and 12 fell; the largest absolute move was 11.45 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-06-03. The move was meaningful; 0 nodes rose and 12 fell; the largest absolute move was 11.45 bp at 2026-07-01."
     },
     "2026-06-05": {
       "trace_id": "2026-06-05",
@@ -2505,11 +2785,16 @@
       ],
       "max_abs_move_bp": 1.8515432613086524,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 9.348604599811184,
+      "uncertainty_ratio": 0.19805557519739883,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-06-04. 12 nodes rose and 0 fell; the largest absolute move was 1.85 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-06-04. The move was within its usual historical range; 12 nodes rose and 0 fell; the largest absolute move was 1.85 bp at 2026-12-01."
     },
     "2026-06-08": {
       "trace_id": "2026-06-08",
@@ -2549,11 +2834,16 @@
       ],
       "max_abs_move_bp": 2.7670852139261015,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 8.06331530500597,
+      "uncertainty_ratio": 0.3431696652378463,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 12,
       "down_nodes": 0,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly higher versus 2026-06-05. 12 nodes rose and 0 fell; the largest absolute move was 2.77 bp at 2027-01-01."
+      "summary": "The curve moved higher versus 2026-06-05. The move was within its usual historical range; 12 nodes rose and 0 fell; the largest absolute move was 2.77 bp at 2027-01-01."
     },
     "2026-06-09": {
       "trace_id": "2026-06-09",
@@ -2593,11 +2883,16 @@
       ],
       "max_abs_move_bp": 3.395313233078845,
       "max_abs_move_reference_month": "2026-08-01",
+      "uncertainty_sd_bp": 8.892425263116017,
+      "uncertainty_ratio": 0.38182083431861025,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 0,
       "down_nodes": 11,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-06-08. 0 nodes rose and 11 fell; the largest absolute move was 3.40 bp at 2026-08-01."
+      "summary": "The curve moved lower versus 2026-06-08. The move was within its usual historical range; 0 nodes rose and 11 fell; the largest absolute move was 3.40 bp at 2026-08-01."
     },
     "2026-06-10": {
       "trace_id": "2026-06-10",
@@ -2637,6 +2932,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -2681,11 +2981,16 @@
       ],
       "max_abs_move_bp": 8.874336337347799,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": 8.138080314569526,
+      "uncertainty_ratio": 1.0904704788253516,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 0,
       "down_nodes": 12,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 0,
-      "summary": "The curve moved modestly lower versus 2026-06-10. 0 nodes rose and 12 fell; the largest absolute move was 8.87 bp at 2027-02-01."
+      "summary": "The curve moved lower versus 2026-06-10. The move was meaningful; 0 nodes rose and 12 fell; the largest absolute move was 8.87 bp at 2027-02-01."
     },
     "2026-06-12": {
       "trace_id": "2026-06-12",
@@ -2725,6 +3030,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -2769,11 +3079,16 @@
       ],
       "max_abs_move_bp": 233.41648991079157,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 8.021518984408221,
+      "uncertainty_ratio": 29.098789189989258,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -16,
-      "summary": "The curve moved modestly lower versus 2026-06-12. 5 nodes rose and 7 fell; the largest absolute move was 233.42 bp at 2026-07-01."
+      "summary": "The curve moved lower versus 2026-06-12. The move was sharp; 5 nodes rose and 7 fell; the largest absolute move was 233.42 bp at 2026-07-01."
     },
     "2026-06-16": {
       "trace_id": "2026-06-16",
@@ -2813,11 +3128,16 @@
       ],
       "max_abs_move_bp": 204.86195991033185,
       "max_abs_move_reference_month": "2026-07-01",
+      "uncertainty_sd_bp": 8.021518984408221,
+      "uncertainty_ratio": 25.539048191312773,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 7,
       "down_nodes": 5,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 8,
-      "summary": "The curve moved modestly higher versus 2026-06-15. 7 nodes rose and 5 fell; the largest absolute move was 204.86 bp at 2026-07-01."
+      "summary": "The curve moved higher versus 2026-06-15. The move was sharp; 7 nodes rose and 5 fell; the largest absolute move was 204.86 bp at 2026-07-01."
     },
     "2026-06-17": {
       "trace_id": "2026-06-17",
@@ -2857,11 +3177,16 @@
       ],
       "max_abs_move_bp": 10.422617660854616,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 1.0390783521820204,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -14,
-      "summary": "The curve moved modestly lower versus 2026-06-16. 5 nodes rose and 7 fell; the largest absolute move was 10.42 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-06-16. The move was meaningful; 5 nodes rose and 7 fell; the largest absolute move was 10.42 bp at 2026-12-01."
     },
     "2026-06-18": {
       "trace_id": "2026-06-18",
@@ -2901,11 +3226,16 @@
       ],
       "max_abs_move_bp": 26.10162504166791,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 2.0713017419129423,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 3,
-      "summary": "The curve moved modestly lower versus 2026-06-17. 6 nodes rose and 6 fell; the largest absolute move was 26.10 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-17. The move was sharp; 6 nodes rose and 6 fell; the largest absolute move was 26.10 bp at 2027-05-01."
     },
     "2026-06-22": {
       "trace_id": "2026-06-22",
@@ -2945,11 +3275,16 @@
       ],
       "max_abs_move_bp": 8.101482601947652,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.6428954135500552,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 6,
       "down_nodes": 5,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 1,
-      "summary": "The curve moved modestly lower versus 2026-06-18. 6 nodes rose and 5 fell; the largest absolute move was 8.10 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-18. The move was modest; 6 nodes rose and 5 fell; the largest absolute move was 8.10 bp at 2027-05-01."
     },
     "2026-06-23": {
       "trace_id": "2026-06-23",
@@ -2989,11 +3324,16 @@
       ],
       "max_abs_move_bp": 11.85254190337881,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.9405617715898311,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 7,
       "down_nodes": 5,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -1,
-      "summary": "The curve moved modestly lower versus 2026-06-22. 7 nodes rose and 5 fell; the largest absolute move was 11.85 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-22. The move was modest; 7 nodes rose and 5 fell; the largest absolute move was 11.85 bp at 2027-05-01."
     },
     "2026-06-24": {
       "trace_id": "2026-06-24",
@@ -3033,11 +3373,16 @@
       ],
       "max_abs_move_bp": 28.794013193027546,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 2.284956955291972,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 4,
       "down_nodes": 7,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 21,
-      "summary": "The curve moved modestly lower versus 2026-06-23. 4 nodes rose and 7 fell; the largest absolute move was 28.79 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-23. The move was sharp; 4 nodes rose and 7 fell; the largest absolute move was 28.79 bp at 2027-05-01."
     },
     "2026-06-25": {
       "trace_id": "2026-06-25",
@@ -3077,11 +3422,16 @@
       ],
       "max_abs_move_bp": 27.762789164784696,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 2.2031238846462906,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -14,
-      "summary": "The curve moved modestly lower versus 2026-06-24. 5 nodes rose and 7 fell; the largest absolute move was 27.76 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-24. The move was sharp; 5 nodes rose and 7 fell; the largest absolute move was 27.76 bp at 2027-05-01."
     },
     "2026-06-26": {
       "trace_id": "2026-06-26",
@@ -3121,11 +3471,16 @@
       ],
       "max_abs_move_bp": 4.903444516350941,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 0.4888467766789522,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -14,
-      "summary": "The curve moved modestly lower versus 2026-06-25. 5 nodes rose and 7 fell; the largest absolute move was 4.90 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-06-25. The move was within its usual historical range; 5 nodes rose and 7 fell; the largest absolute move was 4.90 bp at 2026-12-01."
     },
     "2026-06-29": {
       "trace_id": "2026-06-29",
@@ -3165,11 +3520,16 @@
       ],
       "max_abs_move_bp": 9.53491945556717,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.7566461952383431,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 14,
-      "summary": "The curve moved modestly lower versus 2026-06-26. 5 nodes rose and 7 fell; the largest absolute move was 9.53 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-26. The move was modest; 5 nodes rose and 7 fell; the largest absolute move was 9.53 bp at 2027-05-01."
     },
     "2026-06-30": {
       "trace_id": "2026-06-30",
@@ -3209,11 +3569,16 @@
       ],
       "max_abs_move_bp": 5.488594441540595,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 0.5471830449591457,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 2,
       "down_nodes": 10,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -2,
-      "summary": "The curve moved modestly lower versus 2026-06-29. 2 nodes rose and 10 fell; the largest absolute move was 5.49 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-06-29. The move was modest; 2 nodes rose and 10 fell; the largest absolute move was 5.49 bp at 2026-12-01."
     },
     "2026-07-01": {
       "trace_id": "2026-07-01",
@@ -3253,11 +3618,16 @@
       ],
       "max_abs_move_bp": 3.5258622528755446,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.27979578338389666,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 25,
-      "summary": "The curve moved modestly lower versus 2026-06-30. 6 nodes rose and 6 fell; the largest absolute move was 3.53 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-06-30. The move was within its usual historical range; 6 nodes rose and 6 fell; the largest absolute move was 3.53 bp at 2027-05-01."
     },
     "2026-07-02": {
       "trace_id": "2026-07-02",
@@ -3297,11 +3667,16 @@
       ],
       "max_abs_move_bp": 0.31636247209032575,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.025105032290920665,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 5,
       "down_nodes": 6,
       "unchanged_nodes": 1,
       "source_trade_count_delta": -37,
-      "summary": "The curve moved modestly lower versus 2026-07-01. 5 nodes rose and 6 fell; the largest absolute move was 0.32 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-07-01. The move was within its usual historical range; 5 nodes rose and 6 fell; the largest absolute move was 0.32 bp at 2027-05-01."
     },
     "2026-07-06": {
       "trace_id": "2026-07-06",
@@ -3341,11 +3716,16 @@
       ],
       "max_abs_move_bp": 2.8704879294227936,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 0.28617205050755445,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 7,
-      "summary": "The curve moved modestly lower versus 2026-07-02. 6 nodes rose and 6 fell; the largest absolute move was 2.87 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-07-02. The move was within its usual historical range; 6 nodes rose and 6 fell; the largest absolute move was 2.87 bp at 2026-12-01."
     },
     "2026-07-07": {
       "trace_id": "2026-07-07",
@@ -3385,11 +3765,16 @@
       ],
       "max_abs_move_bp": 5.4192746177061935,
       "max_abs_move_reference_month": "2026-09-01",
+      "uncertainty_sd_bp": 8.787066967428038,
+      "uncertainty_ratio": 0.6167330507203825,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 7,
       "down_nodes": 5,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 11,
-      "summary": "The curve moved modestly higher versus 2026-07-06. 7 nodes rose and 5 fell; the largest absolute move was 5.42 bp at 2026-09-01."
+      "summary": "The curve moved higher versus 2026-07-06. The move was modest; 7 nodes rose and 5 fell; the largest absolute move was 5.42 bp at 2026-09-01."
     },
     "2026-07-08": {
       "trace_id": "2026-07-08",
@@ -3429,11 +3814,16 @@
       ],
       "max_abs_move_bp": 18.995636472944888,
       "max_abs_move_reference_month": "2026-11-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 1.9824840558903434,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 7,
       "down_nodes": 4,
       "unchanged_nodes": 1,
       "source_trade_count_delta": 26,
-      "summary": "The curve moved modestly higher versus 2026-07-07. 7 nodes rose and 4 fell; the largest absolute move was 19.00 bp at 2026-11-01."
+      "summary": "The curve moved higher versus 2026-07-07. The move was meaningful; 7 nodes rose and 4 fell; the largest absolute move was 19.00 bp at 2026-11-01."
     },
     "2026-07-09": {
       "trace_id": "2026-07-09",
@@ -3473,11 +3863,16 @@
       ],
       "max_abs_move_bp": 4.619055214076795,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.36654641600421817,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -19,
-      "summary": "The curve moved modestly higher versus 2026-07-08. 6 nodes rose and 6 fell; the largest absolute move was 4.62 bp at 2027-05-01."
+      "summary": "The curve moved higher versus 2026-07-08. The move was within its usual historical range; 6 nodes rose and 6 fell; the largest absolute move was 4.62 bp at 2027-05-01."
     },
     "2026-07-10": {
       "trace_id": "2026-07-10",
@@ -3517,11 +3912,16 @@
       ],
       "max_abs_move_bp": 0.9273678145738096,
       "max_abs_move_reference_month": "2027-05-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.07359153181667137,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 4,
       "down_nodes": 8,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -11,
-      "summary": "The curve moved modestly lower versus 2026-07-09. 4 nodes rose and 8 fell; the largest absolute move was 0.93 bp at 2027-05-01."
+      "summary": "The curve moved lower versus 2026-07-09. The move was within its usual historical range; 4 nodes rose and 8 fell; the largest absolute move was 0.93 bp at 2027-05-01."
     },
     "2026-07-13": {
       "trace_id": "2026-07-13",
@@ -3561,11 +3961,16 @@
       ],
       "max_abs_move_bp": 2.9427679498983395,
       "max_abs_move_reference_month": "2026-11-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 0.3071226673119276,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 9,
       "down_nodes": 3,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -1,
-      "summary": "The curve moved modestly higher versus 2026-07-10. 9 nodes rose and 3 fell; the largest absolute move was 2.94 bp at 2026-11-01."
+      "summary": "The curve moved higher versus 2026-07-10. The move was within its usual historical range; 9 nodes rose and 3 fell; the largest absolute move was 2.94 bp at 2026-11-01."
     },
     "2026-07-14": {
       "trace_id": "2026-07-14",
@@ -3605,6 +4010,11 @@
       ],
       "max_abs_move_bp": null,
       "max_abs_move_reference_month": null,
+      "uncertainty_sd_bp": null,
+      "uncertainty_ratio": null,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "unavailable",
       "up_nodes": 0,
       "down_nodes": 0,
       "unchanged_nodes": 0,
@@ -3649,11 +4059,16 @@
       ],
       "max_abs_move_bp": 45.520966609955416,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 4.538193044579823,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 3,
       "down_nodes": 9,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 3,
-      "summary": "The curve moved modestly lower versus 2026-07-14. 3 nodes rose and 9 fell; the largest absolute move was 45.52 bp at 2027-01-01."
+      "summary": "The curve moved lower versus 2026-07-14. The move was sharp; 3 nodes rose and 9 fell; the largest absolute move was 45.52 bp at 2027-01-01."
     },
     "2026-07-16": {
       "trace_id": "2026-07-16",
@@ -3693,11 +4108,16 @@
       ],
       "max_abs_move_bp": 123.87584176052569,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 12.349748376084387,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 8,
       "down_nodes": 4,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -27,
-      "summary": "The curve moved modestly higher versus 2026-07-15. 8 nodes rose and 4 fell; the largest absolute move was 123.88 bp at 2027-01-01."
+      "summary": "The curve moved higher versus 2026-07-15. The move was sharp; 8 nodes rose and 4 fell; the largest absolute move was 123.88 bp at 2027-01-01."
     },
     "2026-07-17": {
       "trace_id": "2026-07-17",
@@ -3737,11 +4157,16 @@
       ],
       "max_abs_move_bp": 11.695511445888318,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 1.2206047952107426,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 6,
       "down_nodes": 4,
       "unchanged_nodes": 2,
       "source_trade_count_delta": -8,
-      "summary": "The curve moved modestly higher versus 2026-07-16. 6 nodes rose and 4 fell; the largest absolute move was 11.70 bp at 2026-12-01."
+      "summary": "The curve moved higher versus 2026-07-16. The move was meaningful; 6 nodes rose and 4 fell; the largest absolute move was 11.70 bp at 2026-12-01."
     },
     "2026-07-20": {
       "trace_id": "2026-07-20",
@@ -3781,11 +4206,16 @@
       ],
       "max_abs_move_bp": 52.38442303197477,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 5.222442359034692,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "sharp",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 37,
-      "summary": "The curve moved modestly lower versus 2026-07-17. 6 nodes rose and 6 fell; the largest absolute move was 52.38 bp at 2027-01-01."
+      "summary": "The curve moved lower versus 2026-07-17. The move was sharp; 6 nodes rose and 6 fell; the largest absolute move was 52.38 bp at 2027-01-01."
     },
     "2026-07-21": {
       "trace_id": "2026-07-21",
@@ -3825,11 +4255,16 @@
       ],
       "max_abs_move_bp": 4.233118969361183,
       "max_abs_move_reference_month": "2027-02-01",
+      "uncertainty_sd_bp": 9.13535835700931,
+      "uncertainty_ratio": 0.46337744004461817,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 9,
       "down_nodes": 3,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -36,
-      "summary": "The curve moved modestly higher versus 2026-07-20. 9 nodes rose and 3 fell; the largest absolute move was 4.23 bp at 2027-02-01."
+      "summary": "The curve moved higher versus 2026-07-20. The move was within its usual historical range; 9 nodes rose and 3 fell; the largest absolute move was 4.23 bp at 2027-02-01."
     },
     "2026-07-22": {
       "trace_id": "2026-07-22",
@@ -3869,11 +4304,16 @@
       ],
       "max_abs_move_bp": 22.945822948048367,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 1.8208721857756598,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 10,
-      "summary": "The curve moved modestly lower versus 2026-07-21. 6 nodes rose and 6 fell; the largest absolute move was 22.95 bp at 2027-06-01."
+      "summary": "The curve moved lower versus 2026-07-21. The move was meaningful; 6 nodes rose and 6 fell; the largest absolute move was 22.95 bp at 2027-06-01."
     },
     "2026-07-23": {
       "trace_id": "2026-07-23",
@@ -3913,11 +4353,16 @@
       ],
       "max_abs_move_bp": 3.1812989253543478,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.2524528643374904,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 7,
       "down_nodes": 4,
       "unchanged_nodes": 1,
       "source_trade_count_delta": -8,
-      "summary": "The curve moved modestly higher versus 2026-07-22. 7 nodes rose and 4 fell; the largest absolute move was 3.18 bp at 2027-06-01."
+      "summary": "The curve moved higher versus 2026-07-22. The move was within its usual historical range; 7 nodes rose and 4 fell; the largest absolute move was 3.18 bp at 2027-06-01."
     },
     "2026-07-24": {
       "trace_id": "2026-07-24",
@@ -3957,11 +4402,16 @@
       ],
       "max_abs_move_bp": 5.598561578912253,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.44427541703230333,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 3,
       "down_nodes": 9,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 3,
-      "summary": "The curve moved modestly lower versus 2026-07-23. 3 nodes rose and 9 fell; the largest absolute move was 5.60 bp at 2027-06-01."
+      "summary": "The curve moved lower versus 2026-07-23. The move was within its usual historical range; 3 nodes rose and 9 fell; the largest absolute move was 5.60 bp at 2027-06-01."
     },
     "2026-07-27": {
       "trace_id": "2026-07-27",
@@ -4001,11 +4451,16 @@
       ],
       "max_abs_move_bp": 2.1638902310083807,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.17171611336999157,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 6,
       "down_nodes": 5,
       "unchanged_nodes": 1,
       "source_trade_count_delta": -2,
-      "summary": "The curve moved modestly higher versus 2026-07-24. 6 nodes rose and 5 fell; the largest absolute move was 2.16 bp at 2027-06-01."
+      "summary": "The curve moved higher versus 2026-07-24. The move was within its usual historical range; 6 nodes rose and 5 fell; the largest absolute move was 2.16 bp at 2027-06-01."
     },
     "2026-07-28": {
       "trace_id": "2026-07-28",
@@ -4045,11 +4500,16 @@
       ],
       "max_abs_move_bp": 10.57118892809017,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 1.103264611932969,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 10,
-      "summary": "The curve moved modestly lower versus 2026-07-27. 6 nodes rose and 6 fell; the largest absolute move was 10.57 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-07-27. The move was meaningful; 6 nodes rose and 6 fell; the largest absolute move was 10.57 bp at 2026-12-01."
     },
     "2026-07-29": {
       "trace_id": "2026-07-29",
@@ -4089,11 +4549,16 @@
       ],
       "max_abs_move_bp": 3.879346007953366,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.3078465854493543,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 3,
       "down_nodes": 7,
       "unchanged_nodes": 2,
       "source_trade_count_delta": 13,
-      "summary": "The curve moved modestly lower versus 2026-07-28. 3 nodes rose and 7 fell; the largest absolute move was 3.88 bp at 2027-06-01."
+      "summary": "The curve moved lower versus 2026-07-28. The move was within its usual historical range; 3 nodes rose and 7 fell; the largest absolute move was 3.88 bp at 2027-06-01."
     },
     "2026-07-30": {
       "trace_id": "2026-07-30",
@@ -4133,11 +4598,16 @@
       ],
       "max_abs_move_bp": 2.1761980665524483,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 0.2169551234243014,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 3,
       "down_nodes": 8,
       "unchanged_nodes": 1,
       "source_trade_count_delta": -1,
-      "summary": "The curve moved modestly lower versus 2026-07-29. 3 nodes rose and 8 fell; the largest absolute move was 2.18 bp at 2027-01-01."
+      "summary": "The curve moved lower versus 2026-07-29. The move was within its usual historical range; 3 nodes rose and 8 fell; the largest absolute move was 2.18 bp at 2027-01-01."
     },
     "2026-07-31": {
       "trace_id": "2026-07-31",
@@ -4177,11 +4647,16 @@
       ],
       "max_abs_move_bp": 2.6440593983134697,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.20982007168922287,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 6,
       "down_nodes": 6,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -13,
-      "summary": "The curve moved modestly higher versus 2026-07-30. 6 nodes rose and 6 fell; the largest absolute move was 2.64 bp at 2027-06-01."
+      "summary": "The curve moved higher versus 2026-07-30. The move was within its usual historical range; 6 nodes rose and 6 fell; the largest absolute move was 2.64 bp at 2027-06-01."
     },
     "2026-08-03": {
       "trace_id": "2026-08-03",
@@ -4221,11 +4696,16 @@
       ],
       "max_abs_move_bp": 13.071770071291233,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 1.3642383494498365,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "meaningful",
       "up_nodes": 4,
       "down_nodes": 8,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 12,
-      "summary": "The curve moved modestly lower versus 2026-07-31. 4 nodes rose and 8 fell; the largest absolute move was 13.07 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-07-31. The move was meaningful; 4 nodes rose and 8 fell; the largest absolute move was 13.07 bp at 2026-12-01."
     },
     "2026-08-04": {
       "trace_id": "2026-08-04",
@@ -4265,11 +4745,16 @@
       ],
       "max_abs_move_bp": 3.374093420063229,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.26775212528711495,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 5,
       "down_nodes": 7,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -14,
-      "summary": "The curve moved modestly lower versus 2026-08-03. 5 nodes rose and 7 fell; the largest absolute move was 3.37 bp at 2027-06-01."
+      "summary": "The curve moved lower versus 2026-08-03. The move was within its usual historical range; 5 nodes rose and 7 fell; the largest absolute move was 3.37 bp at 2027-06-01."
     },
     "2026-08-05": {
       "trace_id": "2026-08-05",
@@ -4309,11 +4794,16 @@
       ],
       "max_abs_move_bp": 6.307704345998033,
       "max_abs_move_reference_month": "2027-01-01",
+      "uncertainty_sd_bp": 10.030636899486513,
+      "uncertainty_ratio": 0.6288438520111257,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
       "up_nodes": 3,
       "down_nodes": 9,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 6,
-      "summary": "The curve moved modestly lower versus 2026-08-04. 3 nodes rose and 9 fell; the largest absolute move was 6.31 bp at 2027-01-01."
+      "summary": "The curve moved lower versus 2026-08-04. The move was modest; 3 nodes rose and 9 fell; the largest absolute move was 6.31 bp at 2027-01-01."
     },
     "2026-08-06": {
       "trace_id": "2026-08-06",
@@ -4353,11 +4843,16 @@
       ],
       "max_abs_move_bp": 1.71566223195585,
       "max_abs_move_reference_month": "2026-09-01",
+      "uncertainty_sd_bp": 8.951702066183728,
+      "uncertainty_ratio": 0.19165765563590387,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 2,
       "down_nodes": 10,
       "unchanged_nodes": 0,
       "source_trade_count_delta": -16,
-      "summary": "The curve moved modestly lower versus 2026-08-05. 2 nodes rose and 10 fell; the largest absolute move was 1.72 bp at 2026-09-01."
+      "summary": "The curve moved lower versus 2026-08-05. The move was within its usual historical range; 2 nodes rose and 10 fell; the largest absolute move was 1.72 bp at 2026-09-01."
     },
     "2026-08-07": {
       "trace_id": "2026-08-07",
@@ -4397,11 +4892,16 @@
       ],
       "max_abs_move_bp": 0.7047718072517029,
       "max_abs_move_reference_month": "2026-12-01",
+      "uncertainty_sd_bp": 9.581734802106064,
+      "uncertainty_ratio": 0.07355367496674967,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 4,
       "down_nodes": 7,
       "unchanged_nodes": 1,
       "source_trade_count_delta": -5,
-      "summary": "The curve moved modestly lower versus 2026-08-06. 4 nodes rose and 7 fell; the largest absolute move was 0.70 bp at 2026-12-01."
+      "summary": "The curve moved lower versus 2026-08-06. The move was within its usual historical range; 4 nodes rose and 7 fell; the largest absolute move was 0.70 bp at 2026-12-01."
     },
     "2026-08-10": {
       "trace_id": "2026-08-10",
@@ -4441,11 +4941,16 @@
       ],
       "max_abs_move_bp": 0.2645382462485024,
       "max_abs_move_reference_month": "2027-06-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.02099250638159134,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "within_historical_range",
       "up_nodes": 2,
       "down_nodes": 10,
       "unchanged_nodes": 0,
       "source_trade_count_delta": 12,
-      "summary": "The curve moved modestly lower versus 2026-08-07. 2 nodes rose and 10 fell; the largest absolute move was 0.26 bp at 2027-06-01."
+      "summary": "The curve moved lower versus 2026-08-07. The move was within its usual historical range; 2 nodes rose and 10 fell; the largest absolute move was 0.26 bp at 2027-06-01."
     }
   }
 }
