@@ -37,6 +37,7 @@
         <p id="commentary-summary"></p>
         <dl id="commentary-details"></dl>
         <div id="commentary-moves"></div>
+        <p class="commentary-muted">Trades counts are non-exclusive: an interpolated trade is counted on both final reference-CPI endpoint nodes. Aggregate published observations is the unique accepted fit-observation total.</p>
       </section>
       <p><a href="pca.html">View six-driver PCA diagnostics →</a></p>
       <p id="error"></p>
@@ -62,6 +63,9 @@
     function formatMove(value) {
       if (!Number.isFinite(value)) return '—';
       return `${value >= 0 ? '+' : ''}${value.toFixed(2)} bp`;
+    }
+    function formatTradeCount(value) {
+      return Number.isInteger(value) && value >= 0 ? String(value) : '—';
     }
     function addDetail(details, label, value) {
       const term = document.createElement('dt');
@@ -107,7 +111,7 @@
       const table = document.createElement('table');
       const head = document.createElement('thead');
       const headerRow = document.createElement('tr');
-      ['Reference CPI month', 'Move'].forEach(label => {
+      ['Reference CPI month', 'Trades', 'Move'].forEach(label => {
         const cell = document.createElement('th');
         cell.textContent = label;
         headerRow.appendChild(cell);
@@ -118,9 +122,12 @@
         const row = document.createElement('tr');
         const monthCell = document.createElement('td');
         monthCell.textContent = month;
+        const tradeCell = document.createElement('td');
+        const tradeCounts = Array.isArray(entry.trade_count) ? entry.trade_count : [];
+        tradeCell.textContent = formatTradeCount(tradeCounts[index]);
         const moveCell = document.createElement('td');
         moveCell.textContent = formatMove(entry.move_bp[index]);
-        row.append(monthCell, moveCell);
+        row.append(monthCell, tradeCell, moveCell);
         body.appendChild(row);
       });
       table.append(head, body);

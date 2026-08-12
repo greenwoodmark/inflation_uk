@@ -22,6 +22,11 @@ FORBIDDEN_FIELDS = {
 }
 PCA_SCHEMA = "cpurnsa_pca_diagnostics_v1"
 COMMENTARY_SCHEMA = "cpurnsa_daily_commentary_v1"
+TRADE_COUNT_DEFINITION = (
+    "Accepted fit-observation endpoint-support counts. Exact reference CPI trades count "
+    "once at their endpoint; interpolated trades count once at both final endpoint nodes. "
+    "The known base CPI node is excluded."
+)
 MANIFEST_SCHEMA = "uscpi_public_release_manifest_v1"
 SNAPSHOT_REQUIRED = {"as_of_date", "reference_month", "implied_zc_rate", "model_version"}
 
@@ -32,6 +37,15 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _optional_trade_count(value: object, *, path: Path, row_number: int) -> int | None:
+    text = "" if value is None else str(value).strip()
+    if not text:
+        return None
+    if not text.isascii() or not text.isdecimal():
+        raise ValueError(f"{path} row {row_number} has a non-negative integer node_trade_count")
+    return int(text)
 
 
 def _validate_snapshot(path: Path) -> dict[str, str]:
@@ -52,10 +66,12 @@ def _validate_snapshot(path: Path) -> dict[str, str]:
     dates = {row["as_of_date"] or path.stem for row in rows}
     if len(dates) != 1:
         raise ValueError(f"{path} contains multiple as_of_date values")
-    for row in rows:
+    for row_number, row in enumerate(rows, start=2):
         value = row["implied_zc_rate"].strip()
         if value.lower() not in {"", "nan", "none"} and not math.isfinite(float(value)):
             raise ValueError(f"{path} contains a non-finite implied_zc_rate")
+        if "node_trade_count" in header:
+            _optional_trade_count(row.get("node_trade_count"), path=path, row_number=row_number)
     return rows[0]
 
 
@@ -123,6 +139,8 @@ def _validate_commentary(path: Path, snapshot_dir: Path) -> dict[str, object]:
     payload = json.loads(text)
     if payload.get("schema_version") != COMMENTARY_SCHEMA:
         raise ValueError("commentary schema is incompatible")
+    if payload.get("trade_count_definition") != TRADE_COUNT_DEFINITION:
+        raise ValueError("commentary trade-count definition is missing or incompatible")
     entries = payload.get("entries")
     if not isinstance(entries, dict) or not entries:
         raise ValueError("commentary contains no entries")
@@ -136,10 +154,18 @@ def _validate_commentary(path: Path, snapshot_dir: Path) -> dict[str, object]:
             raise ValueError(f"commentary trace_id does not match date: {date}")
         references = entry.get("reference_month")
         moves = entry.get("move_bp")
-        if not isinstance(references, list) or not isinstance(moves, list):
-            raise ValueError(f"commentary move arrays are missing: {date}")
-        if len(references) != len(moves):
-            raise ValueError(f"commentary move arrays are misaligned: {date}")
+        trade_counts = entry.get("trade_count")
+        if not isinstance(references, list) or not isinstance(moves, list) or not isinstance(trade_counts, list):
+            raise ValueError(f"commentary arrays are missing: {date}")
+        if len(references) != len(moves) or len(references) != len(trade_counts):
+            raise ValueError(f"commentary arrays are misaligned: {date}")
+        for trade_count in trade_counts:
+            if trade_count is not None and (
+                isinstance(trade_count, bool)
+                or not isinstance(trade_count, int)
+                or trade_count < 0
+            ):
+                raise ValueError(f"commentary contains an invalid trade count: {date}")
         for move in moves:
             if move is not None and (not isinstance(move, (int, float)) or not math.isfinite(move)):
                 raise ValueError(f"commentary contains a non-finite move: {date}")

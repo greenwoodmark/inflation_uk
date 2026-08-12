@@ -25,6 +25,11 @@ LEGACY_COLUMNS = (
 MOVE_WINDOW = 60
 MIN_MOVE_OBSERVATIONS = 20
 UNCERTAINTY_SOURCE = "historical_model_implied_moves"
+TRADE_COUNT_DEFINITION = (
+    "Accepted fit-observation endpoint-support counts. Exact reference CPI trades count "
+    "once at their endpoint; interpolated trades count once at both final endpoint nodes. "
+    "The known base CPI node is excluded."
+)
 
 
 def _number(value: object) -> float | None:
@@ -48,6 +53,15 @@ def _rows_from_csv(path: Path) -> list[dict[str, str]]:
     return [dict(zip(LEGACY_COLUMNS, row)) for row in raw_rows]
 
 
+def _optional_trade_count(value: object, *, path: Path, row_number: int) -> int | None:
+    text = "" if value is None else str(value).strip()
+    if not text:
+        return None
+    if not text.isascii() or not text.isdecimal():
+        raise ValueError(f"{path} row {row_number} has a non-negative integer trade count")
+    return int(text)
+
+
 def read_snapshot(path: Path) -> dict:
     rows = _rows_from_csv(path)
     if len(rows) != 12:
@@ -67,6 +81,12 @@ def read_snapshot(path: Path) -> dict:
         if (row["as_of_date"] or date) != date:
             raise ValueError(f"{path} contains multiple as_of_date values")
     source_count = _number(rows[0].get("source_trade_count", rows[0].get("observation_count", 0)))
+    node_trade_counts = None
+    if "node_trade_count" in rows[0]:
+        node_trade_counts = [
+            _optional_trade_count(row.get("node_trade_count"), path=path, row_number=index + 2)
+            for index, row in enumerate(rows)
+        ]
     model_version = rows[0].get("model_version", "unknown")
     curve_kind = rows[0].get("curve_kind") or (
         "canonical_deterministic" if model_version == "uscpi_six_driver_v1" else "historical_broker_marks"
@@ -81,6 +101,7 @@ def read_snapshot(path: Path) -> dict:
         "base_month": rows[0].get("base_month", "unknown"),
         "training_cutoff": rows[0].get("training_cutoff", date),
         "source_trade_count": int(source_count or 0),
+        "node_trade_count": node_trade_counts,
         "reference_month": references,
         "yoy_rate_percent": [rate * 100.0 if rate is not None else None for rate in rates],
         "node_status": [row.get("node_status", "unknown") for row in rows],
@@ -229,6 +250,7 @@ def _build_daily_commentary(snapshots: list[dict]) -> dict:
             "curve_kind": current["curve_kind"],
             "fit_status": current["fit_status"],
             "source_trade_count": current["source_trade_count"],
+            "trade_count": list(current.get("node_trade_count") or [None] * len(current["reference_month"])),
             "comparison_status": "no_prior_snapshot",
             "prior_model_date": None,
             "reference_month": list(current["reference_month"]),
@@ -328,6 +350,7 @@ def _build_daily_commentary(snapshots: list[dict]) -> dict:
     latest_model_date = snapshots[-1]["model_date"] if snapshots else None
     return {
         "schema_version": "cpurnsa_daily_commentary_v1",
+        "trade_count_definition": TRADE_COUNT_DEFINITION,
         "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "latest_model_date": latest_model_date,
         "entries": entries,
