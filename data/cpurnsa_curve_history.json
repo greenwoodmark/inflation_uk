@@ -1,6 +1,6 @@
 {
   "schema_version": "cpurnsa_curve_history_v2",
-  "generated_at_utc": "2026-08-12T09:47:52+00:00",
+  "generated_at_utc": "2026-08-12T10:00:40+00:00",
   "latest_model_date": "2026-08-11",
   "available_snapshot_count": 102,
   "requested_labels": [
@@ -225,18 +225,18 @@
       "training_cutoff": "2026-08-07",
       "source_trade_count": 4,
       "node_trade_count": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
+        2,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
       ],
       "reference_month": [
         "2026-07-01",
