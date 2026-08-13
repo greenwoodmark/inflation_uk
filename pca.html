@@ -24,9 +24,9 @@
   <main>
     <p><a href="cpurnsa.html">← Back to US CPURNSA inflation curve</a></p>
     <h1>US CPURNSA PCA Diagnostics</h1>
-    <p class="subtitle">How many empirical principal components explain variation in the six shadow-posterior drivers?</p>
+    <p class="subtitle">How many empirical principal components explain variation in the six shadow drivers?</p>
     <div class="card">
-      <p class="note"><strong>Frame-aware analysis.</strong> The July 14 publication reseed changes the meaning of the relative driver buckets. PCA is therefore calculated separately within each coordinate frame; the cross-reseed transition is not treated as a market move.</p>
+      <p class="note"><strong>Frame-aware analysis.</strong> The July 14 and August 12 publication reseeds change the meaning of the relative driver buckets. PCA is therefore calculated separately within each coordinate frame; cross-reseed transitions are not treated as market moves.</p>
       <p id="meta" class="meta"></p>
       <p id="error"></p>
     </div>
@@ -118,7 +118,7 @@
     function render(payload) {
       const current = payload.current_frame;
       renderCurrent(current); renderHistory(current); renderTable(payload.frames);
-      document.getElementById('meta').innerHTML = `<span class="badge">${current.frame_id}</span> | Dates: ${payload.analysis_start} → ${payload.analysis_end} | States: ${payload.state_count} | Drivers: ${payload.driver_names.join(', ')} | Reseed boundary: ${payload.frame_policy.reseed_dates.join(', ') || 'none'} | Generated: ${payload.generated_at_utc}`;
+      document.getElementById('meta').innerHTML = `<span class="badge">${current.frame_id}</span> | Current-frame dates: ${current.first_state_date} → ${current.last_state_date} | Current-frame states: ${current.state_count} | Drivers: ${current.driver_names.join(', ')} | Reseed boundaries: ${payload.frame_policy.reseed_dates.join(', ') || 'none'} | Generated: ${payload.generated_at_utc}`;
       document.getElementById('limitations').innerHTML = payload.limitations.map(item => `<li>${item}</li>`).join('');
     }
     loadDiagnostics().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
