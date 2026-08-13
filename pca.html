@@ -61,12 +61,19 @@
     function renderCurrent(frame) {
       const natural = frame.natural_units;
       const standardized = frame.standardized_units;
+      const chart = document.getElementById('current-chart');
+      if (!natural) {
+        chart.innerHTML = `<p class="note">Variance estimates are unavailable for this frame because PCA requires at least two valid posterior states within the same coordinate frame. Current state count: ${frame.state_count}.</p>`;
+        return;
+      }
       const labels = natural.explained_variance_ratio.map((_, index) => `PC${index + 1}`);
       const traces = [
         { x: labels, y: natural.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Natural units (%)', marker: { color: '#0e7490' } },
-        { x: labels, y: natural.cumulative_explained_variance.map(value => value * 100), mode: 'lines+markers', name: 'Natural cumulative (%)', yaxis: 'y2', line: { color: '#c2410c', width: 3 } },
-        { x: labels, y: standardized.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Standardized units (%)', marker: { color: '#94a3b8' }, visible: 'legendonly' }
+        { x: labels, y: natural.cumulative_explained_variance.map(value => value * 100), mode: 'lines+markers', name: 'Natural cumulative (%)', yaxis: 'y2', line: { color: '#c2410c', width: 3 } }
       ];
+      if (standardized) {
+        traces.push({ x: labels, y: standardized.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Standardized units (%)', marker: { color: '#94a3b8' }, visible: 'legendonly' });
+      }
       Plotly.newPlot('current-chart', traces, {
         barmode: 'group', xaxis: { title: 'Principal component' },
         yaxis: { title: 'Individual variance explained (%)', rangemode: 'tozero' },
@@ -77,6 +84,11 @@
     }
     function renderHistory(frame) {
       const history = frame.expanding_history || [];
+      const chart = document.getElementById('history-chart');
+      if (!history.length) {
+        chart.innerHTML = '<p class="note">Expanding PCA history is unavailable until this coordinate frame contains enough posterior states for a covariance estimate.</p>';
+        return;
+      }
       const dates = history.map(item => item.date);
       const traces = [
         { x: dates, y: history.map(item => item.pc1 * 100), mode: 'lines+markers', name: 'PC1 (%)' },
@@ -89,11 +101,17 @@
         paper_bgcolor: 'white', plot_bgcolor: 'white'
       }, { responsive: true, displaylogo: false });
     }
+    function variancePercent(unit, field, index) {
+      return unit && unit[field] && unit[field][index] != null ? percent(unit[field][index]) : '—';
+    }
+    function thresholdCount(unit) {
+      return unit && unit.components_to_threshold ? components(unit.components_to_threshold['0.95']) : '—';
+    }
     function renderTable(frames) {
       const rows = frames.map(frame => {
         const natural = frame.natural_units;
         const standardized = frame.standardized_units;
-        return `<tr><td>${frame.frame_id}</td><td>${frame.first_state_date} → ${frame.last_state_date}</td><td>${frame.state_count}</td><td>${percent(natural.explained_variance_ratio[0])}</td><td>${percent(natural.cumulative_explained_variance[1])}</td><td>${components(natural.components_to_threshold['0.95'])}</td><td>${percent(standardized.explained_variance_ratio[0])}</td><td>${components(standardized.components_to_threshold['0.95'])}</td></tr>`;
+        return `<tr><td>${frame.frame_id}</td><td>${frame.first_state_date} → ${frame.last_state_date}</td><td>${frame.state_count}</td><td>${variancePercent(natural, 'explained_variance_ratio', 0)}</td><td>${variancePercent(natural, 'cumulative_explained_variance', 1)}</td><td>${thresholdCount(natural)}</td><td>${variancePercent(standardized, 'explained_variance_ratio', 0)}</td><td>${thresholdCount(standardized)}</td></tr>`;
       }).join('');
       document.getElementById('frame-table').innerHTML = `<table><thead><tr><th>Frame</th><th>Dates</th><th>N</th><th>Natural PC1</th><th>Natural PC1–2</th><th>Natural PCs to 95%</th><th>Standardized PC1</th><th>Standardized PCs to 95%</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
