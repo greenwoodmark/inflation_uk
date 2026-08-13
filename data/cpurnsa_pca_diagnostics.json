@@ -1,6 +1,6 @@
 {
   "schema_version": "cpurnsa_pca_diagnostics_v1",
-  "generated_at_utc": "2026-08-13T12:52:49+00:00",
+  "generated_at_utc": "2026-08-13T13:11:42+00:00",
   "diagnostic_kind": "uscpi_shadow_posterior_driver_pca",
   "model_version": "uscpi_six_driver_v1",
   "matrix_version": "uscpi_monthly_bucket_matrix_v2",
