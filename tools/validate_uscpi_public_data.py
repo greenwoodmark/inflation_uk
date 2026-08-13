@@ -88,8 +88,15 @@ def _validate_pca(path: Path) -> dict[str, object]:
     if payload.get("frame_policy", {}).get("cross_reseed_transition_included") is not False:
         raise ValueError("PCA must exclude cross-reseed transitions")
     current_frame = payload.get("current_frame") or {}
-    if int(current_frame.get("state_count", 0)) < 2:
-        raise ValueError("PCA current frame needs at least two states")
+    current_state_count = int(current_frame.get("state_count", 0))
+    if current_state_count < 1:
+        raise ValueError("PCA current frame needs at least one state")
+    if current_state_count < 2:
+        # A publication reseed starts a new coordinate frame. Its first state
+        # is valid for publication, but PCA needs a second state before it can
+        # produce variance estimates in that frame.
+        if current_frame.get("natural_units") is not None or current_frame.get("standardized_units") is not None:
+            raise ValueError("single-state PCA frame must not contain variance estimates")
     return payload
 
 
