@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Softs hourly diagnostics</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    body { margin: 0; }
+    main { max-width: 1380px; margin: 0 auto; padding: 26px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { margin-bottom: 6px; }
+    h2 { font-size: 1.1rem; margin-bottom: 12px; }
+    .muted, .meta { color: #475569; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; }
+    .error { color: #b91c1c; }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; }
+    label { display: grid; gap: 4px; color: #475569; font-size: .9rem; }
+    select { min-width: 150px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 7px 9px; background: white; color: #0f172a; }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 12px; }
+    .summary { border: 1px solid #e2e8f0; border-left: 5px solid #94a3b8; border-radius: 8px; padding: 12px; }
+    .summary.complete { border-left-color: #16a34a; }
+    .summary.partial, .summary.fit_not_persisted { border-left-color: #d97706; }
+    .summary h3 { margin-bottom: 8px; }
+    .summary dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; margin: 0; font-size: .9rem; }
+    .summary dt { color: #64748b; }
+    .summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: right; white-space: nowrap; }
+    th { color: #475569; font-weight: 650; background: #f8fafc; }
+    th:first-child, td:first-child { text-align: left; }
+    tr.complete td:first-child { color: #166534; }
+    tr.incomplete td:first-child, tr.empty td:first-child { color: #b45309; }
+    .pill { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: .8rem; background: #e2e8f0; }
+    .pill.complete { color: #166534; background: #dcfce7; }
+    .pill.incomplete, .pill.fit_not_persisted { color: #92400e; background: #fef3c7; }
+    .pill.empty { color: #991b1b; background: #fee2e2; }
+    .fit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .fit { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+    .fit h3 { font-size: .95rem; margin-bottom: 8px; }
+    .fit dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; margin: 0; }
+    .fit dt { color: #64748b; }
+    .fit dd { margin: 0; text-align: right; }
+    a { color: #075985; }
+    @media (max-width: 850px) { .cards { grid-template-columns: repeat(2, minmax(180px, 1fr)); } }
+    @media (max-width: 480px) { .cards { grid-template-columns: 1fr; } main { padding: 18px 10px 30px; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Softs hourly diagnostics</h1>
+    <p class="muted">Hourly persisted BID/ASK coverage and the daily GH3 fit produced from the final valid observations for Cocoa, Cotton, Coffee and Sugar.</p>
+    <p><a href="../index.html">Inflation markets</a></p>
+    <div id="notice" class="notice" hidden></div>
+    <p id="error" class="error"></p>
+  </div>
+
+  <div class="card">
+    <div class="controls">
+      <label>Session date <select id="date-select"></select></label>
+      <label>Symbol <select id="symbol-select"><option value="ALL">All symbols</option><option value="CC">CC — Cocoa</option><option value="CT">CT — Cotton</option><option value="KC">KC — Coffee</option><option value="SB">SB — Sugar</option></select></label>
+      <label>Surface <select id="surface-select"><option value="ALL">All surfaces</option></select></label>
+    </div>
+    <p id="meta" class="meta"></p>
+  </div>
+
+  <section class="card">
+    <h2>Session status</h2>
+    <div id="summary-cards" class="cards"></div>
+  </section>
+
+  <section class="card">
+    <h2>Hourly BID/ASK coverage</h2>
+    <p class="muted">Counts are from persisted hourly Parquet rows. “Final” marks hours containing quotes selected by the current GH3 latest-per-strike logic; it is not a separate hourly GH3 refit.</p>
+    <div id="hourly-tables"></div>
+  </section>
+
+  <section class="card">
+    <h2>GH3 fit diagnostics</h2>
+    <div id="fit-cards" class="fit-grid"></div>
+  </section>
+</main>
+<script>
+  const SYMBOLS = ['CC', 'CT', 'KC', 'SB'];
+  let payload = null;
+  let selectedDate = null;
+
+  const byId = id => document.getElementById(id);
+  const text = value => value === null || value === undefined || value === '' ? '—' : String(value);
+  const number = (value, digits = 0) => Number.isFinite(Number(value)) ? Number(value).toFixed(digits) : '—';
+  const sessionRows = () => (payload.sessions || []).filter(row => row.session_date === selectedDate && (byId('symbol-select').value === 'ALL' || row.symbol === byId('symbol-select').value));
+  const surfaceKey = hour => `${hour.fut_expiry}|${hour.opt_expiry}`;
+
+  function option(select, value, label) {
+    const node = document.createElement('option'); node.value = value; node.textContent = label; return node;
+  }
+  function setNotice(message) { const node = byId('notice'); node.hidden = !message; node.textContent = message || ''; }
+  function setMeta() {
+    byId('meta').textContent = `Published: ${text(payload.generated_at_utc)} | Data range: ${text(payload.data_start_date)} to ${text(payload.data_end_date)} | All timestamps are UTC unless labelled New York.`;
+  }
+  function renderSummary() {
+    const root = byId('summary-cards'); root.replaceChildren();
+    for (const symbol of SYMBOLS) {
+      const row = (payload.sessions || []).find(item => item.symbol === symbol && item.session_date === selectedDate);
+      const card = document.createElement('article'); card.className = `summary ${row ? row.status : ''}`;
+      const title = document.createElement('h3'); title.textContent = symbol; card.appendChild(title);
+      const dl = document.createElement('dl');
+      const fit = row && row.fits && row.fits.length ? row.fits[0] : null;
+      const hours = row ? row.hours : [];
+      const latest = hours.length ? hours.reduce((a, b) => a.hour_utc > b.hour_utc ? a : b) : null;
+      [['Status', row ? row.status : 'no data'], ['Latest hour', latest ? latest.hour_utc : null], ['Final quote rows', latest ? latest.final_quote_rows : null], ['MAD error', fit ? number(fit.mad_err, 6) : null], ['OTM puts / calls', fit ? `${text(fit.OTM_puts)} / ${text(fit.OTM_calls)}` : null]].forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = text(value); dl.append(dt, dd); });
+      card.appendChild(dl); root.appendChild(card);
+    }
+  }
+  function renderSurfaces() {
+    const select = byId('surface-select'); const old = select.value; select.replaceChildren(option(select, 'ALL', 'All surfaces'));
+    const keys = new Map(); sessionRows().flatMap(row => row.hours || []).forEach(hour => keys.set(surfaceKey(hour), `${hour.fut_expiry} / ${hour.opt_expiry}`));
+    [...keys.entries()].sort().forEach(([value, label]) => select.appendChild(option(select, value, label)));
+    select.value = keys.has(old) ? old : 'ALL';
+  }
+  function renderHourly() {
+    const root = byId('hourly-tables'); root.replaceChildren(); const selectedSurface = byId('surface-select').value;
+    for (const session of sessionRows()) {
+      const heading = document.createElement('h3'); heading.textContent = session.symbol; root.appendChild(heading);
+      const rows = (session.hours || []).filter(hour => selectedSurface === 'ALL' || surfaceKey(hour) === selectedSurface);
+      if (!rows.length) { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'No hourly observations for this selection.'; root.appendChild(p); continue; }
+      const wrap = document.createElement('div'); wrap.className = 'table-wrap'; const table = document.createElement('table');
+      const headers = ['Hour UTC', 'Surface', 'Status', 'BID', 'ASK', 'Paired', 'Valid mids', 'Puts', 'Calls', 'Final rows', 'Reason'];
+      const thead = document.createElement('thead'); const tr = document.createElement('tr'); headers.forEach(header => { const th = document.createElement('th'); th.textContent = header; tr.appendChild(th); }); thead.appendChild(tr); table.appendChild(thead);
+      const tbody = document.createElement('tbody'); rows.forEach(hour => { const row = document.createElement('tr'); row.className = hour.status; const values = [hour.hour_utc, `${hour.fut_expiry} / ${hour.opt_expiry}`, hour.status, hour.bid_rows, hour.ask_rows, hour.paired_quotes, hour.valid_mid_quotes, hour.valid_puts, hour.valid_calls, hour.final_quote_rows, hour.failure_code || (hour.is_final_quote_hour ? 'final' : '')]; values.forEach((value, index) => { const cell = document.createElement(index === 2 ? 'td' : 'td'); if (index === 2) { const pill = document.createElement('span'); pill.className = `pill ${hour.status}`; pill.textContent = text(value); cell.appendChild(pill); } else cell.textContent = text(value); row.appendChild(cell); }); tbody.appendChild(row); }); table.appendChild(tbody); wrap.appendChild(table); root.appendChild(wrap);
+    }
+    if (!sessionRows().length) { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'No session data has been published for this date.'; root.appendChild(p); }
+  }
+  function renderFits() {
+    const root = byId('fit-cards'); root.replaceChildren(); sessionRows().forEach(session => (session.fits || []).forEach(fit => { const card = document.createElement('article'); card.className = 'fit'; const heading = document.createElement('h3'); heading.textContent = `${session.symbol} ${text(fit.fut_prefix)} / ${text(fit.opt_prefix)}`; card.appendChild(heading); const dl = document.createElement('dl'); [['Status', fit.fit_status], ['DtE / DtT', `${text(fit.DtE)} / ${text(fit.DtT)}`], ['Forward', number(fit.fwd, 5)], ['OTM puts / calls', `${text(fit.OTM_puts)} / ${text(fit.OTM_calls)}`], ['MAD error', number(fit.mad_err, 6)], ['b / g / h', `${number(fit.b, 5)} / ${number(fit.g, 5)} / ${number(fit.h, 5)}`], ['Medcouple', number(fit.medcouple, 5)], ['Skew / kurtosis', `${number(fit.skew, 5)} / ${number(fit.kurt, 5)}`], ['Fitted UTC', fit.fit_datetime_utc]].forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = text(value); dl.append(dt, dd); }); card.appendChild(dl); root.appendChild(card); }));
+    if (!root.children.length) { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'No GH3 fit rows have been published for this date.'; root.appendChild(p); }
+  }
+  function render() { renderSurfaces(); renderSummary(); renderHourly(); renderFits(); setMeta(); }
+  function initialise() {
+    const dates = [...new Set((payload.sessions || []).map(row => row.session_date))].sort().reverse(); const dateSelect = byId('date-select'); dateSelect.replaceChildren(...dates.map(date => option(dateSelect, date, date)));
+    selectedDate = dates[0] || null; if (selectedDate) dateSelect.value = selectedDate; else setNotice('The page is installed, but no softs diagnostics release has been published yet.');
+    dateSelect.addEventListener('change', event => { selectedDate = event.target.value; render(); }); byId('symbol-select').addEventListener('change', render); byId('surface-select').addEventListener('change', () => { renderHourly(); }); render();
+  }
+  fetch('../data/softs_diagnostics.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`Diagnostics request failed: ${response.status}`); return response.json(); }).then(data => { payload = data; initialise(); }).catch(error => { byId('error').textContent = error.message; });
+</script>
+</body>
+</html>

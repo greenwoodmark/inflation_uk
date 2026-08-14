@@ -1,0 +1,13 @@
+{
+  "schema_version": "softs_fit_diagnostics_v1",
+  "generated_at_utc": "1970-01-01T00:00:00Z",
+  "data_start_date": null,
+  "data_end_date": null,
+  "symbols": ["CC", "CT", "KC", "SB"],
+  "retention_days": 30,
+  "sessions": [],
+  "limitations": [
+    "Hourly rows describe persisted BID/ASK coverage, not separate hourly GH3 refits.",
+    "Request-level IBKR failures are not persisted by the current harvester and cannot be attributed from Parquet alone."
+  ]
+}

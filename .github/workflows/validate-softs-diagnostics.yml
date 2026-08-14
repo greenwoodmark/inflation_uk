@@ -1,0 +1,36 @@
+name: Validate softs diagnostics
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "softs/logs.html"
+      - "data/softs_diagnostics.json"
+      - "tools/validate_softs_diagnostics.py"
+      - ".github/workflows/validate-softs-diagnostics.yml"
+  pull_request:
+    paths:
+      - "softs/logs.html"
+      - "data/softs_diagnostics.json"
+      - "tools/validate_softs_diagnostics.py"
+      - ".github/workflows/validate-softs-diagnostics.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate public softs diagnostics
+        run: python tools/validate_softs_diagnostics.py data/softs_diagnostics.json
