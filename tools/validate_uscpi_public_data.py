@@ -20,7 +20,9 @@ FORBIDDEN_FIELDS = {
     "raw_observations",
     "dissemination_id",
 }
-PCA_SCHEMA = "cpurnsa_pca_diagnostics_v1"
+PCA_SCHEMA = "cpurnsa_pca_diagnostics_v2"
+PCA_DIAGNOSTIC_KIND = "uscpi_shadow_projected_node_pca"
+MIN_PCA_OBSERVATIONS = 10
 COMMENTARY_SCHEMA = "cpurnsa_daily_commentary_v1"
 TRADE_COUNT_DEFINITION = (
     "Accepted fit-observation endpoint-support counts. Exact reference CPI trades count "
@@ -83,20 +85,30 @@ def _validate_pca(path: Path) -> dict[str, object]:
     payload = json.loads(text)
     if payload.get("schema_version") != PCA_SCHEMA:
         raise ValueError("PCA schema is incompatible")
-    if payload.get("diagnostic_kind") != "uscpi_shadow_posterior_driver_pca":
+    if payload.get("diagnostic_kind") != PCA_DIAGNOSTIC_KIND:
         raise ValueError("PCA diagnostic kind is incompatible")
-    if payload.get("frame_policy", {}).get("cross_reseed_transition_included") is not False:
+    policy = payload.get("frame_policy", {})
+    if policy.get("cross_reseed_transition_included") is not False:
         raise ValueError("PCA must exclude cross-reseed transitions")
-    current_frame = payload.get("current_frame") or {}
-    current_state_count = int(current_frame.get("state_count", 0))
-    if current_state_count < 1:
-        raise ValueError("PCA current frame needs at least one state")
-    if current_state_count < 2:
-        # A publication reseed starts a new coordinate frame. Its first state
-        # is valid for publication, but PCA needs a second state before it can
-        # produce variance estimates in that frame.
-        if current_frame.get("natural_units") is not None or current_frame.get("standardized_units") is not None:
-            raise ValueError("single-state PCA frame must not contain variance estimates")
+    if policy.get("cross_reseed_states_included") is not True:
+        raise ValueError("PCA must retain valid states on both sides of reseeds")
+    window = payload.get("current_window") or {}
+    state_count = int(window.get("state_count", 0))
+    node_count = int(window.get("node_count", 0))
+    node_months = window.get("node_reference_months")
+    if state_count < 1 or node_count < 2 or not isinstance(node_months, list):
+        raise ValueError("PCA rolling window metadata is incomplete")
+    if len(node_months) != node_count:
+        raise ValueError("PCA node count does not match node_reference_months")
+    for field in ("natural_units", "standardized_units"):
+        block = window.get(field)
+        if block is not None:
+            if state_count < MIN_PCA_OBSERVATIONS:
+                raise ValueError("PCA estimates require the minimum rolling sample")
+            if int(block.get("sample_count", 0)) != state_count:
+                raise ValueError(f"PCA {field} sample count is inconsistent")
+            if int(block.get("feature_count", 0)) != node_count:
+                raise ValueError(f"PCA {field} feature count is inconsistent")
     return payload
 
 

@@ -24,24 +24,20 @@
   <main>
     <p><a href="cpurnsa.html">← Back to US CPURNSA inflation curve</a></p>
     <h1>US CPURNSA PCA Diagnostics</h1>
-    <p class="subtitle">How many empirical principal components explain variation in the six shadow drivers?</p>
+    <p class="subtitle">How many empirical principal components explain variation in the remaining projected CPI nodes?</p>
     <div class="card">
-      <p class="note"><strong>Frame-aware analysis.</strong> The July 14 and August 12 publication reseeds change the meaning of the relative driver buckets. PCA is therefore calculated separately within each coordinate frame; cross-reseed transitions are not treated as market moves.</p>
+      <p class="note"><strong>Reseed-aware rolling analysis.</strong> PCA uses a 60-day window of posterior curves. Projected nodes are aligned by absolute reference month, so a published front node is not compared with a forecast node after reseeding. Valid states before and after a reseed remain in the window; the reseed transition itself is not treated as a market move.</p>
       <p id="meta" class="meta"></p>
       <p id="error"></p>
     </div>
     <div class="card">
-      <h2>Current frame: explained variance</h2>
-      <p class="note">Natural units are the primary measure. Standardized units give each driver equal marginal volatility before PCA.</p>
+      <h2>Current 60-day window: explained variance</h2>
+      <p class="note">Natural units use projected CPI index levels on the common reference-month set. Standardized units give each remaining node equal marginal volatility before PCA.</p>
       <div id="current-chart" class="chart"></div>
     </div>
     <div class="card">
-      <h2>Current-frame expanding history</h2>
-      <p class="note">Each point recomputes PCA using all available posterior states in the current frame up to that date. The series starts after enough states exist for a six-driver covariance estimate.</p>
-      <div id="history-chart" class="chart"></div>
-    </div>
-    <div class="card">
-      <h2>Frame comparison</h2>
+      <h2>Window coverage across coordinate frames</h2>
+      <p class="note">The table shows which posterior states contribute to the rolling window. PCA percentages are calculated once on the aligned window, not independently on each reseed frame.</p>
       <div id="frame-table"></div>
     </div>
     <div class="card">
@@ -58,15 +54,15 @@
     }
     function percent(value) { return `${(value * 100).toFixed(2)}%`; }
     function components(value) { return value == null ? '—' : String(value); }
-    function renderCurrent(frame) {
-      const natural = frame.natural_units;
-      const standardized = frame.standardized_units;
+    function renderCurrent(windowData) {
+      const natural = windowData.natural_units;
+      const standardized = windowData.standardized_units;
       const chart = document.getElementById('current-chart');
       if (!natural) {
-        chart.innerHTML = `<p class="note">Variance estimates are unavailable for this frame because PCA requires at least two valid posterior states within the same coordinate frame. Current state count: ${frame.state_count}.</p>`;
+        chart.innerHTML = `<p class="note">Variance estimates are unavailable because the rolling window needs at least ten valid posterior states. Current state count: ${windowData.state_count}.</p>`;
         return;
       }
-      const labels = natural.explained_variance_ratio.map((_, index) => `PC${index + 1}`);
+      const labels = windowData.node_reference_months.map(value => value.slice(0, 7));
       const traces = [
         { x: labels, y: natural.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Natural units (%)', marker: { color: '#0e7490' } },
         { x: labels, y: natural.cumulative_explained_variance.map(value => value * 100), mode: 'lines+markers', name: 'Natural cumulative (%)', yaxis: 'y2', line: { color: '#c2410c', width: 3 } }
@@ -75,50 +71,25 @@
         traces.push({ x: labels, y: standardized.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Standardized units (%)', marker: { color: '#94a3b8' }, visible: 'legendonly' });
       }
       Plotly.newPlot('current-chart', traces, {
-        barmode: 'group', xaxis: { title: 'Principal component' },
+        barmode: 'group', xaxis: { title: 'Absolute reference month' },
         yaxis: { title: 'Individual variance explained (%)', rangemode: 'tozero' },
         yaxis2: { title: 'Cumulative variance (%)', overlaying: 'y', side: 'right', range: [0, 105] },
         legend: { orientation: 'h', y: -0.2 }, margin: { t: 20, r: 70, b: 85, l: 70 },
         paper_bgcolor: 'white', plot_bgcolor: 'white'
       }, { responsive: true, displaylogo: false });
     }
-    function renderHistory(frame) {
-      const history = frame.expanding_history || [];
-      const chart = document.getElementById('history-chart');
-      if (!history.length) {
-        chart.innerHTML = '<p class="note">Expanding PCA history is unavailable until this coordinate frame contains enough posterior states for a covariance estimate.</p>';
-        return;
-      }
-      const dates = history.map(item => item.date);
-      const traces = [
-        { x: dates, y: history.map(item => item.pc1 * 100), mode: 'lines+markers', name: 'PC1 (%)' },
-        { x: dates, y: history.map(item => item.cumulative_pc2 * 100), mode: 'lines+markers', name: 'PC1 + PC2 (%)' },
-        { x: dates, y: history.map(item => item.cumulative_pc3 * 100), mode: 'lines+markers', name: 'PC1 + PC2 + PC3 (%)' }
-      ];
-      Plotly.newPlot('history-chart', traces, {
-        xaxis: { title: 'Posterior date', type: 'date' }, yaxis: { title: 'Cumulative variance (%)', range: [0, 105] },
-        hovermode: 'x unified', legend: { orientation: 'h', y: -0.2 }, margin: { t: 20, r: 25, b: 85, l: 70 },
-        paper_bgcolor: 'white', plot_bgcolor: 'white'
-      }, { responsive: true, displaylogo: false });
-    }
-    function variancePercent(unit, field, index) {
-      return unit && unit[field] && unit[field][index] != null ? percent(unit[field][index]) : '—';
-    }
-    function thresholdCount(unit) {
-      return unit && unit.components_to_threshold ? components(unit.components_to_threshold['0.95']) : '—';
-    }
-    function renderTable(frames) {
-      const rows = frames.map(frame => {
-        const natural = frame.natural_units;
-        const standardized = frame.standardized_units;
-        return `<tr><td>${frame.frame_id}</td><td>${frame.first_state_date} → ${frame.last_state_date}</td><td>${frame.state_count}</td><td>${variancePercent(natural, 'explained_variance_ratio', 0)}</td><td>${variancePercent(natural, 'cumulative_explained_variance', 1)}</td><td>${thresholdCount(natural)}</td><td>${variancePercent(standardized, 'explained_variance_ratio', 0)}</td><td>${thresholdCount(standardized)}</td></tr>`;
+    function renderCoverage(segments, windowData) {
+      const rows = segments.map(segment => {
+        return `<tr><td>${segment.frame_id}</td><td>${segment.first_state_date} → ${segment.last_state_date}</td><td>${segment.state_count}</td><td>${segment.base_month}</td><td>${segment.reseed_date || '—'}</td></tr>`;
       }).join('');
-      document.getElementById('frame-table').innerHTML = `<table><thead><tr><th>Frame</th><th>Dates</th><th>N</th><th>Natural PC1</th><th>Natural PC1–2</th><th>Natural PCs to 95%</th><th>Standardized PC1</th><th>Standardized PCs to 95%</th></tr></thead><tbody>${rows}</tbody></table>`;
+      const excluded = windowData.reseed_front_months_excluded.join(', ') || 'none';
+      document.getElementById('frame-table').innerHTML = `<p class="note">Common reference months: ${windowData.node_reference_months.join(', ')}<br>Published front months excluded from the overlap: ${excluded}</p><table><thead><tr><th>Coordinate frame</th><th>Dates</th><th>States</th><th>Base month</th><th>Reseed start</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
     function render(payload) {
-      const current = payload.current_frame;
-      renderCurrent(current); renderHistory(current); renderTable(payload.frames);
-      document.getElementById('meta').innerHTML = `<span class="badge">${current.frame_id}</span> | Current-frame dates: ${current.first_state_date} → ${current.last_state_date} | Current-frame states: ${current.state_count} | Drivers: ${current.driver_names.join(', ')} | Reseed boundaries: ${payload.frame_policy.reseed_dates.join(', ') || 'none'} | Generated: ${payload.generated_at_utc}`;
+      const current = payload.current_window;
+      renderCurrent(current);
+      renderCoverage(payload.frame_segments, current);
+      document.getElementById('meta').innerHTML = `<span class="badge">${current.window_id}</span> | Dates: ${current.first_state_date} → ${current.last_state_date} | States: ${current.state_count} | Common nodes: ${current.node_count} | Reseeds included: ${current.reseed_dates.join(', ') || 'none'} | Generated: ${payload.generated_at_utc}`;
       document.getElementById('limitations').innerHTML = payload.limitations.map(item => `<li>${item}</li>`).join('');
     }
     loadDiagnostics().then(render).catch(error => { document.getElementById('error').textContent = error.message; });
