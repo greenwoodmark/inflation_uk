@@ -1,8 +1,8 @@
 {
   "schema_version": "cpurnsa_daily_commentary_v1",
   "trade_count_definition": "Accepted fit-observation endpoint-support counts. Exact reference CPI trades count once at their endpoint; interpolated trades count once at both final endpoint nodes. The known base CPI node is excluded.",
-  "generated_at_utc": "2026-08-18T05:02:46+00:00",
-  "latest_model_date": "2026-08-17",
+  "generated_at_utc": "2026-08-19T05:03:01+00:00",
+  "latest_model_date": "2026-08-18",
   "entries": {
     "2026-03-18": {
       "trace_id": "2026-03-18",
@@ -6681,6 +6681,69 @@
       "unchanged_nodes": 0,
       "source_trade_count_delta": 13,
       "summary": "The curve moved higher versus 2026-08-14. The move was within its usual historical range; 7 nodes rose and 5 fell; the largest absolute move was 6.02 bp at 2027-07-01."
+    },
+    "2026-08-18": {
+      "trace_id": "2026-08-18",
+      "model_date": "2026-08-18",
+      "curve_kind": "shadow_posterior",
+      "fit_status": "shadow_posterior",
+      "source_trade_count": 12,
+      "trade_count": [
+        2,
+        2,
+        1,
+        2,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        3,
+        0
+      ],
+      "comparison_status": "available",
+      "prior_model_date": "2026-08-17",
+      "reference_month": [
+        "2026-08-01",
+        "2026-09-01",
+        "2026-10-01",
+        "2026-11-01",
+        "2026-12-01",
+        "2027-01-01",
+        "2027-02-01",
+        "2027-03-01",
+        "2027-04-01",
+        "2027-05-01",
+        "2027-06-01",
+        "2027-07-01"
+      ],
+      "move_bp": [
+        2.5902278062917006,
+        1.8170854668420056,
+        2.4346434364042047,
+        3.764350024328955,
+        6.579899401490952,
+        10.36648621696834,
+        7.436468157555609,
+        -0.5250562811109916,
+        -3.212241676116001,
+        -1.7344712883282654,
+        3.131369375537485,
+        10.8352074091278
+      ],
+      "max_abs_move_bp": 10.8352074091278,
+      "max_abs_move_reference_month": "2027-07-01",
+      "uncertainty_sd_bp": 12.601556071478925,
+      "uncertainty_ratio": 0.859830908791582,
+      "uncertainty_status": "available",
+      "uncertainty_alignment": "node_position",
+      "magnitude_class": "modest",
+      "up_nodes": 9,
+      "down_nodes": 3,
+      "unchanged_nodes": 0,
+      "source_trade_count_delta": -6,
+      "summary": "The curve moved higher versus 2026-08-17. The move was modest; 9 nodes rose and 3 fell; the largest absolute move was 10.84 bp at 2027-07-01."
     }
   }
 }
