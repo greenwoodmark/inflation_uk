@@ -1,13 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>US CPURNSA Inflation Curve</title>
-   </head>
-   <body>
-      <h1>Inflation markets</h1>
-      <iframe src="cpurnsa.html" width="100%" height="760" style="border:0"></iframe>
-      <p>🌐 www.deltagammavega.com</p>
-   </body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#071c18">
+    <meta name="description" content="Delta Gamma Vega inflation markets">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700;800;900&display=swap" rel="stylesheet">
+    <title>Delta Gamma Vega | Inflation markets</title>
+    <style>
+      :root {
+        color: #f8fafc;
+        background: #071c18;
+        font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 50% 18%, rgba(16, 185, 129, 0.16), transparent 31rem),
+          #071c18;
+      }
+
+      a { color: inherit; }
+
+      .site-nav {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        left: 0;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        width: min(100% - 2rem, 90rem);
+        margin: 0 auto;
+        padding: 1rem 0;
+      }
+
+      .content-visible .site-footer {
+        display: block;
+      }
+
+      .navbar-logo {
+        display: block;
+        width: min(100%, 13rem);
+        max-width: 13rem;
+      }
+
+      .navbar-logo svg,
+      .hero-logo svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .nav-link {
+        padding: 0.65rem 0.9rem;
+        border: 1px solid rgba(248, 250, 252, 0.28);
+        border-radius: 999px;
+        color: rgba(248, 250, 252, 0.82);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+      }
+
+      .nav-link:hover,
+      .nav-link:focus-visible {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.12);
+        color: #fff;
+        outline: none;
+      }
+
+      .splash {
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .splash-inner {
+        width: min(100%, 64rem);
+        margin: 0 auto;
+      }
+
+      .hero-logo {
+        width: min(100%, 56rem);
+        max-width: 56rem;
+        margin: 0 auto;
+      }
+
+      .hero-logo svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .logo-letter {
+        cursor: pointer;
+      }
+
+      .logo-letter:focus-visible {
+        outline: 3px solid #facc15;
+        outline-offset: 8px;
+      }
+
+      .market-content {
+        min-height: 100vh;
+        padding: 6.5rem 1rem 2rem;
+        background: #f8fafc;
+        color: #0f172a;
+        opacity: 1;
+        transition: opacity 300ms ease;
+      }
+
+      .market-content[hidden] {
+        display: none;
+      }
+
+      .market-inner {
+        width: min(100%, 90rem);
+        margin: 0 auto;
+      }
+
+      .market-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .market-header h1 {
+        margin: 0;
+        color: #0f172a;
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        letter-spacing: -0.04em;
+      }
+
+      .market-header p {
+        margin: 0;
+        color: #475569;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .market-frame {
+        display: block;
+        width: 100%;
+        min-height: 760px;
+        border: 0;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 1rem 3rem rgba(15, 23, 42, 0.12);
+      }
+
+      .site-footer {
+        display: none;
+        padding: 1.5rem;
+        background: #071c18;
+        color: rgba(226, 232, 240, 0.62);
+        font-size: 0.8rem;
+        text-align: center;
+      }
+
+      @media (max-width: 560px) {
+        .site-nav { padding-top: 0.75rem; }
+        .navbar-logo { width: min(48vw, 10rem); }
+        .nav-link { padding: 0.55rem 0.7rem; font-size: 0.65rem; }
+        .market-header { display: block; }
+        .market-header p { margin-top: 0.45rem; }
+        .market-frame { min-height: 680px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <div class="navbar-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 1050 430" width="100%" height="auto" role="img" aria-label="Delta Gamma Vega logo">
+          <defs>
+            <linearGradient id="payoffSpectrumNav" gradientUnits="userSpaceOnUse" x1="80" y1="330" x2="1030" y2="70">
+              <stop offset="0%" stop-color="#FACC15"/>
+              <stop offset="15%" stop-color="#F59E0B"/>
+              <stop offset="34%" stop-color="#EA580C"/>
+              <stop offset="50%" stop-color="#EAB308"/>
+              <stop offset="66%" stop-color="#84CC16"/>
+              <stop offset="84%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#10B981"/>
+            </linearGradient>
+            <filter id="subtleGlowNav" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g font-family="Roboto, -apple-system, sans-serif" font-weight="800" text-anchor="middle" dominant-baseline="alphabetic" fill="url(#payoffSpectrumNav)" filter="url(#subtleGlowNav)">
+            <a class="logo-letter" href="#inflation-markets" data-reveal-inflation aria-label="Open Inflation markets">
+              <text x="105.20" y="333.10" font-size="76px" transform="rotate(7, 105.20, 333.10)">D</text>
+            </a>
+            <text x="164.90" y="340.43" font-size="76px" transform="rotate(7, 164.90, 340.43)">e</text>
+            <text x="208.80" y="345.83" font-size="76px" transform="rotate(7, 208.80, 345.83)">l</text>
+            <text x="245.50" y="350.34" font-size="76px" transform="rotate(7, 245.50, 350.34)">t</text>
+            <text x="292.90" y="356.16" font-size="76px" transform="rotate(7, 292.90, 356.16)">a</text>
+            <text x="358.10" y="362.59" font-size="76px" transform="rotate(2.87, 358.10, 362.59)">G</text>
+            <text x="414.90" y="362.11" font-size="76px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
+            <text x="479.60" y="354.76" font-size="76px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
+            <text x="559.60" y="333.12" font-size="76px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
+            <text x="627.90" y="303.49" font-size="76px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
+            <text x="702.48" y="259.04" font-size="76px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
+            <text x="765.20" y="221.36" font-size="98.8px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
+            <text x="846.10" y="172.77" font-size="128.4px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
+            <text x="950.48" y="110.08" font-size="167px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
+          </g>
+        </svg>
+      </div>
+      <a class="nav-link" href="#inflation-markets" data-reveal-inflation>Inflation markets</a>
+    </nav>
+
+    <main>
+      <section class="splash" aria-label="Delta Gamma Vega">
+        <div class="splash-inner">
+          <div class="hero-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 1050 430" width="100%" height="auto" role="img" aria-label="Delta Gamma Vega logo">
+              <defs>
+                <linearGradient id="payoffSpectrumHero" gradientUnits="userSpaceOnUse" x1="80" y1="330" x2="1030" y2="70">
+                  <stop offset="0%" stop-color="#FACC15"/>
+                  <stop offset="15%" stop-color="#F59E0B"/>
+                  <stop offset="34%" stop-color="#EA580C"/>
+                  <stop offset="50%" stop-color="#EAB308"/>
+                  <stop offset="66%" stop-color="#84CC16"/>
+                  <stop offset="84%" stop-color="#22C55E"/>
+                  <stop offset="100%" stop-color="#10B981"/>
+                </linearGradient>
+                <filter id="subtleGlowHero" x="-15%" y="-15%" width="130%" height="130%">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <style>
+                @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@800&amp;display=swap');
+                .wordmark-roboto-hero {
+                  font-family: 'Roboto', -apple-system, sans-serif;
+                  font-weight: 800;
+                  text-anchor: middle;
+                  dominant-baseline: alphabetic;
+                  fill: url(#payoffSpectrumHero);
+                  filter: url(#subtleGlowHero);
+                }
+              </style>
+              <g class="wordmark-roboto-hero">
+                <g id="delta-hero">
+                  <a class="logo-letter" href="#inflation-markets" data-reveal-inflation aria-label="Open Inflation markets">
+                    <text x="105.20" y="333.10" font-size="76.0px" transform="rotate(7.00, 105.20, 333.10)">D</text>
+                  </a>
+                  <text x="164.90" y="340.43" font-size="76.0px" transform="rotate(7.00, 164.90, 340.43)">e</text>
+                  <text x="208.80" y="345.83" font-size="76.0px" transform="rotate(7.00, 208.80, 345.83)">l</text>
+                  <text x="245.50" y="350.34" font-size="76.0px" transform="rotate(7.00, 245.50, 350.34)">t</text>
+                  <text x="292.90" y="356.16" font-size="76.0px" transform="rotate(7.00, 292.90, 356.16)">a</text>
+                </g>
+                <g id="gamma-hero">
+                  <text x="358.10" y="362.59" font-size="76.0px" transform="rotate(2.87, 358.10, 362.59)">G</text>
+                  <text x="414.90" y="362.11" font-size="76.0px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
+                  <text x="479.60" y="354.76" font-size="76.0px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
+                  <text x="559.60" y="333.12" font-size="76.0px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
+                  <text x="627.90" y="303.49" font-size="76.0px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
+                </g>
+                <g id="vega-hero">
+                  <text x="702.48" y="259.04" font-size="76.0px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
+                  <text x="765.20" y="221.36" font-size="98.8px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
+                  <text x="846.10" y="172.77" font-size="128.4px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
+                  <a href="https://www.deltagammavega.com/softs/logs.html" aria-label="Open softs logs">
+                    <text x="950.48" y="110.08" font-size="167.0px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
+                  </a>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section id="inflation-markets" class="market-content" hidden aria-labelledby="markets-title">
+        <div class="market-inner">
+          <div class="market-header">
+            <h1 id="markets-title" tabindex="-1">Inflation markets</h1>
+            <p>US CPURNSA inflation curve</p>
+          </div>
+          <iframe class="market-frame" src="cpurnsa.html" title="US CPURNSA inflation curve"></iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">www.deltagammavega.com</footer>
+
+    <script>
+      const marketContent = document.getElementById('inflation-markets');
+      const marketHeading = document.getElementById('markets-title');
+
+      document.querySelectorAll('[data-reveal-inflation]').forEach((trigger) => {
+        trigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          document.body.classList.add('content-visible');
+          marketContent.hidden = false;
+          marketHeading.focus({ preventScroll: true });
+          marketContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    </script>
+  </body>
 </html>
