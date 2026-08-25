@@ -72,7 +72,7 @@
         chart.innerHTML = `<p class="note">Variance estimates are unavailable because the rolling window needs at least ten valid posterior states. Current state count: ${windowData.state_count}.</p>`;
         return;
       }
-      const labels = windowData.node_reference_months.map(value => value.slice(0, 7));
+      const labels = natural.explained_variance_ratio.map((_, index) => `PC${index + 1}`);
       const traces = [
         { x: labels, y: natural.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Natural units (%)', marker: { color: '#0e7490' } },
         { x: labels, y: natural.cumulative_explained_variance.map(value => value * 100), mode: 'lines+markers', name: 'Natural cumulative (%)', yaxis: 'y2', line: { color: '#c2410c', width: 3 } }
@@ -81,7 +81,7 @@
         traces.push({ x: labels, y: standardized.explained_variance_ratio.map(value => value * 100), type: 'bar', name: 'Standardized units (%)', marker: { color: '#94a3b8' }, visible: 'legendonly' });
       }
       Plotly.newPlot('current-chart', traces, {
-        barmode: 'group', xaxis: { title: 'Absolute reference month' },
+        barmode: 'group', xaxis: { title: 'Principal component' },
         yaxis: { title: 'Individual variance explained (%)', rangemode: 'tozero' },
         yaxis2: { title: 'Cumulative variance (%)', overlaying: 'y', side: 'right', range: [0, 105] },
         legend: { orientation: 'h', y: -0.2 }, margin: { t: 20, r: 70, b: 85, l: 70 },
