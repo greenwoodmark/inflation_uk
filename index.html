@@ -48,10 +48,6 @@
         padding: 1rem 0;
       }
 
-      .content-visible .site-footer {
-        display: block;
-      }
-
       .navbar-logo {
         display: block;
         width: min(100%, 13rem);
@@ -120,58 +116,8 @@
         outline-offset: 8px;
       }
 
-      .market-content {
-        min-height: 100vh;
-        padding: 6.5rem 1rem 2rem;
-        background: #f8fafc;
-        color: #0f172a;
-        opacity: 1;
-        transition: opacity 300ms ease;
-      }
-
-      .market-content[hidden] {
-        display: none;
-      }
-
-      .market-inner {
-        width: min(100%, 90rem);
-        margin: 0 auto;
-      }
-
-      .market-header {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .market-header h1 {
-        margin: 0;
-        color: #0f172a;
-        font-size: clamp(1.6rem, 4vw, 2.4rem);
-        letter-spacing: -0.04em;
-      }
-
-      .market-header p {
-        margin: 0;
-        color: #475569;
-        font-size: 0.85rem;
-        font-weight: 700;
-      }
-
-      .market-frame {
-        display: block;
-        width: 100%;
-        min-height: 760px;
-        border: 0;
-        border-radius: 0.75rem;
-        background: #fff;
-        box-shadow: 0 1rem 3rem rgba(15, 23, 42, 0.12);
-      }
-
       .site-footer {
-        display: none;
+        display: block;
         padding: 1.5rem;
         background: #071c18;
         color: rgba(226, 232, 240, 0.62);
@@ -183,9 +129,6 @@
         .site-nav { padding-top: 0.75rem; }
         .navbar-logo { width: min(48vw, 10rem); }
         .nav-link { padding: 0.55rem 0.7rem; font-size: 0.65rem; }
-        .market-header { display: block; }
-        .market-header p { margin-top: 0.45rem; }
-        .market-frame { min-height: 680px; }
       }
     </style>
   </head>
@@ -209,7 +152,7 @@
             </filter>
           </defs>
           <g font-family="Roboto, -apple-system, sans-serif" font-weight="800" text-anchor="middle" dominant-baseline="alphabetic" fill="url(#payoffSpectrumNav)" filter="url(#subtleGlowNav)">
-            <a class="logo-letter" href="#inflation-markets" data-reveal-inflation aria-label="Open Inflation markets">
+            <a class="logo-letter" href="cpurnsa.html" aria-label="Open Inflation markets">
               <text x="105.20" y="333.10" font-size="76px" transform="rotate(7, 105.20, 333.10)">D</text>
             </a>
             <text x="164.90" y="340.43" font-size="76px" transform="rotate(7, 164.90, 340.43)">e</text>
@@ -228,7 +171,7 @@
           </g>
         </svg>
       </div>
-      <a class="nav-link" href="#inflation-markets" data-reveal-inflation>Inflation markets</a>
+      <a class="nav-link" href="cpurnsa.html">Inflation markets</a>
     </nav>
 
     <main>
@@ -267,7 +210,7 @@
               </style>
               <g class="wordmark-roboto-hero">
                 <g id="delta-hero">
-                  <a class="logo-letter" href="#inflation-markets" data-reveal-inflation aria-label="Open Inflation markets">
+                  <a class="logo-letter" href="cpurnsa.html" aria-label="Open Inflation markets">
                     <text x="105.20" y="333.10" font-size="76.0px" transform="rotate(7.00, 105.20, 333.10)">D</text>
                   </a>
                   <text x="164.90" y="340.43" font-size="76.0px" transform="rotate(7.00, 164.90, 340.43)">e</text>
@@ -296,32 +239,8 @@
         </div>
       </section>
 
-      <section id="inflation-markets" class="market-content" hidden aria-labelledby="markets-title">
-        <div class="market-inner">
-          <div class="market-header">
-            <h1 id="markets-title" tabindex="-1">Inflation markets</h1>
-            <p>US CPURNSA inflation curve</p>
-          </div>
-          <iframe class="market-frame" src="cpurnsa.html" title="US CPURNSA inflation curve"></iframe>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">www.deltagammavega.com</footer>
-
-    <script>
-      const marketContent = document.getElementById('inflation-markets');
-      const marketHeading = document.getElementById('markets-title');
-
-      document.querySelectorAll('[data-reveal-inflation]').forEach((trigger) => {
-        trigger.addEventListener('click', (event) => {
-          event.preventDefault();
-          document.body.classList.add('content-visible');
-          marketContent.hidden = false;
-          marketHeading.focus({ preventScroll: true });
-          marketContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-    </script>
   </body>
 </html>
