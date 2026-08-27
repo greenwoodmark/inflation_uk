@@ -67,3 +67,9 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Generated website variants and local-only internal resources
+build/
+site/internal/
+__pycache__/
+*.pyc

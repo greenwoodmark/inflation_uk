@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bayesian Updating When a CPI Fit Is Rank Deficient</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#cbd5e1; --card:#fff; --bg:#f8fafc; --blue:#0369a1; --orange:#c2410c; --green:#15803d; --purple:#7c3aed; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.5; }
+    main { max-width:1180px; margin:0 auto; padding:28px 18px 48px; }
+    h1 { margin:0 0 8px; font-size:clamp(1.7rem,4vw,2.4rem); line-height:1.15; }
+    h2 { margin:0 0 8px; font-size:1.25rem; }
+    h3 { margin:20px 0 6px; font-size:1rem; }
+    .subtitle { color:var(--muted); max-width:850px; margin:0 0 20px; }
+    .card { background:var(--card); border:1px solid #e2e8f0; border-radius:10px; padding:20px; margin:16px 0; box-shadow:0 1px 2px #0f172a0a; }
+    .lead { font-size:1.08rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:18px; align-items:start; }
+    .example { border:1px solid var(--line); border-radius:9px; padding:16px; }
+    .example.rank { border-top:4px solid var(--orange); }
+    .example.full { border-top:4px solid var(--green); }
+    .badge { display:inline-block; padding:3px 9px; border-radius:999px; font-size:.82rem; font-weight:650; background:#ffedd5; color:#9a3412; }
+    .full .badge { background:#dcfce7; color:#166534; }
+    .note { color:var(--muted); font-size:.94rem; }
+    .controls { display:grid; gap:8px; margin:14px 0; }
+    label { display:grid; grid-template-columns:1fr 92px; gap:10px; align-items:center; font-size:.93rem; }
+    input[type=range] { width:100%; accent-color:var(--blue); }
+    output { color:var(--ink); font-variant-numeric:tabular-nums; text-align:right; }
+    .chart { width:100%; aspect-ratio:1.45; min-height:250px; background:#fff; border:1px solid #e2e8f0; border-radius:7px; }
+    svg { display:block; width:100%; height:100%; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+    .stat { background:#f8fafc; border-radius:6px; padding:8px 10px; font-size:.9rem; }
+    .stat strong { display:block; font-size:1rem; font-variant-numeric:tabular-nums; }
+    .callout { border-left:4px solid var(--blue); background:#f0f9ff; padding:12px 14px; margin:14px 0; }
+    .callout.warning { border-color:var(--orange); background:#fff7ed; }
+    .callout.success { border-color:var(--green); background:#f0fdf4; }
+    code, .formula { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .formula { background:#f1f5f9; border-radius:6px; padding:10px 12px; overflow:auto; white-space:nowrap; }
+    table { width:100%; border-collapse:collapse; font-size:.94rem; }
+    th,td { border-bottom:1px solid #e2e8f0; padding:8px; text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-weight:650; }
+    .legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:8px; font-size:.85rem; color:var(--muted); }
+    .key { display:inline-flex; align-items:center; gap:5px; }
+    .swatch { width:20px; height:3px; display:inline-block; }
+    .small { font-size:.85rem; color:var(--muted); }
+    a { color:#075985; }
+    @media (max-width:600px) { main { padding:20px 12px 36px; } .card { padding:15px; } label { grid-template-columns:1fr 78px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="cpurnsa.html">← Back to US CPURNSA inflation curve</a></p>
+    <h1>Bayesian updating when a CPI fit is rank deficient</h1>
+    <p class="subtitle">A two-driver illustration of why today’s trades may update some combinations of month-on-month inflation growth while leaving other combinations anchored to yesterday’s estimate.</p>
+
+    <section class="card">
+      <p class="lead"><strong>Two unknown drivers:</strong> <em>a</em> = 1st m/m inflation growth and <em>b</em> = 2nd m/m inflation growth.</p>
+      <p>Each trade does not necessarily observe <em>a</em> and <em>b</em> separately. It observes a weighted combination of them. If all today’s trades observe the same combination, the deterministic fit cannot uniquely recover both drivers.</p>
+      <div class="formula">trade target ≈ h<sub>a</sub>a + h<sub>b</sub>b</div>
+      <div class="callout"><strong>Starting conditions:</strong> begin with the blue prior point and the default slider values. In the rank-deficient panel, the prior starts at <code>(a,b)=(0.60,1.20)</code>, while today’s observed sum is <code>a+b=3.60</code>. The purple posterior must move onto that gray dashed line, but its split between <code>a</code> and <code>b</code> remains largely inherited from the prior. In the full-rank panel, the same separated prior is confronted with <code>a+b=3.60</code> and <code>a−b=−0.40</code>, so both observations pull the posterior toward their unique intersection.</div>
+      <div class="callout"><strong>How to read the diagrams:</strong> a line is a set of driver values that is consistent with an observation. One line leaves many possible answers. Two independent lines intersect at one answer.</div>
+    </section>
+
+    <section class="grid">
+      <article class="example rank">
+        <span class="badge">Rank deficient: one independent direction</span>
+        <h2>All trades observe <em>a + b</em></h2>
+        <p class="note">The deterministic observation matrix has rank 1, but there are 2 unknown drivers. The line contains infinitely many equally good deterministic solutions.</p>
+        <div class="controls">
+          <label>Observed target, <code>a + b</code><input id="rankTarget" type="range" min="1" max="4" step="0.05" value="3.6"></label>
+          <label>Prior mean for <code>a</code><input id="rankPriorA" type="range" min="0" max="3" step="0.05" value="0.6"></label>
+          <label>Prior mean for <code>b</code><input id="rankPriorB" type="range" min="0" max="3" step="0.05" value="1.2"></label>
+        </div>
+        <div class="chart"><svg id="rankChart" viewBox="0 0 520 360" role="img" aria-label="Rank deficient driver diagram"></svg></div>
+        <div class="legend">
+          <span class="key"><i class="swatch" style="height:0; background:none; border-top:3px dashed #64748b"></i>deterministic solutions (a + b)</span>
+          <span class="key"><i class="swatch" style="background:#0369a1"></i>prior mean</span>
+          <span class="key"><i class="swatch" style="background:#7c3aed"></i>Bayesian posterior</span>
+        </div>
+        <div class="stats">
+          <div class="stat">Deterministic result<strong>Not unique</strong></div>
+          <div class="stat">Rank<strong>1 of 2</strong></div>
+          <div class="stat">Prior mean<strong id="rankPriorValue">(0.60, 1.20)</strong></div>
+          <div class="stat">Posterior mean<strong id="rankPosteriorValue">(1.40, 2.00)</strong></div>
+        </div>
+        <p id="rankExplanation" class="note"></p>
+      </article>
+
+      <article class="example full">
+        <span class="badge">Full rank: two independent directions</span>
+        <h2>Add a trade observing <em>a − b</em></h2>
+        <p class="note">The second observation is independent of the first. The two deterministic lines now intersect, so both drivers can be solved without using a prior to choose the split.</p>
+        <div class="controls">
+          <label>Observed target, <code>a + b</code><input id="fullSum" type="range" min="1" max="4" step="0.05" value="3.6"></label>
+          <label>Observed target, <code>a − b</code><input id="fullDiff" type="range" min="-2" max="2" step="0.05" value="-0.4"></label>
+          <label>Prior mean for <code>a</code><input id="fullPriorA" type="range" min="0" max="3" step="0.05" value="0.6"></label>
+          <label>Prior mean for <code>b</code><input id="fullPriorB" type="range" min="0" max="3" step="0.05" value="1.2"></label>
+        </div>
+        <div class="chart"><svg id="fullChart" viewBox="0 0 520 360" role="img" aria-label="Full rank driver diagram"></svg></div>
+        <div class="legend">
+          <span class="key"><i class="swatch" style="background:#15803d; opacity:.5; height:3.75px"></i>first observation (a + b)</span>
+          <span class="key"><i class="swatch" style="background:#c2410c; opacity:.5; height:3.75px"></i>second observation (a − b)</span>
+          <span class="key"><i class="swatch" style="background:#0369a1"></i>prior mean</span>
+          <span class="key"><i class="swatch" style="background:#0f172a"></i>deterministic solution</span>
+          <span class="key"><i class="swatch" style="background:#7c3aed"></i>Bayesian posterior</span>
+        </div>
+        <div class="stats">
+          <div class="stat">Deterministic result<strong id="fullDetValue">(1.60, 2.00)</strong></div>
+          <div class="stat">Rank<strong>2 of 2</strong></div>
+          <div class="stat">Prior mean<strong id="fullPriorValue">(0.60, 1.20)</strong></div>
+          <div class="stat">Posterior mean<strong id="fullPosteriorValue">(1.49, 1.91)</strong></div>
+        </div>
+        <p id="fullExplanation" class="note"></p>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>What the Bayesian update is doing</h2>
+      <table>
+        <thead><tr><th>Situation</th><th>What the trades identify</th><th>What the prior contributes</th></tr></thead>
+        <tbody>
+          <tr><td>Rank deficient</td><td>The observed combination, such as <code>a+b</code>, updates both drivers through that combination.</td><td>The allocation and uncertainty along the unobserved direction, such as <code>a-b</code>. With an independent equal-variance prior, the allocation is an equal split.</td></tr>
+          <tr><td>Full rank</td><td>Both independent combinations, such as <code>a+b</code> and <code>a-b</code>.</td><td>Regularisation and uncertainty weighting, but not the basic uniqueness of the solution.</td></tr>
+        </tbody>
+      </table>
+      <h3>The important distinction</h3>
+      <p>The rank-deficient Bayesian result is not a new deterministic fit to today’s data. It is a <strong>prior-informed posterior estimate</strong>: the likelihood updates both drivers through the observed <code>a+b</code> combination, while the prior supplies the allocation along the unobserved <code>a−b</code> direction. In this example, the independent equal-variance prior makes the update split equally between <code>a</code> and <code>b</code>, so <code>a−b</code> is preserved exactly. That is the simple two-driver analogue of the current six-driver shadow posterior.</p>
+      <div class="callout warning"><strong>For the USCPI application:</strong> a rank-deficient deterministic status remains rank-deficient. The Bayesian shadow curve is useful as an explicitly labelled exploratory estimate, but it should not be described as a fully identified canonical fit.</div>
+    </section>
+
+    <section class="card small">
+      <strong>Calculation note.</strong> The example uses a Gaussian prior with independent variance 0.16 for each driver and observation variance 0.04. The posterior is calculated from the normal Bayesian linear update. With this symmetric prior and an <code>a+b</code> observation, both drivers receive equal posterior-mean updates and the posterior mean of <code>a−b</code> equals its prior mean. Values are illustrative, not USCPI market data.
+    </section>
+  </main>
+  <script>
+    const NS = 'http://www.w3.org/2000/svg';
+    const XMAX = 3.2, YMAX = 3.2, W = 520, H = 360, PAD = { left:58, right:18, top:18, bottom:48 };
+    const OBS_VAR = 0.04;
+    const PRIOR_COV = [[0.16, 0], [0, 0.16]];
+    const el = id => document.getElementById(id);
+    const num = id => Number(el(id).value);
+    const fmt = x => Number(x).toFixed(2);
+    const pointFmt = p => `(${fmt(p[0])}, ${fmt(p[1])})`;
+    function matInv2(m) { const d = m[0][0] * m[1][1] - m[0][1] * m[1][0]; return [[m[1][1] / d, -m[0][1] / d], [-m[1][0] / d, m[0][0] / d]]; }
+    function matVec(m, v) { return [m[0][0] * v[0] + m[0][1] * v[1], m[1][0] * v[0] + m[1][1] * v[1]]; }
+    function transpose(m) { return [[m[0][0], m[1][0]], [m[0][1], m[1][1]]]; }
+    function mm(a, b) { return [[a[0][0] * b[0][0] + a[0][1] * b[1][0], a[0][0] * b[0][1] + a[0][1] * b[1][1]], [a[1][0] * b[0][0] + a[1][1] * b[1][0], a[1][0] * b[0][1] + a[1][1] * b[1][1]]]; }
+    function bayes(Hm, y, prior) {
+      const precision = [[1 / PRIOR_COV[0][0], 0], [0, 1 / PRIOR_COV[1][1]]];
+      const rhs = [prior[0] / PRIOR_COV[0][0], prior[1] / PRIOR_COV[1][1]];
+      Hm.forEach((row, index) => {
+        precision[0][0] += row[0] * row[0] / OBS_VAR;
+        precision[0][1] += row[0] * row[1] / OBS_VAR;
+        precision[1][0] += row[1] * row[0] / OBS_VAR;
+        precision[1][1] += row[1] * row[1] / OBS_VAR;
+        rhs[0] += row[0] * y[index] / OBS_VAR;
+        rhs[1] += row[1] * y[index] / OBS_VAR;
+      });
+      return matVec(matInv2(precision), rhs);
+    }
+    function lineSum(target) { return [[Math.max(0, target - YMAX), Math.min(YMAX, target)], [Math.min(XMAX, target), Math.max(0, target - XMAX)]]; }
+    function lineDiff(target) { const a1 = Math.max(0, target), a2 = Math.min(XMAX, YMAX + target); return [[a1, a1 - target], [a2, a2 - target]]; }
+    function sx(x) { return PAD.left + x / XMAX * (W - PAD.left - PAD.right); }
+    function sy(y) { return H - PAD.bottom - y / YMAX * (H - PAD.top - PAD.bottom); }
+    function svg(tag, attrs, text) { const node = document.createElementNS(NS, tag); Object.entries(attrs || {}).forEach(([k,v]) => node.setAttribute(k, v)); if (text !== undefined) node.textContent = text; return node; }
+    function drawBase(root) {
+      root.replaceChildren();
+      for (let i = 0; i <= 3; i++) { root.append(svg('line', { x1:sx(i), y1:sy(0), x2:sx(i), y2:sy(YMAX), stroke:'#e2e8f0' })); root.append(svg('line', { x1:sx(0), y1:sy(i), x2:sx(XMAX), y2:sy(i), stroke:'#e2e8f0' })); }
+      root.append(svg('line', { x1:sx(0), y1:sy(0), x2:sx(XMAX), y2:sy(0), stroke:'#64748b', 'stroke-width':1.5 }));
+      root.append(svg('line', { x1:sx(0), y1:sy(0), x2:sx(0), y2:sy(YMAX), stroke:'#64748b', 'stroke-width':1.5 }));
+      for (let i = 0; i <= 3; i++) { root.append(svg('text', { x:sx(i), y:H-20, 'text-anchor':'middle', fill:'#475569', 'font-size':12 }, String(i))); root.append(svg('text', { x:45, y:sy(i)+4, 'text-anchor':'end', fill:'#475569', 'font-size':12 }, String(i))); }
+      root.append(svg('text', { x:(sx(0)+sx(XMAX))/2, y:H-4, 'text-anchor':'middle', fill:'#334155', 'font-size':13 }, 'a: 1st m/m inflation growth (%)'));
+      root.append(svg('text', { x:14, y:(sy(0)+sy(YMAX))/2, transform:`rotate(-90 14 ${(sy(0)+sy(YMAX))/2})`, 'text-anchor':'middle', fill:'#334155', 'font-size':13 }, 'b: 2nd m/m inflation growth (%)'));
+    }
+    function drawLine(root, points, color, dash='', opacity=1, width=3) { root.append(svg('line', { x1:sx(points[0][0]), y1:sy(points[0][1]), x2:sx(points[1][0]), y2:sy(points[1][1]), stroke:color, 'stroke-width':width, 'stroke-opacity':opacity, 'stroke-dasharray':dash, 'stroke-linecap':'round' })); }
+    function drawPoint(root, p, color, label, dx=7, dy=-8) { root.append(svg('circle', { cx:sx(p[0]), cy:sy(p[1]), r:6, fill:'#fff', stroke:color, 'stroke-width':3 })); root.append(svg('text', { x:sx(p[0])+dx, y:sy(p[1])+dy, fill:color, 'font-size':12, 'font-weight':600 }, label)); }
+    function deterministicFull(sum, diff) { return [(sum + diff) / 2, (sum - diff) / 2]; }
+    function updateRank() {
+      const target = num('rankTarget'), prior = [num('rankPriorA'), num('rankPriorB')];
+      const posterior = bayes([[1,1]], [target], prior);
+      drawBase(el('rankChart')); drawLine(el('rankChart'), lineSum(target), '#64748b', '8 6'); drawPoint(el('rankChart'), prior, '#0369a1', 'prior'); drawPoint(el('rankChart'), posterior, '#7c3aed', 'posterior');
+      el('rankPriorValue').textContent = pointFmt(prior); el('rankPosteriorValue').textContent = pointFmt(posterior);
+      el('rankExplanation').innerHTML = `The gray dashed line contains infinitely many deterministic answers because every point on it has <code>a+b=${fmt(target)}</code>. The Bayesian posterior updates both <code>a</code> and <code>b</code> through their observed sum. Because this example uses an independent equal-variance prior, the update is split equally and the posterior preserves <code>a−b</code> exactly; a different prior covariance would allocate the update differently.`;
+    }
+    function updateFull() {
+      const sum = num('fullSum'), diff = num('fullDiff'), prior = [num('fullPriorA'), num('fullPriorB')], det = deterministicFull(sum, diff), posterior = bayes([[1,1],[1,-1]], [sum,diff], prior);
+      drawBase(el('fullChart')); drawLine(el('fullChart'), lineSum(sum), '#15803d', '', 0.5, 3.75); drawLine(el('fullChart'), lineDiff(diff), '#c2410c', '', 0.5, 3.75); drawPoint(el('fullChart'), prior, '#0369a1', 'prior', 7, 16); drawPoint(el('fullChart'), det, '#0f172a', 'deterministic'); drawPoint(el('fullChart'), posterior, '#7c3aed', 'posterior');
+      el('fullDetValue').textContent = pointFmt(det); el('fullPriorValue').textContent = pointFmt(prior); el('fullPosteriorValue').textContent = pointFmt(posterior);
+      el('fullExplanation').innerHTML = `The two lines intersect at <code>${pointFmt(det)}</code>. The deterministic answer is unique because the two observations identify both independent combinations. The posterior is close to that intersection; the prior has much less influence than in the rank-deficient example.`;
+    }
+    ['rankTarget','rankPriorA','rankPriorB'].forEach(id => el(id).addEventListener('input', updateRank));
+    ['fullSum','fullDiff','fullPriorA','fullPriorB'].forEach(id => el(id).addEventListener('input', updateFull));
+    updateRank(); updateFull();
+  </script>
+</body>
+</html>

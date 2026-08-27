@@ -8,6 +8,10 @@ on:
       - "data/cpurnsa_snapshots/**"
       - "data/cpurnsa_pca_diagnostics.json"
       - "data/uscpi_release_manifest.json"
+      - "site/shared/**"
+      - "tools/build_site.py"
+      - "tools/validate_public_build.py"
+      - "firebase.json"
   workflow_dispatch:
 
 permissions:
@@ -51,6 +55,11 @@ jobs:
             --manifest-path data/uscpi_release_manifest.json \
             --curve-path data/cpurnsa_curve_history.json \
             --commentary-path data/cpurnsa_daily_commentary.json
+
+      - name: Assemble and validate Firebase public build
+        run: |
+          python tools/build_site.py --target public
+          python tools/validate_public_build.py build/public
 
       - name: Commit generated public data
         run: |
