@@ -3,7 +3,7 @@ as_of_date,reference_month,projected_index,implied_zc_rate,node_status,fit_statu
 2026-06-23,2026-07-01,334.68854464603186,0.036033483092394514,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
 2026-06-23,2026-08-01,334.94235425993651,0.033849279761267947,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
 2026-06-23,2026-09-01,335.43083555366007,0.032730405029741672,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
-2026-06-23,2026-10-01,335.30309792492653,0.029788018344143685,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
+2026-06-23,2026-10-01,335.30309792492653,0.031146606980630542,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
 2026-06-23,2026-11-01,334.76490736012062,0.032836115290293844,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
 2026-06-23,2026-12-01,335.5813391765746,0.035572278622003184,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
 2026-06-23,2027-01-01,337.42116316983476,0.037414568303453244,shadow_posterior,shadow_posterior,shadow_posterior,12,uscpi_six_driver_v1,uscpi_monthly_bucket_matrix_v2,2026-05-01,335.12299999999999,2026-06-23,12,
