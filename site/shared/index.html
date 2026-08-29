@@ -138,36 +138,40 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 1050 430" width="100%" height="auto" role="img" aria-label="Delta Gamma Vega logo">
           <defs>
             <linearGradient id="payoffSpectrumNav" gradientUnits="userSpaceOnUse" x1="80" y1="330" x2="1030" y2="70">
-              <stop offset="0%" stop-color="#FACC15"/>
-              <stop offset="15%" stop-color="#F59E0B"/>
-              <stop offset="34%" stop-color="#EA580C"/>
-              <stop offset="50%" stop-color="#EAB308"/>
-              <stop offset="66%" stop-color="#84CC16"/>
-              <stop offset="84%" stop-color="#22C55E"/>
-              <stop offset="100%" stop-color="#10B981"/>
+              <stop offset="0%" stop-color="#3B82F6"/>
+              <stop offset="50%" stop-color="#FFFFFF"/>
+              <stop offset="100%" stop-color="#22C55E"/>
             </linearGradient>
             <filter id="subtleGlowNav" x="-15%" y="-15%" width="130%" height="130%">
               <feGaussianBlur stdDeviation="2" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
+
+            <!-- REVERSIBLE HANDWRITTEN PERTURBATION: remove this filter and restore the filter reference below to undo. -->
+            <filter id="handwrittenPerturbationNav" x="-15%" y="-15%" width="130%" height="130%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.12" numOctaves="1" seed="12" result="strokeNoise"/>
+              <feDisplacementMap in="SourceGraphic" in2="strokeNoise" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="roughLettering"/>
+              <feGaussianBlur in="roughLettering" stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="roughLettering"/></feMerge>
+            </filter>
           </defs>
-          <g font-family="Roboto, -apple-system, sans-serif" font-weight="800" text-anchor="middle" dominant-baseline="alphabetic" fill="url(#payoffSpectrumNav)" filter="url(#subtleGlowNav)">
+          <g font-family="Roboto, -apple-system, sans-serif" font-weight="800" text-anchor="middle" dominant-baseline="alphabetic" fill="url(#payoffSpectrumNav)" filter="url(#handwrittenPerturbationNav)">
             <a class="logo-letter" href="cpurnsa.html" aria-label="Open Inflation markets">
-              <text x="105.20" y="333.10" font-size="76px" transform="rotate(7, 105.20, 333.10)">D</text>
+              <text x="105.20" y="333.10" font-size="87.4px" transform="rotate(7, 105.20, 333.10)">D</text>
             </a>
-            <text x="164.90" y="340.43" font-size="76px" transform="rotate(7, 164.90, 340.43)">e</text>
-            <text x="208.80" y="345.83" font-size="76px" transform="rotate(7, 208.80, 345.83)">l</text>
-            <text x="245.50" y="350.34" font-size="76px" transform="rotate(7, 245.50, 350.34)">t</text>
-            <text x="292.90" y="356.16" font-size="76px" transform="rotate(7, 292.90, 356.16)">a</text>
-            <text x="358.10" y="362.59" font-size="76px" transform="rotate(2.87, 358.10, 362.59)">G</text>
-            <text x="414.90" y="362.11" font-size="76px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
-            <text x="479.60" y="354.76" font-size="76px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
-            <text x="559.60" y="333.12" font-size="76px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
-            <text x="627.90" y="303.49" font-size="76px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
-            <text x="702.48" y="259.04" font-size="76px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
-            <text x="765.20" y="221.36" font-size="98.8px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
-            <text x="846.10" y="172.77" font-size="128.4px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
-            <text x="950.48" y="110.08" font-size="167px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
+            <text x="164.90" y="340.43" font-size="87.4px" transform="rotate(7, 164.90, 340.43)">e</text>
+            <text x="208.80" y="345.83" font-size="87.4px" transform="rotate(7, 208.80, 345.83)">l</text>
+            <text x="245.50" y="350.34" font-size="87.4px" transform="rotate(7, 245.50, 350.34)">t</text>
+            <text x="292.90" y="356.16" font-size="87.4px" transform="rotate(7, 292.90, 356.16)">a</text>
+            <text x="358.10" y="362.59" font-size="87.4px" transform="rotate(2.87, 358.10, 362.59)">G</text>
+            <text x="414.90" y="362.11" font-size="87.4px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
+            <text x="479.60" y="354.76" font-size="87.4px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
+            <text x="559.60" y="333.12" font-size="87.4px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
+            <text x="627.90" y="303.49" font-size="87.4px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
+            <text x="702.48" y="259.04" font-size="87.4px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
+            <text x="765.20" y="221.36" font-size="113.62px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
+            <text x="846.10" y="172.77" font-size="147.66px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
+            <text x="950.48" y="110.08" font-size="192.05px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
           </g>
         </svg>
       </div>
@@ -181,19 +185,26 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 1050 430" width="100%" height="auto" role="img" aria-label="Delta Gamma Vega logo">
               <defs>
                 <linearGradient id="payoffSpectrumHero" gradientUnits="userSpaceOnUse" x1="80" y1="330" x2="1030" y2="70">
-                  <stop offset="0%" stop-color="#FACC15"/>
-                  <stop offset="15%" stop-color="#F59E0B"/>
-                  <stop offset="34%" stop-color="#EA580C"/>
-                  <stop offset="50%" stop-color="#EAB308"/>
-                  <stop offset="66%" stop-color="#84CC16"/>
-                  <stop offset="84%" stop-color="#22C55E"/>
-                  <stop offset="100%" stop-color="#10B981"/>
+                  <stop offset="0%" stop-color="#3B82F6"/>
+                  <stop offset="50%" stop-color="#FFFFFF"/>
+                  <stop offset="100%" stop-color="#22C55E"/>
                 </linearGradient>
                 <filter id="subtleGlowHero" x="-15%" y="-15%" width="130%" height="130%">
                   <feGaussianBlur stdDeviation="2" result="blur"/>
                   <feMerge>
                     <feMergeNode in="blur"/>
                     <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+
+                <!-- REVERSIBLE HANDWRITTEN PERTURBATION: remove this filter and restore the filter reference below to undo. -->
+                <filter id="handwrittenPerturbationHero" x="-15%" y="-15%" width="130%" height="130%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.12" numOctaves="1" seed="12" result="strokeNoise"/>
+                  <feDisplacementMap in="SourceGraphic" in2="strokeNoise" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="roughLettering"/>
+                  <feGaussianBlur in="roughLettering" stdDeviation="2" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="roughLettering"/>
                   </feMerge>
                 </filter>
               </defs>
@@ -205,32 +216,32 @@
                   text-anchor: middle;
                   dominant-baseline: alphabetic;
                   fill: url(#payoffSpectrumHero);
-                  filter: url(#subtleGlowHero);
+                  filter: url(#handwrittenPerturbationHero);
                 }
               </style>
               <g class="wordmark-roboto-hero">
                 <g id="delta-hero">
                   <a class="logo-letter" href="cpurnsa.html" aria-label="Open Inflation markets">
-                    <text x="105.20" y="333.10" font-size="76.0px" transform="rotate(7.00, 105.20, 333.10)">D</text>
+                    <text x="105.20" y="333.10" font-size="87.4px" transform="rotate(7.00, 105.20, 333.10)">D</text>
                   </a>
-                  <text x="164.90" y="340.43" font-size="76.0px" transform="rotate(7.00, 164.90, 340.43)">e</text>
-                  <text x="208.80" y="345.83" font-size="76.0px" transform="rotate(7.00, 208.80, 345.83)">l</text>
-                  <text x="245.50" y="350.34" font-size="76.0px" transform="rotate(7.00, 245.50, 350.34)">t</text>
-                  <text x="292.90" y="356.16" font-size="76.0px" transform="rotate(7.00, 292.90, 356.16)">a</text>
+                  <text x="164.90" y="340.43" font-size="87.4px" transform="rotate(7.00, 164.90, 340.43)">e</text>
+                  <text x="208.80" y="345.83" font-size="87.4px" transform="rotate(7.00, 208.80, 345.83)">l</text>
+                  <text x="245.50" y="350.34" font-size="87.4px" transform="rotate(7.00, 245.50, 350.34)">t</text>
+                  <text x="292.90" y="356.16" font-size="87.4px" transform="rotate(7.00, 292.90, 356.16)">a</text>
                 </g>
                 <g id="gamma-hero">
-                  <text x="358.10" y="362.59" font-size="76.0px" transform="rotate(2.87, 358.10, 362.59)">G</text>
-                  <text x="414.90" y="362.11" font-size="76.0px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
-                  <text x="479.60" y="354.76" font-size="76.0px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
-                  <text x="559.60" y="333.12" font-size="76.0px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
-                  <text x="627.90" y="303.49" font-size="76.0px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
+                  <text x="358.10" y="362.59" font-size="87.4px" transform="rotate(2.87, 358.10, 362.59)">G</text>
+                  <text x="414.90" y="362.11" font-size="87.4px" transform="rotate(-3.37, 414.90, 362.11)">a</text>
+                  <text x="479.60" y="354.76" font-size="87.4px" transform="rotate(-10.46, 479.60, 354.76)">m</text>
+                  <text x="559.60" y="333.12" font-size="87.4px" transform="rotate(-19.10, 559.60, 333.12)">m</text>
+                  <text x="627.90" y="303.49" font-size="87.4px" transform="rotate(-26.29, 627.90, 303.49)">a</text>
                 </g>
                 <g id="vega-hero">
-                  <text x="702.48" y="259.04" font-size="76.0px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
-                  <text x="765.20" y="221.36" font-size="98.8px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
-                  <text x="846.10" y="172.77" font-size="128.4px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
+                  <text x="702.48" y="259.04" font-size="87.4px" transform="rotate(-30.83, 702.48, 259.04)">V</text>
+                  <text x="765.20" y="221.36" font-size="113.62px" transform="rotate(-30.83, 765.20, 221.36)">e</text>
+                  <text x="846.10" y="172.77" font-size="147.66px" transform="rotate(-30.83, 846.10, 172.77)">g</text>
                   <a href="https://www.deltagammavega.com/softs/logs.html" aria-label="Open softs logs">
-                    <text x="950.48" y="110.08" font-size="167.0px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
+                    <text x="950.48" y="110.08" font-size="192.05px" transform="rotate(-30.83, 950.48, 110.08)">a</text>
                   </a>
                 </g>
               </g>
