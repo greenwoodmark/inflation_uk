@@ -6,7 +6,10 @@ on:
       - main
     paths:
       - "site/shared/softs/logs.html"
+      - "site/shared/logs.html"
+      - "site/shared/bars/logs.html"
       - "data/softs_diagnostics.json"
+      - "data/bars_etf_logs.json"
       - "tools/build_site.py"
       - "tools/validate_public_build.py"
       - "tools/validate_softs_diagnostics.py"
@@ -14,7 +17,10 @@ on:
   pull_request:
     paths:
       - "site/shared/softs/logs.html"
+      - "site/shared/logs.html"
+      - "site/shared/bars/logs.html"
       - "data/softs_diagnostics.json"
+      - "data/bars_etf_logs.json"
       - "tools/build_site.py"
       - "tools/validate_public_build.py"
       - "tools/validate_softs_diagnostics.py"

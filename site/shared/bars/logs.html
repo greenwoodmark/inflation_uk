@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ETF 1-minute bars | Delta Gamma Vega</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    body { margin: 0; }
+    main { max-width: 1100px; margin: 0 auto; padding: 28px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    h1 { margin: 0 0 8px; }
+    h2 { margin: 0 0 14px; font-size: 1.15rem; }
+    .muted, .meta { color: #475569; }
+    .meta { font-size: .92rem; }
+    .summary { display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr)); gap: 12px; margin-top: 18px; }
+    .metric { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+    .metric strong { display: block; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+    .metric span { color: #64748b; font-size: .85rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 11px 10px; text-align: right; white-space: nowrap; }
+    th { color: #475569; font-size: .9rem; font-weight: 650; background: #f8fafc; }
+    th:first-child, td:first-child { text-align: left; }
+    td:first-child { font-weight: 700; color: #075985; }
+    .error { color: #b91c1c; }
+    a { color: #075985; }
+    @media (max-width: 650px) { .summary { grid-template-columns: 1fr; } main { padding: 18px 10px 30px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <h1>ETF 1-minute bars</h1>
+    <p class="muted">Coverage summary for every ETF currently present in the systematicpositiveskew data lake. Timestamps are UTC and counts are persisted 1-minute bar rows.</p>
+    <div id="summary" class="summary" aria-live="polite"></div>
+    <p id="meta" class="meta"></p>
+    <p id="error" class="error" role="alert"></p>
+  </section>
+
+  <section class="card">
+    <h2>Coverage by ETF</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">ETF</th><th scope="col">First 1-minute bar (UTC)</th><th scope="col">Last 1-minute bar (UTC)</th><th scope="col">Number of bars</th></tr>
+        </thead>
+        <tbody id="rows"><tr><td colspan="4">Loading coverage…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p><a href="../logs.html">← All logs</a></p>
+</main>
+<script>
+  const byId = id => document.getElementById(id);
+  const formatNumber = value => Number(value).toLocaleString('en-GB');
+  const formatTimestamp = value => value.replace('T', ' ').replace('Z', ' UTC');
+  function metric(label, value) {
+    const node = document.createElement('div'); node.className = 'metric';
+    node.innerHTML = `<strong>${value}</strong><span>${label}</span>`; return node;
+  }
+  function render(data) {
+    const rows = [...data.etfs].sort((a, b) => a.symbol.localeCompare(b.symbol));
+    const totalBars = rows.reduce((total, row) => total + row.bar_count, 0);
+    byId('summary').replaceChildren(metric('ETFs covered', formatNumber(data.etf_count)), metric('Total 1-minute bars', formatNumber(totalBars)), metric('Bar size', data.bar_size));
+    byId('meta').textContent = `Snapshot generated ${formatTimestamp(data.generated_at_utc)} from ${data.source}.`;
+    byId('rows').replaceChildren(...rows.map(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.symbol}</td><td>${formatTimestamp(row.first_bar_utc)}</td><td>${formatTimestamp(row.last_bar_utc)}</td><td>${formatNumber(row.bar_count)}</td>`;
+      return tr;
+    }));
+  }
+  fetch('../data/bars_etf_logs.json', { cache: 'no-store' })
+    .then(response => { if (!response.ok) throw new Error(`Coverage request failed: ${response.status}`); return response.json(); })
+    .then(render)
+    .catch(error => { byId('rows').replaceChildren(); byId('error').textContent = error.message; });
+</script>
+</body>
+</html>

@@ -14,15 +14,27 @@ PUBLIC_FILES = (
     "cpi_bayesian_update_example.html",
     "404.html",
     "CNAME",
-    "softs/logs.html",
 )
 PUBLIC_DATA_FILES = (
     "cpurnsa_curve_history.json",
     "cpurnsa_daily_commentary.json",
     "cpurnsa_pca_diagnostics.json",
     "health.json",
-    "softs_diagnostics.json",
 )
+INTERNAL_FILES = (
+    "logs.html",
+    "bars/logs.html",
+    "softs/logs.html",
+    "model/logs.html",
+)
+INTERNAL_DATA_FILES = (
+    "softs_diagnostics.json",
+    "bars_etf_logs.json",
+    "equity_vol_logs.json",
+)
+
+PUBLIC_LOG_TEXT = '<text x="950.48" y="110.08" font-size="192.05px" transform="rotate(-30.83, 950.48, 110.08)">a</text>'
+INTERNAL_LOG_LINK = f'<a href="logs.html" aria-label="Open logs">{PUBLIC_LOG_TEXT}</a>'
 
 
 def _copy(source: Path, destination: Path) -> None:
@@ -48,6 +60,19 @@ def build_variant(root: Path, output: Path, *, include_internal: bool) -> None:
         _copy(shared / relative, output / relative)
     for filename in PUBLIC_DATA_FILES:
         _copy(data / filename, output / "data" / filename)
+
+    if include_internal:
+        # Keep the logs link on the internal landing page only. The shared
+        # source is deliberately link-free so a direct public copy is safe.
+        internal_index = output / "index.html"
+        index_text = internal_index.read_text(encoding="utf-8")
+        if PUBLIC_LOG_TEXT not in index_text:
+            raise ValueError("Shared landing page is missing its final letter")
+        internal_index.write_text(index_text.replace(PUBLIC_LOG_TEXT, INTERNAL_LOG_LINK), encoding="utf-8")
+        for relative in INTERNAL_FILES:
+            _copy(shared / relative, output / relative)
+        for filename in INTERNAL_DATA_FILES:
+            _copy(data / filename, output / "data" / filename)
 
     if include_internal:
         # Keep the shared CPURNSA page available to the internal overlay without

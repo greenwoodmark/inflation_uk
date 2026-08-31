@@ -20,14 +20,16 @@ This is the ordinary project documentation for `www.deltagammavega.com`. The web
 - `/pca.html`: PCA diagnostics; fetches `/data/cpurnsa_pca_diagnostics.json`.
 - `/chart.html`: additional static page.
 - `/cpi_bayesian_update_example.html`: public Bayesian CPI update example.
-- `/data/*`: published data files are directly public unless excluded from the generated public build.
-- `/data/*`: published data files are directly public unless excluded from the generated public build. The current public build allowlist includes only the five approved JSON data files used by the pages.
+- `/data/*`: published data files are directly public unless excluded from the generated public build. The public build allowlist contains only the approved JSON data files used by the public pages.
+- The logs hub and its two subpages are internal-only: `/logs.html`, `/bars/logs.html`, and `/softs/logs.html`. Their backing payloads (`softs_diagnostics.json` and `bars_etf_logs.json`) are also copied only to `build/internal`.
 
 There is no authentication, token gate, Cloudflare configuration, Firebase rewrite, redirect, or custom-header rule in the repository. Hiding a link does not protect a route.
 
 ## Two-build workflow
 
 The repository keeps common page source in `/home/mark/inflation_uk/site/shared`. The source pages retain their deployed layout when assembled, so existing relative links and data URLs continue to work.
+
+The logs hub and its two category pages are copied only into `build/internal`, together with their JSON payloads. The public build removes the landing-page logs anchor as well as those HTML and JSON resources, so Firebase Hosting does not expose this section.
 
 ### Routine build steps
 

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ETF fits | Delta Gamma Vega</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    body { margin: 0; }
+    main { max-width: 1280px; margin: 0 auto; padding: 26px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { margin-bottom: 6px; }
+    h2 { font-size: 1.1rem; margin-bottom: 12px; }
+    .muted, .meta { color: #475569; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; }
+    .error { color: #b91c1c; }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; }
+    label { display: grid; gap: 4px; color: #475569; font-size: .9rem; }
+    select { min-width: 150px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 7px 9px; background: white; color: #0f172a; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }
+    .summary { border: 1px solid #e2e8f0; border-left: 5px solid #94a3b8; border-radius: 8px; padding: 12px; }
+    .summary.fit-written { border-left-color: #16a34a; }
+    .summary.input-ready, .summary.fit-already-present { border-left-color: #2563eb; }
+    .summary.fit-error, .summary.input-error { border-left-color: #dc2626; }
+    .summary h3 { margin-bottom: 8px; }
+    .summary dl, .details dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; margin: 0; font-size: .9rem; }
+    dt { color: #64748b; } dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: right; white-space: nowrap; }
+    th { color: #475569; font-weight: 650; background: #f8fafc; }
+    th:first-child, td:first-child { text-align: left; }
+    .pill { display: inline-block; border-radius: 999px; padding: 2px 8px; background: #e2e8f0; }
+    .pill.fit-written { color: #166534; background: #dcfce7; }
+    .pill.input-ready, .pill.fit-already-present { color: #1d4ed8; background: #dbeafe; }
+    .pill.fit-error, .pill.input-error { color: #991b1b; background: #fee2e2; }
+    .details { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 12px; }
+    .detail { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+    a { color: #075985; }
+    @media (max-width: 650px) { .cards, .details { grid-template-columns: 1fr; } main { padding: 18px 10px 30px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <h1>ETF fits</h1>
+    <p class="muted">Operational state of the one-month GH3 fit pipeline for TIP and TLT. “Input ready” means the canonical volatility smile was written; it is not itself a completed GH3 fit.</p>
+    <p><a href="../logs.html">← All logs</a></p>
+    <div id="notice" class="notice" hidden></div>
+    <p id="error" class="error" role="alert"></p>
+  </section>
+  <section class="card">
+    <div class="controls">
+      <label>Symbol <select id="symbol"><option value="ALL">TIP and TLT</option><option value="TIP">TIP</option><option value="TLT">TLT</option></select></label>
+      <label>Status <select id="status"><option value="ALL">All states</option><option value="fit written">Fit written</option><option value="fit error">Fit error</option><option value="input ready">Input ready</option><option value="fit already present">Fit already present</option></select></label>
+    </div>
+    <p id="meta" class="meta"></p>
+  </section>
+  <section class="card"><h2>Latest state</h2><div id="summary" class="cards"></div></section>
+  <section class="card"><h2>Fit pipeline history</h2><div class="table-wrap"><table><thead><tr><th>Date</th><th>Symbol</th><th>State</th><th>Event</th><th>Rows</th><th>MAD error</th><th>Timestamp UTC</th></tr></thead><tbody id="rows"><tr><td colspan="7">Loading fit state…</td></tr></tbody></table></div></section>
+  <section class="card"><h2>Selected state details</h2><div id="details" class="details"></div></section>
+</main>
+<script>
+  let payload = null;
+  const byId = id => document.getElementById(id);
+  const text = value => value === null || value === undefined || value === '' ? '—' : String(value);
+  const number = value => Number.isFinite(Number(value)) ? Number(value).toFixed(6) : '—';
+  const selectedRows = () => (payload.rows || []).filter(row => (byId('symbol').value === 'ALL' || row.symbol === byId('symbol').value) && (byId('status').value === 'ALL' || row.status === byId('status').value));
+  function renderSummary() {
+    const root = byId('summary'); root.replaceChildren();
+    for (const symbol of payload.symbols) {
+      const rows = (payload.rows || []).filter(row => row.symbol === symbol).sort((a, b) => b.date.localeCompare(a.date));
+      const row = rows[0]; const card = document.createElement('article'); card.className = `summary ${row ? row.status.replaceAll(' ', '-') : ''}`;
+      const h = document.createElement('h3'); h.textContent = symbol; card.appendChild(h);
+      const dl = document.createElement('dl'); [['Latest date', row && row.date], ['State', row && row.status], ['Event', row && row.event], ['MAD error', row && number(row.mad_err)], ['Quote rows', row && row.rows]].forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = text(value); dl.append(dt, dd); }); card.appendChild(dl); root.appendChild(card);
+    }
+  }
+  function renderRows() {
+    const root = byId('rows'); root.replaceChildren(); const rows = selectedRows();
+    rows.forEach(row => { const tr = document.createElement('tr'); const values = [row.date, row.symbol, row.status, row.event, row.rows, number(row.mad_err), row.timestamp_utc]; values.forEach((value, index) => { const td = document.createElement('td'); if (index === 2) { const pill = document.createElement('span'); pill.className = `pill ${row.status.replaceAll(' ', '-')}`; pill.textContent = text(value); td.appendChild(pill); } else td.textContent = text(value); tr.appendChild(td); }); tr.addEventListener('click', () => renderDetails(row)); root.appendChild(tr); });
+    if (!rows.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 7; td.textContent = 'No fit state matches this selection.'; tr.appendChild(td); root.appendChild(tr); }
+    renderDetails(rows[0]);
+  }
+  function renderDetails(row) {
+    const root = byId('details'); root.replaceChildren(); if (!row) { root.textContent = 'No selected fit state.'; return; }
+    const values = [['Symbol / date', `${row.symbol} / ${row.date}`], ['Status', row.status], ['Event', row.event], ['Stage', row.stage], ['MAD error', number(row.mad_err)], ['Rows', row.rows], ['Strike references', row.strike_references && row.strike_references.join(', ')], ['URI', row.uri], ['Error', row.error]];
+    const card = document.createElement('article'); card.className = 'detail'; const dl = document.createElement('dl'); values.forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = text(value); dl.append(dt, dd); }); card.appendChild(dl); root.appendChild(card);
+  }
+  function render() { byId('meta').textContent = `Snapshot generated ${text(payload.generated_at_utc)} | Source: ${text(payload.source)} | Dates are event dates.`; renderSummary(); renderRows(); }
+  byId('symbol').addEventListener('change', render); byId('status').addEventListener('change', render);
+  fetch('../data/equity_vol_logs.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`Fit snapshot request failed: ${response.status}`); return response.json(); }).then(data => { payload = data; if (!data.rows.length) byId('notice').hidden = false, byId('notice').textContent = 'No TIP/TLT fit events have been published yet.'; render(); }).catch(error => { byId('error').textContent = error.message; });
+</script>
+</body>
+</html>

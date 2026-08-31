@@ -77,8 +77,6 @@ def _normalise_snapshot(path: Path) -> dict[str, Any]:
         ],
         "node_status": statuses,
         "knot_label": labels,
-        "prior_driver_levels": snapshot.get("prior_driver_levels"),
-        "posterior_driver_levels": snapshot.get("posterior_driver_levels"),
         "standardized_observation_count": int(snapshot.get("standardized_observation_count", 0)),
         "missing_conditional_count": int(snapshot.get("missing_conditional_count", 0)),
         "observed_terms": [int(value) for value in snapshot.get("observed_terms", [])],

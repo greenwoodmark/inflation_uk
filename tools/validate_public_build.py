@@ -13,12 +13,10 @@ ALLOWED_FILES = {
     "cpi_bayesian_update_example.html",
     "404.html",
     "CNAME",
-    "softs/logs.html",
     "data/cpurnsa_curve_history.json",
     "data/cpurnsa_daily_commentary.json",
     "data/cpurnsa_pca_diagnostics.json",
     "data/health.json",
-    "data/softs_diagnostics.json",
 }
 REQUIRED_FILES = ALLOWED_FILES - {"CNAME"}
 FORBIDDEN_NAME_PARTS = ("private", "internal", "secret", ".env", "__pycache__")

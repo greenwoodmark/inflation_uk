@@ -21,7 +21,11 @@ echo "Files prepared for Firebase production deployment:"
 find build/public -type f -printf '%P\n' | sort
 echo
 echo "This will deploy build/public to the live Firebase Hosting site."
-read -r -p "Type DEPLOY to continue: " confirmation
+if [[ "${DGV_DEPLOY_CONFIRMATION:-}" == "DEPLOY" ]]; then
+  confirmation="DEPLOY"
+else
+  read -r -p "Type DEPLOY to continue: " confirmation
+fi
 if [[ "$confirmation" != "DEPLOY" ]]; then
   echo "Deployment cancelled."
   exit 0
