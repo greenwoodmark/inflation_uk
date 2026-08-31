@@ -27,7 +27,14 @@ def build_short_records(replay_dir):
     from models.USCPI_fixings.dtcc_adapter import AdapterConfig
 
     cpi = load_headline_cpi()
-    dates = sorted(path.stem for path in (replay_dir / 'snapshots').glob('*.json') if path.stem >= POST_BROKER_START)
+    short_snapshot_dir = Path(__file__).resolve().parents[1] / 'data' / 'cpurnsa_snapshots'
+    short_snapshots = {}
+    for path in sorted(short_snapshot_dir.glob('*.csv')):
+        with path.open(newline='') as handle:
+            rows = list(csv.DictReader(handle))
+        if rows:
+            short_snapshots[path.stem] = rows
+    dates = sorted(date for date in short_snapshots if date >= POST_BROKER_START and (replay_dir / 'snapshots' / f'{date}.json').is_file())
     records = []
     config = AdapterConfig(economic_conventions_approved=True, quote_semantics='annualized_zero_coupon', fixed_rate_semantics='annualized_zero_coupon')
     cache = {}
@@ -44,10 +51,10 @@ def build_short_records(replay_dir):
         cache[date] = (target_months, grouped)
     for index, date in enumerate(dates[:-1]):
         next_date = dates[index + 1]
-        snapshot = json.loads((replay_dir / 'snapshots' / f'{date}.json').read_text())
-        next_snapshot = json.loads((replay_dir / 'snapshots' / f'{next_date}.json').read_text())
-        rates = {int(m) // 1: number(r) for m, r in zip(snapshot['term_months'], snapshot['inflation_rate_percent']) if 1 <= int(m) <= 12}
-        next_rates = {int(m) // 1: number(r) for m, r in zip(next_snapshot['term_months'], next_snapshot['inflation_rate_percent']) if 1 <= int(m) <= 12}
+        snapshot = short_snapshots[date]
+        next_snapshot = short_snapshots[next_date]
+        rates = {index + 1: (number(row.get('implied_zc_rate')) * 100.0 if number(row.get('implied_zc_rate')) is not None else None) for index, row in enumerate(snapshot)}
+        next_rates = {index + 1: (number(row.get('implied_zc_rate')) * 100.0 if number(row.get('implied_zc_rate')) is not None else None) for index, row in enumerate(next_snapshot)}
         targets, grouped = cache[date]
         _, next_grouped = cache[next_date]
         rows = []
@@ -59,7 +66,7 @@ def build_short_records(replay_dir):
             next_target = cache[next_date][0][month_index - 1]
             t1_rates = cache[next_date][1][next_target.strftime('%Y-%m')]
             rows.append({'node': f'{month_index}M', 'node_index': month_index, 'shadow_t_percent': rates.get(month_index), 'shadow_t_plus_1_percent': next_rates.get(month_index), 'trade_count': len(t_rates), 'mean_dtcc_zc_rate_t_percent': sum(t_rates) / len(t_rates) if t_rates else None, 'mean_dtcc_zc_rate_t_plus_1_percent': sum(t1_rates) / len(t1_rates) if t1_rates else None, 'zc_t_percent': rates.get(month_index), 'zc_t_plus_1_percent': next_rates.get(month_index)})
-        records.append({'date': date, 'next_date': next_date, 'status_t': snapshot.get('status'), 'status_t_plus_1': next_snapshot.get('status'), 'nodes': rows})
+        records.append({'date': date, 'next_date': next_date, 'status_t': snapshot[0].get('fit_status'), 'status_t_plus_1': next_snapshot[0].get('fit_status'), 'nodes': rows})
     return records
 
 

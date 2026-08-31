@@ -65,7 +65,7 @@
   let payload = null;
   const byId = id => document.getElementById(id);
   const text = value => value === null || value === undefined || value === '' ? '—' : String(value);
-  const number = value => Number.isFinite(Number(value)) ? Number(value).toFixed(6) : '—';
+  const number = value => value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) ? '—' : Number(value).toFixed(6);
   const selectedRows = () => (payload.rows || []).filter(row => (byId('symbol').value === 'ALL' || row.symbol === byId('symbol').value) && (byId('status').value === 'ALL' || row.status === byId('status').value));
   function renderSummary() {
     const root = byId('summary'); root.replaceChildren();

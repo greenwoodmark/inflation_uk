@@ -9,11 +9,76 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    import pyarrow.dataset as ds
+except ImportError:  # pragma: no cover - the website build environment may be log-only
+    ds = None
+
 SYMBOLS = ("TIP", "TLT")
 DEFAULT_LOG_DIR = Path(os.environ.get("EQUITY_VOL_LOG_DIR", "/home/mark/trading_env/data"))
 WEBSITE_ROOT = Path(os.environ.get("ETF_WEBSITE_ROOT", "/home/mark/inflation_uk"))
 OUTPUT_PATH = WEBSITE_ROOT / "data" / "equity_vol_logs.json"
+OPTIONS_BASE = "gs://systematicpositiveskew/options_data"
 EVENT_RE = re.compile(r"^(?P<timestamp>\S+) \[EQUITY_VOL\] (?P<body>\{.*\})$")
+
+# Monthly fit files contain one persisted row per valuation date. Cache them by
+# URI because the event log can contain many historical skipped events.
+_PERSISTED_FITS: dict[str, dict[str, dict]] = {}
+_PYARROW_WARNING_SHOWN = False
+
+
+def _fit_uri(symbol: str, date: str) -> str:
+    persisted_symbol = {"TIP": "TIP_UP", "TLT": "TLT_UP"}[symbol]
+    month = str(int(date[5:7]))
+    return (
+        f"{OPTIONS_BASE}/symbol={persisted_symbol}/opt_expiry=1m/"
+        f"year={date[:4]}/month={month}/data.parquet"
+    )
+
+
+def _persisted_fit(event: dict, symbol: str) -> dict:
+    """Return persisted diagnostics for a skipped event, if available."""
+    global _PYARROW_WARNING_SHOWN
+    if ds is None:
+        if not _PYARROW_WARNING_SHOWN:
+            print("[INFO] PyArrow unavailable; skipped fit enrichment disabled")
+            _PYARROW_WARNING_SHOWN = True
+        return {}
+
+    date = str(event.get("date", ""))
+    if not date:
+        return {}
+    uri = str(event.get("uri") or _fit_uri(symbol, date))
+    if uri not in _PERSISTED_FITS:
+        try:
+            table = ds.dataset(uri, format="parquet").to_table(
+                columns=["date", "mad_err", "OTM_puts", "OTM_calls"]
+            )
+            columns = table.to_pydict()
+            _PERSISTED_FITS[uri] = {
+                str(row_date): {
+                    "mad_err": mad_err,
+                    "OTM_puts": otm_puts,
+                    "OTM_calls": otm_calls,
+                }
+                for row_date, mad_err, otm_puts, otm_calls in zip(
+                    columns["date"],
+                    columns["mad_err"],
+                    columns["OTM_puts"],
+                    columns["OTM_calls"],
+                    strict=True,
+                )
+            }
+        except Exception as exc:
+            print(f"[INFO] Could not enrich skipped fit from {uri}: {exc}")
+            _PERSISTED_FITS[uri] = {}
+    fit = _PERSISTED_FITS[uri].get(date, {})
+    if not fit:
+        return {}
+    return {
+        "rows": int(fit["OTM_puts"] + fit["OTM_calls"]),
+        "mad_err": fit["mad_err"],
+    }
 
 
 def _read_events(symbol: str) -> list[dict]:
@@ -56,7 +121,7 @@ def generate_report() -> dict:
                 continue
             current = by_date.get(date)
             if current is None or event["timestamp_utc"] >= current["timestamp_utc"]:
-                by_date[date] = {
+                report_row = {
                     "symbol": symbol,
                     "date": date,
                     "status": _status(str(event.get("event", "unknown"))),
@@ -69,6 +134,16 @@ def generate_report() -> dict:
                     "uri": event.get("uri"),
                     "strike_references": event.get("strike_references"),
                 }
+                if (
+                    report_row["event"] == "GH3_SKIPPED"
+                    and (report_row["rows"] is None or report_row["mad_err"] is None)
+                ):
+                    persisted = _persisted_fit(event, symbol)
+                    if report_row["rows"] is None:
+                        report_row["rows"] = persisted.get("rows")
+                    if report_row["mad_err"] is None:
+                        report_row["mad_err"] = persisted.get("mad_err")
+                by_date[date] = report_row
         rows.extend(by_date.values())
     rows.sort(key=lambda row: (row["date"], row["symbol"]), reverse=True)
     return {
