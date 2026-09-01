@@ -5,7 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 import sys
 
-DEFAULT_REPLAY = Path('/home/mark/trading_env/artifacts/uscpi_long_shadow_history_v4')
+DEFAULT_REPLAY = Path('/home/mark/trading_env/artifacts/uscpi_long_shadow_history_v4_median_maturity_2026')
+DEFAULT_SHORT_REPLAY = Path('/home/mark/trading_env/artifacts/uscpi_six_driver/shadow/replay_june12_aug28_median_maturity_2026')
+LIVE_SHORT_SNAPSHOT_DIR = Path('/home/mark/inflation_uk/data/cpurnsa_snapshots')
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / 'site/internal/data/uscpi_shadow_replay_history.json'
 POST_BROKER_START = '2026-06-12'
 
@@ -19,15 +21,17 @@ def number(value):
 def build_short_records(replay_dir):
     """Build 1M–12M records from the short six-driver DTCC adapter."""
     sys.path.insert(0, '/home/mark/trading_env')
+    import pandas as pd
     from models.USCPI_fixings.run_eod import (
         _base_vintage, read_sdr_object, sdr_object_uri, target_months_for_date,
     )
     from models.USCPI_fixings.cpi_history import attach_initial_reference_cpi, load_headline_cpi
     from models.USCPI_fixings.driver_space_adapter import adapt_dtcc_rows_to_driver_observations
     from models.USCPI_fixings.dtcc_adapter import AdapterConfig
+    from models.USCPI_fixings.conventions import reference_cpi_weights
 
     cpi = load_headline_cpi()
-    short_snapshot_dir = Path(__file__).resolve().parents[1] / 'data' / 'cpurnsa_snapshots'
+    short_snapshot_dir = DEFAULT_SHORT_REPLAY / 'sanitized_curves'
     short_snapshots = {}
     for path in sorted(short_snapshot_dir.glob('*.csv')):
         with path.open(newline='') as handle:
@@ -41,13 +45,24 @@ def build_short_records(replay_dir):
     for date in dates:
         target_months = target_months_for_date(date, cpi)
         base_month, base_cpi, _, _ = _base_vintage(date, cpi, target_months)
-        raw = attach_initial_reference_cpi(read_sdr_object(sdr_object_uri('gs://systematicpositiveskew/inflation_data/sdr', date)), cpi)
-        result = adapt_dtcc_rows_to_driver_observations(raw, target_date=date, target_months=target_months, base_month=base_month, base_cpi=base_cpi, config=config, eod_cutoff_utc=f'{date}T23:59:59.999999999Z')
+        observation_path = DEFAULT_SHORT_REPLAY / 'observations' / f'{date}.csv'
+        if not observation_path.is_file():
+            raise FileNotFoundError(f'median replay observations missing: {observation_path}')
         grouped = {month.strftime('%Y-%m'): [] for month in target_months}
-        for row in result.observations.itertuples(index=False):
-            maturity = str(row.maturity_date)[:7]
-            if maturity in grouped:
-                grouped[maturity].append(float(row.fixed_rate_decimal) * 100.0)
+        target_set = set(grouped)
+        with observation_path.open(newline='') as handle:
+            replay_observations = csv.DictReader(handle)
+            for row in replay_observations:
+                maturity = row.get('maturity_date')
+                rate = number(row.get('fixed_rate_decimal'))
+                if not maturity or rate is None:
+                    continue
+                earlier, later, weight = reference_cpi_weights(pd.Timestamp(maturity))
+                endpoints = {earlier, later} if weight > 0.0 and later != earlier else {earlier}
+                for endpoint in endpoints:
+                    key = endpoint.strftime('%Y-%m')
+                    if key in target_set:
+                        grouped[key].append(rate * 100.0)
         cache[date] = (target_months, grouped)
     for index, date in enumerate(dates[:-1]):
         next_date = dates[index + 1]
@@ -68,6 +83,46 @@ def build_short_records(replay_dir):
             rows.append({'node': f'{month_index}M', 'node_index': month_index, 'shadow_t_percent': rates.get(month_index), 'shadow_t_plus_1_percent': next_rates.get(month_index), 'trade_count': len(t_rates), 'mean_dtcc_zc_rate_t_percent': sum(t_rates) / len(t_rates) if t_rates else None, 'mean_dtcc_zc_rate_t_plus_1_percent': sum(t1_rates) / len(t1_rates) if t1_rates else None, 'zc_t_percent': rates.get(month_index), 'zc_t_plus_1_percent': next_rates.get(month_index)})
         records.append({'date': date, 'next_date': next_date, 'status_t': snapshot[0].get('fit_status'), 'status_t_plus_1': next_snapshot[0].get('fit_status'), 'nodes': rows})
     return records
+
+
+def build_live_short_pair(snapshot_dir=LIVE_SHORT_SNAPSHOT_DIR):
+    """Add the latest live shadow pair after the bounded historical replay."""
+    paths = sorted(snapshot_dir.glob('*.csv'))
+    if len(paths) < 2:
+        return None
+    selected = paths[-2:]
+    frames = []
+    for path in selected:
+        with path.open(newline='') as handle:
+            rows = list(csv.DictReader(handle))
+        if len(rows) != 12:
+            return None
+        frames.append((path.stem, rows))
+    (date, snapshot), (next_date, next_snapshot) = frames
+    rows = []
+    for index, (current, following) in enumerate(zip(snapshot, next_snapshot), start=1):
+        current_rate = number(current.get('implied_zc_rate'))
+        following_rate = number(following.get('implied_zc_rate'))
+        current_count = int(float(current.get('node_trade_count') or 0))
+        following_count = int(float(following.get('node_trade_count') or 0))
+        rows.append({
+            'node': f'{index}M',
+            'node_index': index,
+            'shadow_t_percent': current_rate * 100.0 if current_rate is not None else None,
+            'shadow_t_plus_1_percent': following_rate * 100.0 if following_rate is not None else None,
+            'trade_count': current_count,
+            'mean_dtcc_zc_rate_t_percent': None,
+            'mean_dtcc_zc_rate_t_plus_1_percent': None,
+            'zc_t_percent': current_rate * 100.0 if current_rate is not None else None,
+            'zc_t_plus_1_percent': following_rate * 100.0 if following_rate is not None else None,
+        })
+    return {
+        'date': date,
+        'next_date': next_date,
+        'status_t': snapshot[0].get('fit_status'),
+        'status_t_plus_1': next_snapshot[0].get('fit_status'),
+        'nodes': rows,
+    }
 
 
 def build(replay_dir=DEFAULT_REPLAY, output=DEFAULT_OUTPUT):
@@ -128,6 +183,9 @@ def build(replay_dir=DEFAULT_REPLAY, output=DEFAULT_OUTPUT):
         records.append({'date': date, 'next_date': next_date, 'status_t': snapshots[date]['status'], 'status_t_plus_1': snapshots[next_date]['status'], 'nodes': rows})
     long_records = records
     short_records = build_short_records(replay_dir)
+    live_short_pair = build_live_short_pair()
+    if live_short_pair is not None and live_short_pair['date'] not in {record['date'] for record in short_records}:
+        short_records.append(live_short_pair)
     payload = {
         'schema_version': 'uscpi_shadow_replay_logs_v2',
         'generated_at_utc': datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

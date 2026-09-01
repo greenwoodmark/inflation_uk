@@ -21,8 +21,9 @@ OUTPUT_PATH = WEBSITE_ROOT / "data" / "equity_vol_logs.json"
 OPTIONS_BASE = "gs://systematicpositiveskew/options_data"
 EVENT_RE = re.compile(r"^(?P<timestamp>\S+) \[EQUITY_VOL\] (?P<body>\{.*\})$")
 
-# Monthly fit files contain one persisted row per valuation date. Cache them by
-# URI because the event log can contain many historical skipped events.
+# Monthly fit files contain one persisted row per valuation date. Cache the
+# symbol-level datasets because the event log can contain many historical
+# skipped events, and persisted rows also provide the authoritative date list.
 _PERSISTED_FITS: dict[str, dict[str, dict]] = {}
 _PYARROW_WARNING_SHOWN = False
 
@@ -36,49 +37,66 @@ def _fit_uri(symbol: str, date: str) -> str:
     )
 
 
-def _persisted_fit(event: dict, symbol: str) -> dict:
-    """Return persisted diagnostics for a skipped event, if available."""
+def _load_persisted_fits(symbol: str) -> dict[str, dict]:
+    """Load all persisted fit rows for a symbol, keyed by valuation date."""
     global _PYARROW_WARNING_SHOWN
+    if symbol in _PERSISTED_FITS:
+        return _PERSISTED_FITS[symbol]
     if ds is None:
         if not _PYARROW_WARNING_SHOWN:
-            print("[INFO] PyArrow unavailable; skipped fit enrichment disabled")
+            print("[INFO] PyArrow unavailable; persisted fit merge disabled")
             _PYARROW_WARNING_SHOWN = True
-        return {}
+        _PERSISTED_FITS[symbol] = {}
+        return _PERSISTED_FITS[symbol]
 
+    persisted_symbol = {"TIP": "TIP_UP", "TLT": "TLT_UP"}[symbol]
+    root = f"{OPTIONS_BASE}/symbol={persisted_symbol}/opt_expiry=1m"
+    try:
+        table = ds.dataset(root, format="parquet").to_table(
+            columns=["date", "mad_err", "OTM_puts", "OTM_calls", "fit_datetime"]
+        )
+        columns = table.to_pydict()
+        _PERSISTED_FITS[symbol] = {
+            str(date): {
+                "mad_err": mad_err,
+                "OTM_puts": otm_puts,
+                "OTM_calls": otm_calls,
+                "fit_datetime": fit_datetime,
+            }
+            for date, mad_err, otm_puts, otm_calls, fit_datetime in zip(
+                columns["date"],
+                columns["mad_err"],
+                columns["OTM_puts"],
+                columns["OTM_calls"],
+                columns["fit_datetime"],
+                strict=True,
+            )
+        }
+    except Exception as exc:
+        print(f"[INFO] Could not load persisted {symbol} fits from {root}: {exc}")
+        _PERSISTED_FITS[symbol] = {}
+    return _PERSISTED_FITS[symbol]
+
+
+def _persisted_fit(event: dict, symbol: str) -> dict:
+    """Return persisted diagnostics for a skipped event, if available."""
     date = str(event.get("date", ""))
     if not date:
         return {}
-    uri = str(event.get("uri") or _fit_uri(symbol, date))
-    if uri not in _PERSISTED_FITS:
-        try:
-            table = ds.dataset(uri, format="parquet").to_table(
-                columns=["date", "mad_err", "OTM_puts", "OTM_calls"]
-            )
-            columns = table.to_pydict()
-            _PERSISTED_FITS[uri] = {
-                str(row_date): {
-                    "mad_err": mad_err,
-                    "OTM_puts": otm_puts,
-                    "OTM_calls": otm_calls,
-                }
-                for row_date, mad_err, otm_puts, otm_calls in zip(
-                    columns["date"],
-                    columns["mad_err"],
-                    columns["OTM_puts"],
-                    columns["OTM_calls"],
-                    strict=True,
-                )
-            }
-        except Exception as exc:
-            print(f"[INFO] Could not enrich skipped fit from {uri}: {exc}")
-            _PERSISTED_FITS[uri] = {}
-    fit = _PERSISTED_FITS[uri].get(date, {})
+    fit = _load_persisted_fits(symbol).get(date, {})
     if not fit:
         return {}
     return {
         "rows": int(fit["OTM_puts"] + fit["OTM_calls"]),
         "mad_err": fit["mad_err"],
     }
+
+
+def _persisted_timestamp(fit: dict, date: str) -> str:
+    timestamp = str(fit.get("fit_datetime") or f"{date}T00:00:00+00:00")
+    if timestamp.endswith("Z") or "+" in timestamp[10:]:
+        return timestamp
+    return timestamp.replace(" ", "T") + "+00:00"
 
 
 def _read_events(symbol: str) -> list[dict]:
@@ -144,6 +162,26 @@ def generate_report() -> dict:
                     if report_row["mad_err"] is None:
                         report_row["mad_err"] = persisted.get("mad_err")
                 by_date[date] = report_row
+
+        # The cloud fitter writes durable rows to GCS, while its structured
+        # stdout events are not copied into this Linux log directory. Add any
+        # persisted dates that are therefore absent from the local event log.
+        for date, fit in _load_persisted_fits(symbol).items():
+            if date in by_date:
+                continue
+            by_date[date] = {
+                "symbol": symbol,
+                "date": date,
+                "status": "fit written",
+                "event": "GH3_WRITTEN",
+                "timestamp_utc": _persisted_timestamp(fit, date),
+                "rows": int(fit["OTM_puts"] + fit["OTM_calls"]),
+                "mad_err": fit["mad_err"],
+                "error": None,
+                "stage": None,
+                "uri": _fit_uri(symbol, date),
+                "strike_references": None,
+            }
         rows.extend(by_date.values())
     rows.sort(key=lambda row: (row["date"], row["symbol"]), reverse=True)
     return {
