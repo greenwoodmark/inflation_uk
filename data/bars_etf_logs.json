@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-09-01T09:20:03.101776Z",
+  "generated_at_utc": "2026-09-02T08:05:23.212966Z",
   "source": "gs://systematicpositiveskew/etf_data",
   "bar_size": "1 min",
-  "expected_session": "2026-08-31",
+  "expected_session": "2026-09-01",
   "etf_count": 7,
   "etfs": [
     {
@@ -32,8 +32,8 @@
     {
       "symbol": "TIP",
       "first_bar_utc": "2017-01-03T14:30:00Z",
-      "last_bar_utc": "2026-08-31T23:59:00Z",
-      "bar_count": 948909
+      "last_bar_utc": "2026-09-01T23:59:00Z",
+      "bar_count": 949556
     },
     {
       "symbol": "TLT",
