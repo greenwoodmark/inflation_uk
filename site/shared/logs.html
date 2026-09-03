@@ -14,6 +14,7 @@
     ul { margin: 22px 0; padding-left: 22px; }
     li { margin: 12px 0; }
     a { color: #075985; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -28,7 +29,20 @@
         <li><a href="/shadow_replay/logs.html">CPURNSA shadow replay</a></li>
       </ul>
       <p><a href="index.html">← main</a></p>
+      <p id="refresh-status" class="notice" hidden></p>
     </div>
   </main>
+<script>
+  fetch('data/refresh_status.json', { cache: 'no-store' }).then(response => {
+    if (!response.ok) throw new Error(`Refresh status request failed: ${response.status}`);
+    return response.json();
+  }).then(status => {
+    const node = document.getElementById('refresh-status');
+    if (status.overall_status === 'success') return;
+    const failed = Object.entries(status.stages || {}).filter(([, stage]) => ['failed', 'blocked'].includes(stage.status)).map(([name, stage]) => `${name}: ${stage.status}`).join('; ');
+    node.hidden = false;
+    node.textContent = `Refresh status: ${status.overall_status}. ${failed || 'Check the individual page status.'}`;
+  }).catch(() => {});
+</script>
 </body>
 </html>

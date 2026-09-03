@@ -207,3 +207,15 @@ The existing pages use relative data URLs, so preserving their current paths sho
 2. Verify live DNS and both the custom and `web.app` hostnames when investigating hosting or access behavior.
 3. Distinguish verified facts from assumptions about Cloudflare account ownership, DNS control, and Firebase deployment state.
 4. Keep private resources outside `build/public`; use the build and validation commands before deployment.
+
+## Resilient internal logs refresh
+
+The internal logs refresh is deliberately separate from the Firebase public deployment. The scheduled `/home/mark/trading_env/ops/run_all_logs_refresh.sh` now runs independent model-fit, ETF-bar, and shadow/replay stages, records their results in `data/refresh_status.json`, and rebuilds `build/internal` even when one non-critical stage fails. A failed ETF-bar collection therefore does not suppress `model/logs.html` or `shadow_replay/logs.html`; the last valid payload remains in place and the status manifest records the degraded stage.
+
+`bars/logs.html` now retains the latest available ETF coverage when a session is delayed and displays the expected session, per-symbol current/stale status, and a visible stale warning. Freshness is still monitored as a failure condition by the orchestration status, but it is no longer allowed to erase or hide the usable report.
+
+The ETF collector remains at 06:00 UTC because it requires the serial IBKR connection and shared pacing budget. The internal refresh remains at 08:00 UTC: GS TIP/TLT fits are available from approximately 02:30 UTC, USCPI shadow inputs are processed around 05:00 UTC, and the 08:00 slot avoids competing with the Europe/London-gated softs deployment. Moving the refresh earlier would save only part of the idle interval and could create a seasonal softs overlap; the independent stages and status manifest remove the more important failure dependency. If earlier publication is later required, normalize the softs schedule and add one shared website-output lock before moving it to approximately 07:15 UTC.
+
+The internal status payload is copied only into `build/internal/data/refresh_status.json`; it is not included in the public Firebase build.
+
+The ETF publication wrapper, softs deployment wrapper, and all-logs refresh now share `/home/mark/trading_env/ops/website-output.lock` around website-data/build/publication work. ETF IBKR acquisition remains outside that lock, so it can continue using its own `etf_1min.lock`; only its report/publication phase is serialized with the internal build. This prevents concurrent destructive `build_site.py` runs and avoids the 07:00/08:00 softs companion invocation racing the internal refresh.

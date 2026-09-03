@@ -1,51 +1,82 @@
 {
-  "generated_at_utc": "2026-09-03T11:59:54.973478Z",
+  "generated_at_utc": "2026-09-03T12:33:06.034295Z",
   "source": "gs://systematicpositiveskew/etf_data",
   "bar_size": "1 min",
   "expected_session": "2026-09-02",
+  "freshness_status": "current",
+  "stale_symbols": [],
+  "warning": null,
   "etf_count": 7,
   "etfs": [
     {
       "symbol": "IBIT",
       "first_bar_utc": "2026-01-02T09:00:00Z",
       "last_bar_utc": "2026-09-03T11:33:00Z",
-      "bar_count": 160933
+      "bar_count": 160933,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "MSTR",
       "first_bar_utc": "2025-08-13T13:30:00Z",
       "last_bar_utc": "2026-09-03T11:33:00Z",
-      "bar_count": 198804
+      "bar_count": 198804,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "SPCX",
       "first_bar_utc": "2026-06-12T15:46:00Z",
       "last_bar_utc": "2026-09-03T11:34:00Z",
-      "bar_count": 54080
+      "bar_count": 54080,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "STRC",
       "first_bar_utc": "2026-01-02T12:09:00Z",
       "last_bar_utc": "2026-09-03T11:33:00Z",
-      "bar_count": 159237
+      "bar_count": 159237,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "TIP",
       "first_bar_utc": "2017-01-03T14:30:00Z",
       "last_bar_utc": "2026-09-02T23:59:00Z",
-      "bar_count": 950275
+      "bar_count": 950275,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "TLT",
       "first_bar_utc": "2017-01-03T14:30:00Z",
       "last_bar_utc": "2026-09-03T11:39:00Z",
-      "bar_count": 953193
+      "bar_count": 953193,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     },
     {
       "symbol": "TSLA",
       "first_bar_utc": "2026-01-02T09:00:00Z",
       "last_bar_utc": "2026-09-03T11:34:00Z",
-      "bar_count": 160897
+      "bar_count": 160897,
+      "expected_session": "2026-09-02",
+      "stale": false,
+      "staleness_days": 0,
+      "status": "current"
     }
   ]
 }

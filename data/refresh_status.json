@@ -1,0 +1,51 @@
+{
+  "schema_version": "internal_refresh_status_v1",
+  "run_id": "e0e70809-b646-4dfe-ba2d-c503b510049f",
+  "generated_at_utc": "2026-09-03T12:36:20Z",
+  "started_at_utc": "2026-09-03T12:27:20Z",
+  "overall_status": "success",
+  "stages": {
+    "model_logs": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:27:20Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:27:35Z"
+    },
+    "etf_bars": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:27:35Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:33:06Z"
+    },
+    "short_shadow_export": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:33:06Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:36:16Z"
+    },
+    "long_shadow_extension": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:36:16Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:36:16Z"
+    },
+    "cpurnsa_publish": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:36:16Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:36:16Z"
+    },
+    "shadow_replay": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:36:16Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:36:20Z"
+    },
+    "internal_build": {
+      "status": "success",
+      "started_at_utc": "2026-09-03T12:36:20Z",
+      "output": null,
+      "finished_at_utc": "2026-09-03T12:36:20Z"
+    }
+  }
+}

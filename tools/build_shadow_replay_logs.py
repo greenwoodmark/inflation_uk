@@ -1,6 +1,6 @@
 """Build the internal shadow-replay node log payload."""
 from __future__ import annotations
-import csv, json
+import csv, json, os
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
@@ -201,7 +201,9 @@ def build(replay_dir=DEFAULT_REPLAY, output=DEFAULT_OUTPUT):
         'records': long_records,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(payload, indent=2) + '\n')
+    temporary = output.with_name(f".{output.name}.{os.getpid()}.tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + '\n')
+    os.replace(temporary, output)
     return payload
 
 if __name__ == '__main__':

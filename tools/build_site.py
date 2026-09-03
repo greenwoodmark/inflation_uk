@@ -32,6 +32,7 @@ INTERNAL_DATA_FILES = (
     "bars_etf_logs.json",
     "equity_vol_logs.json",
 )
+INTERNAL_OPTIONAL_DATA_FILES = ("refresh_status.json",)
 
 PUBLIC_LOG_TEXT = '<text x="950.48" y="110.08" font-size="192.05px" transform="rotate(-30.83, 950.48, 110.08)">a</text>'
 INTERNAL_LOG_LINK = f'<a href="logs.html" aria-label="Open logs">{PUBLIC_LOG_TEXT}</a>'
@@ -73,6 +74,10 @@ def build_variant(root: Path, output: Path, *, include_internal: bool) -> None:
             _copy(shared / relative, output / relative)
         for filename in INTERNAL_DATA_FILES:
             _copy(data / filename, output / "data" / filename)
+        for filename in INTERNAL_OPTIONAL_DATA_FILES:
+            optional_source = data / filename
+            if optional_source.is_file():
+                _copy(optional_source, output / "data" / filename)
 
     if include_internal:
         # Keep the shared CPURNSA page available to the internal overlay without

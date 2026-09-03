@@ -1,7 +1,7 @@
 {
   "schema_version": "cpurnsa_daily_commentary_v1",
   "trade_count_definition": "Accepted fit-observation endpoint-support counts. Exact reference CPI trades count once at their endpoint; interpolated trades count once at both final endpoint nodes. The known base CPI node is excluded.",
-  "generated_at_utc": "2026-09-03T05:03:33+00:00",
+  "generated_at_utc": "2026-09-03T12:36:16+00:00",
   "latest_model_date": "2026-09-02",
   "entries": {
     "2026-03-18": {

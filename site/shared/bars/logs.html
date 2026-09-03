@@ -24,7 +24,12 @@
     th:first-child, td:first-child { text-align: left; }
     td:first-child { font-weight: 700; color: #075985; }
     .error { color: #b91c1c; }
-    a { color: #075985; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; }
+    tr.stale td { background: #fffbeb; }
+    tr.stale td:first-child { color: #92400e; }
+    .status { font-weight: 650; }
+    .status.stale { color: #92400e; }
+    .status.current { color: #166534; }
     @media (max-width: 650px) { .summary { grid-template-columns: 1fr; } main { padding: 18px 10px 30px; } }
   </style>
 </head>
@@ -34,6 +39,7 @@
     <h1>ETF 1-minute bars</h1>
     <p class="muted">Coverage summary for every ETF currently present in the systematicpositiveskew data lake. Timestamps are UTC and counts are persisted 1-minute bar rows.</p>
     <div id="summary" class="summary" aria-live="polite"></div>
+    <p id="freshness" class="notice" hidden></p>
     <p id="meta" class="meta"></p>
     <p id="error" class="error" role="alert"></p>
   </section>
@@ -43,9 +49,9 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th scope="col">ETF</th><th scope="col">First 1-minute bar (UTC)</th><th scope="col">Last 1-minute bar (UTC)</th><th scope="col">Number of bars</th></tr>
+          <tr><th scope="col">ETF</th><th scope="col">First 1-minute bar (UTC)</th><th scope="col">Last 1-minute bar (UTC)</th><th scope="col">Expected session</th><th scope="col">Status</th><th scope="col">Number of bars</th></tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="4">Loading coverage…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="6">Loading coverage…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -56,18 +62,25 @@
   const byId = id => document.getElementById(id);
   const formatNumber = value => Number(value).toLocaleString('en-GB');
   const formatTimestamp = value => value.replace('T', ' ').replace('Z', ' UTC');
+  const formatDate = value => value ? value : '—';
   function metric(label, value) {
     const node = document.createElement('div'); node.className = 'metric';
-    node.innerHTML = `<strong>${value}</strong><span>${label}</span>`; return node;
+    const strong = document.createElement('strong'); strong.textContent = value;
+    const span = document.createElement('span'); span.textContent = label;
+    node.append(strong, span); return node;
   }
   function render(data) {
     const rows = [...data.etfs].sort((a, b) => a.symbol.localeCompare(b.symbol));
     const totalBars = rows.reduce((total, row) => total + row.bar_count, 0);
     byId('summary').replaceChildren(metric('ETFs covered', formatNumber(data.etf_count)), metric('Total 1-minute bars', formatNumber(totalBars)), metric('Bar size', data.bar_size));
-    byId('meta').textContent = `Snapshot generated ${formatTimestamp(data.generated_at_utc)} from ${data.source}.`;
+    const freshness = byId('freshness');
+    freshness.hidden = data.freshness_status !== 'stale';
+    freshness.textContent = data.warning || `Some ETF bars are older than expected session ${data.expected_session}.`;
+    byId('meta').textContent = `Snapshot generated ${formatTimestamp(data.generated_at_utc)} from ${data.source}. Expected session: ${formatDate(data.expected_session)}.`;
     byId('rows').replaceChildren(...rows.map(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${row.symbol}</td><td>${formatTimestamp(row.first_bar_utc)}</td><td>${formatTimestamp(row.last_bar_utc)}</td><td>${formatNumber(row.bar_count)}</td>`;
+      const tr = document.createElement('tr'); tr.className = row.status || (row.stale ? 'stale' : 'current');
+      const values = [row.symbol, formatTimestamp(row.first_bar_utc), formatTimestamp(row.last_bar_utc), formatDate(row.expected_session || data.expected_session), row.status || (row.stale ? 'stale' : 'current'), formatNumber(row.bar_count)];
+      values.forEach((value, index) => { const td = document.createElement('td'); td.textContent = value; if (index === 4) { td.className = `status ${row.status || (row.stale ? 'stale' : 'current')}`; } tr.appendChild(td); });
       return tr;
     }));
   }
