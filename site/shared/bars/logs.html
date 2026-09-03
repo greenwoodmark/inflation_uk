@@ -30,6 +30,11 @@
     .status { font-weight: 650; }
     .status.stale { color: #92400e; }
     .status.current { color: #166534; }
+    .refresh-cell { text-align: left; }
+    .refresh-button { border: 1px solid #0c4a6e; border-radius: 5px; background: #e0f2fe; color: #0c4a6e; cursor: pointer; font: inherit; padding: 5px 9px; }
+    .refresh-button:hover:not(:disabled) { background: #bae6fd; }
+    .refresh-button:disabled { cursor: wait; opacity: .65; }
+    .refresh-status { display: block; color: #475569; font-size: .78rem; margin-top: 3px; }
     @media (max-width: 650px) { .summary { grid-template-columns: 1fr; } main { padding: 18px 10px 30px; } }
   </style>
 </head>
@@ -49,9 +54,9 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th scope="col">ETF</th><th scope="col">First 1-minute bar (UTC)</th><th scope="col">Last 1-minute bar (UTC)</th><th scope="col">Expected session</th><th scope="col">Status</th><th scope="col">Number of bars</th></tr>
+          <tr><th scope="col">Refresh</th><th scope="col">ETF</th><th scope="col">First 1-minute bar (UTC)</th><th scope="col">Last 1-minute bar (UTC)</th><th scope="col">Expected session</th><th scope="col">Status</th><th scope="col">Number of bars</th></tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="6">Loading coverage…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="7">Loading coverage…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -69,6 +74,63 @@
     const span = document.createElement('span'); span.textContent = label;
     node.append(strong, span); return node;
   }
+  const REFRESH_API = 'http://127.0.0.1:8765';
+  const refreshJobs = new Map();
+  function setRefreshState(button, status, message) {
+    button.disabled = status === 'queued' || status === 'running';
+    button.textContent = status === 'queued' ? 'Queued…' : status === 'running' ? 'Refreshing…' : 'Refresh';
+    const statusNode = button.parentElement.querySelector('.refresh-status');
+    if (statusNode) statusNode.textContent = message || '';
+  }
+  async function waitForRefresh(button, jobId, symbol) {
+    for (;;) {
+      const response = await fetch(`${REFRESH_API}/api/etf-refresh/${encodeURIComponent(jobId)}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`Refresh status failed: ${response.status}`);
+      const job = await response.json();
+      setRefreshState(button, job.status, job.status === 'running' ? 'IBKR request in progress' : job.status === 'queued' ? 'Waiting for collector' : job.message);
+      if (job.status === 'succeeded') {
+        refreshJobs.delete(symbol);
+        const report = await fetch(`../data/bars_etf_logs.json?refresh=${Date.now()}`, { cache: 'no-store' });
+        if (!report.ok) throw new Error(`Coverage reload failed: ${report.status}`);
+        render(await report.json());
+        return;
+      }
+      if (job.status === 'failed') {
+        refreshJobs.delete(symbol);
+        throw new Error(job.message || 'ETF refresh failed');
+      }
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+  async function refreshTicker(symbol, button) {
+    if (refreshJobs.has(symbol)) return;
+    byId('error').textContent = '';
+    setRefreshState(button, 'queued', 'Submitting refresh');
+    try {
+      const response = await fetch(`${REFRESH_API}/api/etf-refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol }),
+      });
+      const job = await response.json();
+      if (!response.ok && response.status !== 409) throw new Error(job.error || `Refresh request failed: ${response.status}`);
+      if (response.status === 409 && job.status !== 'queued' && job.status !== 'running') throw new Error(job.error || 'Ticker is already refreshing');
+      refreshJobs.set(symbol, job.job_id);
+      await waitForRefresh(button, job.job_id, symbol);
+    } catch (error) {
+      refreshJobs.delete(symbol);
+      setRefreshState(button, 'failed', 'Unavailable or failed');
+      byId('error').textContent = `${symbol}: ${error.message}`;
+    }
+  }
+  function refreshControl(symbol) {
+    const cell = document.createElement('td'); cell.className = 'refresh-cell';
+    const button = document.createElement('button'); button.className = 'refresh-button'; button.type = 'button'; button.textContent = 'Refresh';
+    button.setAttribute('aria-label', `Refresh ${symbol} 1-minute data`);
+    button.addEventListener('click', () => refreshTicker(symbol, button));
+    const status = document.createElement('span'); status.className = 'refresh-status'; status.setAttribute('aria-live', 'polite');
+    cell.append(button, status); return cell;
+  }
   function render(data) {
     const rows = [...data.etfs].sort((a, b) => a.symbol.localeCompare(b.symbol));
     const totalBars = rows.reduce((total, row) => total + row.bar_count, 0);
@@ -79,6 +141,7 @@
     byId('meta').textContent = `Snapshot generated ${formatTimestamp(data.generated_at_utc)} from ${data.source}. Expected session: ${formatDate(data.expected_session)}.`;
     byId('rows').replaceChildren(...rows.map(row => {
       const tr = document.createElement('tr'); tr.className = row.status || (row.stale ? 'stale' : 'current');
+      tr.appendChild(refreshControl(row.symbol));
       const values = [row.symbol, formatTimestamp(row.first_bar_utc), formatTimestamp(row.last_bar_utc), formatDate(row.expected_session || data.expected_session), row.status || (row.stale ? 'stale' : 'current'), formatNumber(row.bar_count)];
       values.forEach((value, index) => { const td = document.createElement('td'); td.textContent = value; if (index === 4) { td.className = `status ${row.status || (row.stale ? 'stale' : 'current')}`; } tr.appendChild(td); });
       return tr;
