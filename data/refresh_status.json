@@ -1,51 +1,51 @@
 {
   "schema_version": "internal_refresh_status_v1",
-  "run_id": "e0e70809-b646-4dfe-ba2d-c503b510049f",
-  "generated_at_utc": "2026-09-03T12:36:20Z",
-  "started_at_utc": "2026-09-03T12:27:20Z",
+  "run_id": "c339d7ef-a50a-409d-afea-074fc70bf97d",
+  "generated_at_utc": "2026-09-04T08:04:17Z",
+  "started_at_utc": "2026-09-04T08:00:01Z",
   "overall_status": "success",
   "stages": {
     "model_logs": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:27:20Z",
+      "started_at_utc": "2026-09-04T08:00:01Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:27:35Z"
+      "finished_at_utc": "2026-09-04T08:00:16Z"
     },
     "etf_bars": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:27:35Z",
+      "started_at_utc": "2026-09-04T08:00:16Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:33:06Z"
+      "finished_at_utc": "2026-09-04T08:00:20Z"
     },
     "short_shadow_export": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:33:06Z",
+      "started_at_utc": "2026-09-04T08:00:20Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:36:16Z"
+      "finished_at_utc": "2026-09-04T08:03:31Z"
     },
     "long_shadow_extension": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:36:16Z",
+      "started_at_utc": "2026-09-04T08:03:31Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:36:16Z"
+      "finished_at_utc": "2026-09-04T08:04:13Z"
     },
     "cpurnsa_publish": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:36:16Z",
+      "started_at_utc": "2026-09-04T08:04:13Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:36:16Z"
+      "finished_at_utc": "2026-09-04T08:04:13Z"
     },
     "shadow_replay": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:36:16Z",
+      "started_at_utc": "2026-09-04T08:04:13Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:36:20Z"
+      "finished_at_utc": "2026-09-04T08:04:17Z"
     },
     "internal_build": {
       "status": "success",
-      "started_at_utc": "2026-09-03T12:36:20Z",
+      "started_at_utc": "2026-09-04T08:04:17Z",
       "output": null,
-      "finished_at_utc": "2026-09-03T12:36:20Z"
+      "finished_at_utc": "2026-09-04T08:04:17Z"
     }
   }
 }
