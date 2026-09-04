@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-04T10:45:33.120950Z",
+  "generated_at_utc": "2026-09-04T14:46:37.590716Z",
   "source": "gs://systematicpositiveskew/etf_data",
   "bar_size": "1 min",
   "expected_session": "2026-09-03",
@@ -51,8 +51,8 @@
     {
       "symbol": "TIP",
       "first_bar_utc": "2017-01-03T14:30:00Z",
-      "last_bar_utc": "2026-09-03T23:59:00Z",
-      "bar_count": 950972,
+      "last_bar_utc": "2026-09-04T14:13:00Z",
+      "bar_count": 951166,
       "expected_session": "2026-09-03",
       "stale": false,
       "staleness_days": 0,
@@ -61,8 +61,8 @@
     {
       "symbol": "TLT",
       "first_bar_utc": "2017-01-03T14:30:00Z",
-      "last_bar_utc": "2026-09-03T23:59:00Z",
-      "bar_count": 953994,
+      "last_bar_utc": "2026-09-04T14:28:00Z",
+      "bar_count": 954383,
       "expected_session": "2026-09-03",
       "stale": false,
       "staleness_days": 0,
