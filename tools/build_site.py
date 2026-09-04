@@ -26,11 +26,13 @@ INTERNAL_FILES = (
     "bars/logs.html",
     "softs/logs.html",
     "model/logs.html",
+    "JUP/model.html",
 )
 INTERNAL_DATA_FILES = (
     "softs_diagnostics.json",
     "bars_etf_logs.json",
     "equity_vol_logs.json",
+    "jup_model_logs.json",
 )
 INTERNAL_OPTIONAL_DATA_FILES = ("refresh_status.json",)
 

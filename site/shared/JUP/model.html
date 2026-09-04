@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jupiter / JUP EPS model | Internal</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    * { box-sizing: border-box; } body { margin: 0; } main { max-width: 1180px; margin: 0 auto; padding: 26px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+    h1, h2, h3 { margin-top: 0; } h1 { margin-bottom: 6px; } h2 { font-size: 1.1rem; margin-bottom: 10px; }
+    .muted, .meta { color: #475569; } .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; }
+    .table-wrap { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    caption { text-align: left; font-weight: 650; padding: 0 0 10px; } th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; text-align: right; white-space: nowrap; vertical-align: top; }
+    th { color: #475569; font-weight: 650; background: #f8fafc; } th:first-child, td:first-child { text-align: left; white-space: normal; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 12px; } .metric { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+    .metric strong { display: block; font-size: 1.25rem; margin-top: 4px; font-variant-numeric: tabular-nums; } .formula { font-family: ui-monospace, monospace; font-size: .82rem; color: #475569; }
+    li { margin: 7px 0; } a { color: #075985; } .error { color: #b91c1c; }
+    @media (max-width: 650px) { main { padding: 18px 10px 30px; } .grid { grid-template-columns: 1fr; } th, td { padding: 7px 6px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <h1>Jupiter / JUP EPS model</h1>
+    <p class="muted">Internal research log covering H1 2026 actuals and a deliberately static six-month scenario. This is not a live forecast.</p>
+    <p><a href="../logs.html">← All logs</a></p>
+    <div class="notice"><strong>Scenario status:</strong> <span id="status">Loading…</span>. No live JUP snapshot, NAV/HWM data, or share-class data is connected.</div>
+    <p id="meta" class="meta"></p><p id="error" class="error" role="alert"></p>
+  </section>
+
+  <section class="card">
+    <h2>A. Prior six-month performance: H1 2026</h2>
+    <p class="muted">Actuals are labelled report-derived from the supplied interim-results context. Per-share line items use the 526.8m H1 APM denominator unless noted; costs and deductions are shown as negative.</p>
+    <div class="table-wrap"><table aria-describedby="actual-note"><caption>H1 2026 EPS bridge (GBP millions and pence per share)</caption><thead><tr><th scope="col">Component</th><th scope="col">Actual GBP m</th><th scope="col">Actual p/share</th><th scope="col">Model GBP m</th><th scope="col">Model p/share</th></tr></thead><tbody id="actual-components"></tbody></table></div>
+    <p id="actual-note" class="meta">“Not available” means the supplied context did not support a defensible value; no model value has been invented.</p>
+    <div class="grid" id="actual-earnings"></div>
+  </section>
+
+  <section class="card">
+    <h2>B. Current six-month projected performance — scenario</h2>
+    <p class="notice">This is a deterministic scenario, not a populated/live JUP snapshot. Management fees and costs use a simple H1 run-rate. PF is explicitly assumed at £20.0m; it is not H1 PF revenue annualized.</p>
+    <div class="table-wrap"><table aria-describedby="projection-note"><caption>Scenario EPS bridge</caption><thead><tr><th scope="col">Component</th><th scope="col">Scenario GBP m</th><th scope="col">Scenario p/share</th><th scope="col">Formula / basis</th></tr></thead><tbody id="projection-components"></tbody></table></div>
+    <p id="projection-note" class="meta">Scenario denominator: 526.8m H1 APM shares.</p>
+    <div class="grid" id="projection-earnings"></div>
+  </section>
+
+  <section class="card">
+    <h2>Methodology and limitations</h2>
+    <ul id="limitations"></ul>
+    <h3>Key assumptions and formulas</h3><ul id="assumptions"></ul>
+  </section>
+</main>
+<script>
+  const byId = id => document.getElementById(id);
+  const text = value => value === null || value === undefined || value === '' ? 'Not available' : String(value);
+  const money = value => value === null || value === undefined ? 'Not available' : `£${Number(value).toFixed(1)}m`;
+  const pence = value => value === null || value === undefined ? 'Not available' : `${Number(value).toFixed(1)}p`;
+  function cell(value, className) { const node = document.createElement('td'); node.textContent = text(value); if (className) node.className = className; return node; }
+  function metric(label, value, formula) { const article = document.createElement('article'); article.className = 'metric'; const title = document.createElement('span'); title.textContent = label; const strong = document.createElement('strong'); strong.textContent = value; article.append(title, strong); if (formula) { const small = document.createElement('div'); small.className = 'formula'; small.textContent = formula; article.appendChild(small); } return article; }
+  function renderComponents(rootId, rows, projection) { const root = byId(rootId); root.replaceChildren(); rows.forEach(row => { const tr = document.createElement('tr'); if (projection) { tr.append(cell(row.item), cell(money(row.amount_gbp_m)), cell(pence(row.per_share_pence)), cell(row.formula)); } else { tr.append(cell(row.item), cell(money(row.amount_gbp_m)), cell(pence(row.per_share_pence)), cell(money(row.model_gbp_m)), cell(pence(row.model_per_share_pence))); } root.appendChild(tr); }); }
+  function renderEarnings(rootId, earnings, projection) { const root = byId(rootId); root.replaceChildren(); const values = projection ? [['Scenario underlying EPS', pence(earnings.scenario_underlying_eps_pence), earnings.scenario_underlying_eps_formula], ['Scenario underlying PAT', money(earnings.scenario_underlying_pat_gbp_m), null], ['PF after-tax contribution', money(earnings.pf_after_tax_contribution_gbp_m), '20.0 × 0.39375']] : [['Statutory basic EPS', pence(earnings.statutory_basic_eps_pence), earnings.statutory_basic_eps_formula], ['Statutory diluted EPS', pence(earnings.statutory_diluted_eps_pence), earnings.statutory_diluted_eps_formula], ['Underlying EPS before PF', pence(earnings.underlying_pre_performance_fee_eps_pence), earnings.underlying_pre_performance_fee_eps_formula], ['Underlying EPS', pence(earnings.underlying_eps_pence), earnings.underlying_eps_basis]]; values.forEach(value => root.appendChild(metric(value[0], value[1], value[2])); }
+  fetch('../../data/jup_model_logs.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`JUP payload request failed: ${response.status}`); return response.json(); }).then(payload => { byId('status').textContent = payload.scenario_status; byId('meta').textContent = `As of ${text(payload.as_of)} | Generated ${text(payload.generated_at_utc)} | Actual period: ${text(payload.actual.period)}`; renderComponents('actual-components', payload.actual.components, false); renderEarnings('actual-earnings', payload.actual.earnings, false); renderComponents('projection-components', payload.projection.components, true); renderEarnings('projection-earnings', payload.projection.earnings, true); payload.limitations.forEach(item => { const li = document.createElement('li'); li.textContent = item; byId('limitations').appendChild(li); }); payload.assumptions.forEach(item => { const li = document.createElement('li'); li.textContent = item; byId('assumptions').appendChild(li); }); }).catch(error => { byId('status').textContent = 'unavailable'; byId('error').textContent = error.message; });
+</script>
+</body>
+</html>
