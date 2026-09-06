@@ -78,9 +78,9 @@
 
   <section class="card">
     <h2>F. Delta of JUP share price to GEAR performance</h2>
-    <p class="muted">Each point compares the trailing 365-calendar-day GEAR NAV growth with the trailing 365-calendar-day JUP share-price return. The point date is the GEAR valuation date; each series uses the latest available observation on or before the current and prior dates. JUP return uses the unadjusted IBKR closing price, so it is a share-price return rather than a dividend-adjusted total return. The fitted line is an ordinary-least-squares regression of JUP return on GEAR growth; beta is its slope, measured in JUP percentage points per one percentage point of GEAR growth.</p>
+    <p class="muted">Each point compares the trailing 90-calendar-day GEAR NAV growth with the trailing 90-calendar-day JUP share-price return. The point date is the GEAR valuation date; each series uses the latest available observation on or before the current and prior dates. JUP return uses the unadjusted IBKR closing price, so it is a share-price return rather than a dividend-adjusted total return. The fitted line is an ordinary-least-squares regression of JUP return on GEAR growth; beta is its slope, measured in JUP percentage points per one percentage point of GEAR growth.</p>
     <div class="chart-wrap" aria-live="polite">
-      <div id="jup-gear-scatter" role="img" aria-label="Rolling one-year JUP share-price return versus GEAR NAV growth"></div>
+      <div id="jup-gear-scatter" role="img" aria-label="Rolling 90-day JUP share-price return versus GEAR NAV growth"></div>
     </div>
     <p id="jup-gear-scatter-error" class="meta"></p>
   </section>
@@ -129,7 +129,7 @@
         x: xValues,
         y: yValues,
         text: data.map(row => `${row.date}<br>GEAR NAV: ${row.gear_return_pct.toFixed(2)}%<br>JUP price: ${row.jup_price_return_pct.toFixed(2)}%`),
-        name: 'Rolling one-year observations',
+        name: 'Rolling 90-day observations',
         mode: 'markers',
         marker: { color: '#7c3aed', size: 7, opacity: 0.72, line: { color: '#5b21b6', width: 0.5 } },
         hovertemplate: '%{text}<extra></extra>'
@@ -151,8 +151,8 @@
       plot_bgcolor: '#f8fafc',
       hovermode: 'closest',
       legend: { orientation: 'h', y: -0.18, x: 0 },
-      xaxis: { title: 'GEAR trailing one-year NAV growth (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
-      yaxis: { title: 'JUP trailing one-year share-price return (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
+      xaxis: { title: 'GEAR trailing 90-day NAV growth (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
+      yaxis: { title: 'JUP trailing 90-day share-price return (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
       annotations: [{ x: 0, y: 1.12, xref: 'paper', yref: 'paper', text: `Unadjusted JUP share-price return versus GEAR NAV growth<br><sup>${statistics}</sup>`, showarrow: false, xanchor: 'left', font: { color: '#475569', size: 12 } }]
     };
     Plotly.newPlot('jup-gear-scatter', traces, layout, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });

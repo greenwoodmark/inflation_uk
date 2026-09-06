@@ -15,7 +15,7 @@ NAV_PREFIX = "fund_data/jupiter/nav/isin=IE00BLP5S809/"
 JUP_SHARE_PRICE_OBJECT = "fund_data/jupiter/JUP_LN_share_price_daily/data.parquet"
 OUTPUT = Path(__file__).resolve().parents[1] / "data" / "jup_gear_chart.json"
 START_DATE = date(2024, 1, 1)
-ROLLING_DAYS = 365
+ROLLING_DAYS = 90
 
 # These are the existing documented AUM anchors, in GBP millions. AUM is
 # interpolated on read for this visualization and is not a persisted source.
@@ -77,11 +77,11 @@ def _asof_value(rows: list[dict], dates: list[date], target: date, field: str) -
 
 
 def build_scatter_series(nav_rows: list[dict], price_rows: list[dict]) -> list[dict]:
-    """Pair trailing 365-calendar-day GEAR NAV and JUP price returns.
+    """Pair trailing 90-calendar-day GEAR NAV and JUP price returns.
 
     Each point is dated by a GEAR valuation date.  The current JUP close and
     the prior JUP close are the latest London closes on or before the GEAR
-    date and the date 365 calendar days earlier, respectively.  GEAR uses the
+    date and the date 90 calendar days earlier, respectively.  GEAR uses the
     analogous latest NAV observations on or before those dates.
     """
     nav_dates = [row["valuation_date"] for row in nav_rows]
@@ -112,7 +112,7 @@ def build_scatter_series(nav_rows: list[dict], price_rows: list[dict]) -> list[d
             "jup_close_gbp": round(price_value, 6),
         })
     if not points:
-        raise RuntimeError("No aligned rolling one-year GEAR/JUP observations available")
+        raise RuntimeError("No aligned rolling 90-day GEAR/JUP observations available")
     return points
 
 
@@ -172,11 +172,11 @@ def main() -> None:
         "nav_source": "Canonical GEAR GBP NAV series: FE fundinfo-derived pre-overlap history and official Jupiter NAV from 2024-11-28 onward.",
         "aum_source": "Linear interpolation of documented annual/current AUM anchors; visualization only.",
         "jup_share_price_source": f"IBKR historical daily TRADES bars from gs://{BUCKET}/{JUP_SHARE_PRICE_OBJECT}; unadjusted close, not dividend-adjusted total return.",
-        "rolling_return_definition": "Trailing 365 calendar-day return using the latest available observation on or before each target date; each point is dated by the GEAR valuation date.",
+        "rolling_return_definition": "Trailing 90 calendar-day return using the latest available observation on or before each target date; each point is dated by the GEAR valuation date.",
         "regression": {
             **regression,
-            "dependent_variable": "JUP trailing one-year unadjusted share-price return (%)",
-            "independent_variable": "GEAR trailing one-year NAV growth (%)",
+            "dependent_variable": "JUP trailing 90-day unadjusted share-price return (%)",
+            "independent_variable": "GEAR trailing 90-day NAV growth (%)",
             "method": "Ordinary least squares: JUP return = intercept + beta × GEAR return",
         },
         "aum_anchors_gbp_m": [{"date": day.isoformat(), "aum_gbp_m": value} for day, value in AUM_ANCHORS],
