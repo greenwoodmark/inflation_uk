@@ -33,6 +33,7 @@ INTERNAL_DATA_FILES = (
     "bars_etf_logs.json",
     "equity_vol_logs.json",
     "jup_model_logs.json",
+    "jup_gear_chart.json",
 )
 INTERNAL_OPTIONAL_DATA_FILES = ("refresh_status.json",)
 
