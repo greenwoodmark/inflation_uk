@@ -61,6 +61,8 @@ jobs:
           python tools/build_site.py --target public
           python tools/validate_public_build.py build/public
 
+      # These files are generated outputs. GitHub Actions is their sole writer;
+      # normal developer commits should contain the source inputs only.
       - name: Commit generated public data
         run: |
           set -euo pipefail
