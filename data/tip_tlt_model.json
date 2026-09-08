@@ -1,7 +1,7 @@
 {
   "schema_version": "tip_tlt_gh5_model_v1",
   "model_version": "gh5_v1",
-  "generated_at_utc": "2026-09-08T08:08:53+00:00",
+  "generated_at_utc": "2026-09-08T08:31:19+00:00",
   "tenor": "1m",
   "symbols": {
     "TIP": {
@@ -347,5 +347,424 @@
       "q": 0.029209521953932085
     }
   },
-  "latest_date": "2026-09-04"
+  "latest_date": "2026-09-04",
+  "comparison_schema_version": "tip_tlt_gh3_gh5_comparison_v1",
+  "comparison": {
+    "raw_date": "2026-09-04",
+    "cab": 0.0,
+    "symbols": {
+      "TIP": {
+        "raw_date": "2026-09-04",
+        "fits": {
+          "gh3_v1": {
+            "fit_date": "2026-09-04",
+            "model_version": "gh3_v1",
+            "source": "recomputed_from_latest_raw_smile_cab_0",
+            "forward": 107.3921685024295,
+            "medcouple": -0.022289005389057728,
+            "b": 0.012730013256102159,
+            "g": 0.0452256846895365,
+            "h": 0.22290577084609814,
+            "mad_err": 0.05047448619038409,
+            "cab": 0.0,
+            "settings_hash": "1c86a1336287fe2a"
+          },
+          "gh5_v1": {
+            "fit_date": "2026-09-04",
+            "model_version": "gh5_v1",
+            "source": "recomputed_from_latest_raw_smile_cab_0",
+            "forward": 107.3921685024295,
+            "medcouple": -0.02263047701159845,
+            "b": 0.012640481103375359,
+            "g": 0.04560824832200538,
+            "h": 0.21000662661305947,
+            "mad_err": 0.04633819139919219,
+            "cab": 0.0,
+            "settings_hash": "7626857f5d317488",
+            "c": -0.000861820883554448,
+            "q": 0.05
+          }
+        },
+        "points": [
+          {
+            "moneyness": 0.9742495626107643,
+            "strike": 104.62677319131345,
+            "right": "P",
+            "delta_reference": 0.95,
+            "raw_iv": 0.07541161763076139,
+            "gh3_v1_fitted_iv": 0.06971926296797358,
+            "gh5_v1_fitted_iv": 0.07027243959405523
+          },
+          {
+            "moneyness": 0.9799069463338952,
+            "strike": 105.23433189739082,
+            "right": "P",
+            "delta_reference": 0.9,
+            "raw_iv": 0.06828955750195838,
+            "gh3_v1_fitted_iv": 0.06522044684452198,
+            "gh5_v1_fitted_iv": 0.06547970895072022
+          },
+          {
+            "moneyness": 0.9837425145568296,
+            "strike": 105.64624188629075,
+            "right": "P",
+            "delta_reference": 0.85,
+            "raw_iv": 0.06382475832962423,
+            "gh3_v1_fitted_iv": 0.06247215114598628,
+            "gh5_v1_fitted_iv": 0.06257235708985466
+          },
+          {
+            "moneyness": 0.9868016080782553,
+            "strike": 105.97476457320839,
+            "right": "P",
+            "delta_reference": 0.8,
+            "raw_iv": 0.06066776235336904,
+            "gh3_v1_fitted_iv": 0.060539843496804066,
+            "gh5_v1_fitted_iv": 0.060540133094829134
+          },
+          {
+            "moneyness": 0.9894336148596757,
+            "strike": 106.25742148897822,
+            "right": "P",
+            "delta_reference": 0.75,
+            "raw_iv": 0.05839937497354634,
+            "gh3_v1_fitted_iv": 0.05912291208095156,
+            "gh5_v1_fitted_iv": 0.059058430164025844
+          },
+          {
+            "moneyness": 0.9918032174610955,
+            "strike": 106.5118982508337,
+            "right": "P",
+            "delta_reference": 0.7,
+            "raw_iv": 0.056814248052907315,
+            "gh3_v1_fitted_iv": 0.0580858264569457,
+            "gh5_v1_fitted_iv": 0.05798082665472989
+          },
+          {
+            "moneyness": 0.9940040724184546,
+            "strike": 106.7482528372638,
+            "right": "P",
+            "delta_reference": 0.65,
+            "raw_iv": 0.05571602670188219,
+            "gh3_v1_fitted_iv": 0.05736831169719611,
+            "gh5_v1_fitted_iv": 0.05723498688388537
+          },
+          {
+            "moneyness": 0.9960969871026157,
+            "strike": 106.97301548368645,
+            "right": "P",
+            "delta_reference": 0.6,
+            "raw_iv": 0.05500748175865899,
+            "gh3_v1_fitted_iv": 0.05692927897790044,
+            "gh5_v1_fitted_iv": 0.05678168526294785
+          },
+          {
+            "moneyness": 0.9981261042798641,
+            "strike": 107.19092677749668,
+            "right": "P",
+            "delta_reference": 0.55,
+            "raw_iv": 0.054677123786893225,
+            "gh3_v1_fitted_iv": 0.05674860905160625,
+            "gh5_v1_fitted_iv": 0.05659396046867279
+          },
+          {
+            "moneyness": 1.000127080842573,
+            "strike": 107.40581598968853,
+            "right": "C",
+            "delta_reference": 0.5,
+            "raw_iv": 0.054719023148931414,
+            "gh3_v1_fitted_iv": 0.05681440989676912,
+            "gh5_v1_fitted_iv": 0.056658491430763805
+          },
+          {
+            "moneyness": 1.002132068829477,
+            "strike": 107.62113599742348,
+            "right": "C",
+            "delta_reference": 0.45,
+            "raw_iv": 0.055126779351190654,
+            "gh3_v1_fitted_iv": 0.057120271074368276,
+            "gh5_v1_fitted_iv": 0.05696858078839293
+          },
+          {
+            "moneyness": 1.004173479877861,
+            "strike": 107.84036755671424,
+            "right": "C",
+            "delta_reference": 0.4,
+            "raw_iv": 0.055892996211608995,
+            "gh3_v1_fitted_iv": 0.05766479166130218,
+            "gh5_v1_fitted_iv": 0.057523675322775546
+          },
+          {
+            "moneyness": 1.0062878066495495,
+            "strike": 108.06742969364862,
+            "right": "C",
+            "delta_reference": 0.35,
+            "raw_iv": 0.05701305081965822,
+            "gh3_v1_fitted_iv": 0.0584532364202866,
+            "gh5_v1_fitted_iv": 0.05833093701683711
+          },
+          {
+            "moneyness": 1.0085208035473252,
+            "strike": 108.30723607275995,
+            "right": "C",
+            "delta_reference": 0.3,
+            "raw_iv": 0.05849251979168762,
+            "gh3_v1_fitted_iv": 0.05950662257724703,
+            "gh5_v1_fitted_iv": 0.059409371829437445
+          },
+          {
+            "moneyness": 1.0109361182119787,
+            "strike": 108.5666219522128,
+            "right": "C",
+            "delta_reference": 0.25,
+            "raw_iv": 0.060396328163015045,
+            "gh3_v1_fitted_iv": 0.06085432756023839,
+            "gh5_v1_fitted_iv": 0.06079839988078671
+          },
+          {
+            "moneyness": 1.0136324967919634,
+            "strike": 108.85619189502087,
+            "right": "C",
+            "delta_reference": 0.2,
+            "raw_iv": 0.06289233738445459,
+            "gh3_v1_fitted_iv": 0.06256329944484826,
+            "gh5_v1_fitted_iv": 0.06257126880854405
+          },
+          {
+            "moneyness": 1.0167845376544444,
+            "strike": 109.19469639845097,
+            "right": "C",
+            "delta_reference": 0.15,
+            "raw_iv": 0.06619047756819475,
+            "gh3_v1_fitted_iv": 0.06476809434981567,
+            "gh5_v1_fitted_iv": 0.06487283155949586
+          },
+          {
+            "moneyness": 1.0207644527645365,
+            "strike": 109.62210811257934,
+            "right": "C",
+            "delta_reference": 0.1,
+            "raw_iv": 0.07072094695551773,
+            "gh3_v1_fitted_iv": 0.06777967449557515,
+            "gh5_v1_fitted_iv": 0.06802717999661467
+          },
+          {
+            "moneyness": 1.026691944468762,
+            "strike": 110.25867430047629,
+            "right": "C",
+            "delta_reference": 0.05,
+            "raw_iv": 0.0778313346980928,
+            "gh3_v1_fitted_iv": 0.07254076447524883,
+            "gh5_v1_fitted_iv": 0.07306303967218691
+          }
+        ]
+      },
+      "TLT": {
+        "raw_date": "2026-09-04",
+        "fits": {
+          "gh3_v1": {
+            "fit_date": "2026-09-04",
+            "model_version": "gh3_v1",
+            "source": "recomputed_from_latest_raw_smile_cab_0",
+            "forward": 82.37035550966485,
+            "medcouple": -0.05090507226325565,
+            "b": 0.025142755885013784,
+            "g": -0.02905384053996594,
+            "h": 0.10409206130592814,
+            "mad_err": 0.013445403990286861,
+            "cab": 0.0,
+            "settings_hash": "1c86a1336287fe2a"
+          },
+          "gh5_v1": {
+            "fit_date": "2026-09-04",
+            "model_version": "gh5_v1",
+            "source": "recomputed_from_latest_raw_smile_cab_0",
+            "forward": 82.37035550966485,
+            "medcouple": -0.05919974235521918,
+            "b": 0.025196713366771144,
+            "g": -0.056001104501562086,
+            "h": 0.08972336767220845,
+            "mad_err": 0.010985091226753268,
+            "cab": 0.0,
+            "settings_hash": "7626857f5d317488",
+            "c": 0.022171913253974652,
+            "q": 0.04140821723868589
+          }
+        },
+        "points": [
+          {
+            "moneyness": 0.9551043489543628,
+            "strike": 78.67228477219786,
+            "right": "P",
+            "delta_reference": 0.95,
+            "raw_iv": 0.11477391832732144,
+            "gh3_v1_fitted_iv": 0.11397897739319689,
+            "gh5_v1_fitted_iv": 0.11399183040398558
+          },
+          {
+            "moneyness": 0.964928351459305,
+            "strike": 79.48149135105778,
+            "right": "P",
+            "delta_reference": 0.9,
+            "raw_iv": 0.10900656863078297,
+            "gh3_v1_fitted_iv": 0.10875033966228785,
+            "gh5_v1_fitted_iv": 0.10879461612941614
+          },
+          {
+            "moneyness": 0.9716136007840317,
+            "strike": 80.03215771460627,
+            "right": "P",
+            "delta_reference": 0.85,
+            "raw_iv": 0.1061003875453983,
+            "gh3_v1_fitted_iv": 0.10557243272279003,
+            "gh5_v1_fitted_iv": 0.10565595694335878
+          },
+          {
+            "moneyness": 0.9769598444936065,
+            "strike": 80.47252970960525,
+            "right": "P",
+            "delta_reference": 0.8,
+            "raw_iv": 0.10397363929265369,
+            "gh3_v1_fitted_iv": 0.10330212668674411,
+            "gh5_v1_fitted_iv": 0.10340840485589498
+          },
+          {
+            "moneyness": 0.9815698783257659,
+            "strike": 80.85225983527181,
+            "right": "P",
+            "delta_reference": 0.75,
+            "raw_iv": 0.10214700510347895,
+            "gh3_v1_fitted_iv": 0.10157447472048424,
+            "gh5_v1_fitted_iv": 0.10168733450664624
+          },
+          {
+            "moneyness": 0.9857283621000676,
+            "strike": 81.19479562214221,
+            "right": "P",
+            "delta_reference": 0.7,
+            "raw_iv": 0.10055981066881428,
+            "gh3_v1_fitted_iv": 0.1002148507294848,
+            "gh5_v1_fitted_iv": 0.10031921749933415
+          },
+          {
+            "moneyness": 0.9895975411320513,
+            "strike": 81.51350127453725,
+            "right": "P",
+            "delta_reference": 0.65,
+            "raw_iv": 0.09923174149720351,
+            "gh3_v1_fitted_iv": 0.09914371236867617,
+            "gh5_v1_fitted_iv": 0.09922646983340205
+          },
+          {
+            "moneyness": 0.993283060866988,
+            "strike": 81.81707884534187,
+            "right": "P",
+            "delta_reference": 0.6,
+            "raw_iv": 0.09814930055023006,
+            "gh3_v1_fitted_iv": 0.09829889184088925,
+            "gh5_v1_fitted_iv": 0.09834804167349984
+          },
+          {
+            "moneyness": 0.9968619142396211,
+            "strike": 82.11187026996262,
+            "right": "P",
+            "delta_reference": 0.55,
+            "raw_iv": 0.09728360965759524,
+            "gh3_v1_fitted_iv": 0.0976644994871978,
+            "gh5_v1_fitted_iv": 0.09766078523667382
+          },
+          {
+            "moneyness": 1.0003966063048073,
+            "strike": 82.4030241119892,
+            "right": "C",
+            "delta_reference": 0.5,
+            "raw_iv": 0.09661959368981089,
+            "gh3_v1_fitted_iv": 0.09721509223523027,
+            "gh5_v1_fitted_iv": 0.09715713164626728
+          },
+          {
+            "moneyness": 1.003943831748807,
+            "strike": 82.69521033288439,
+            "right": "C",
+            "delta_reference": 0.45,
+            "raw_iv": 0.09615238561200239,
+            "gh3_v1_fitted_iv": 0.09694232661288789,
+            "gh5_v1_fitted_iv": 0.0968258624340794
+          },
+          {
+            "moneyness": 1.0075610964639148,
+            "strike": 82.99316571344038,
+            "right": "C",
+            "delta_reference": 0.4,
+            "raw_iv": 0.09588601645077972,
+            "gh3_v1_fitted_iv": 0.0968489648972415,
+            "gh5_v1_fitted_iv": 0.0966696628685426
+          },
+          {
+            "moneyness": 1.0113135171711491,
+            "strike": 83.3022539411171,
+            "right": "C",
+            "delta_reference": 0.35,
+            "raw_iv": 0.09583391363022872,
+            "gh3_v1_fitted_iv": 0.09695215595827672,
+            "gh5_v1_fitted_iv": 0.09671862722800527
+          },
+          {
+            "moneyness": 1.0152831230035955,
+            "strike": 83.62923178476895,
+            "right": "C",
+            "delta_reference": 0.3,
+            "raw_iv": 0.0960219529640245,
+            "gh3_v1_fitted_iv": 0.09726627221757993,
+            "gh5_v1_fitted_iv": 0.09699311629200238
+          },
+          {
+            "moneyness": 1.0195844351022656,
+            "strike": 83.98353239149442,
+            "right": "C",
+            "delta_reference": 0.25,
+            "raw_iv": 0.09656285832710194,
+            "gh3_v1_fitted_iv": 0.09783053490991579,
+            "gh5_v1_fitted_iv": 0.09754726747116392
+          },
+          {
+            "moneyness": 1.0243956039205715,
+            "strike": 84.37983007747529,
+            "right": "C",
+            "delta_reference": 0.2,
+            "raw_iv": 0.09770355314350779,
+            "gh3_v1_fitted_iv": 0.09871887916024312,
+            "gh5_v1_fitted_iv": 0.09847955671589552
+          },
+          {
+            "moneyness": 1.0300322773359674,
+            "strike": 84.84412487059333,
+            "right": "C",
+            "delta_reference": 0.15,
+            "raw_iv": 0.09973406674503944,
+            "gh3_v1_fitted_iv": 0.10005929774902221,
+            "gh5_v1_fitted_iv": 0.09996170924454041
+          },
+          {
+            "moneyness": 1.0371685818875882,
+            "strike": 85.43194481353558,
+            "right": "C",
+            "delta_reference": 0.1,
+            "raw_iv": 0.10339063550511372,
+            "gh3_v1_fitted_iv": 0.10214903946790505,
+            "gh5_v1_fitted_iv": 0.10237847586994087
+          },
+          {
+            "moneyness": 1.0478366798369547,
+            "strike": 86.31067983423682,
+            "right": "C",
+            "delta_reference": 0.05,
+            "raw_iv": 0.11096779454610688,
+            "gh3_v1_fitted_iv": 0.10589761168304081,
+            "gh5_v1_fitted_iv": 0.10690467512127283
+          }
+        ]
+      }
+    }
+  }
 }

@@ -41,7 +41,12 @@
     </section>
 
     <section class="card">
-      <h2>Underlying duration metadata</h2>
+      <h2>Same-date GH3 versus GH5 comparison (cab=0.0)</h2>
+      <p class="muted">This diagnostic uses the common latest raw smile date and plots both models at identical strikes. Unlike the production GH5 chart above, both GH3 and GH5 are recomputed from the same raw smile with <code>cab=0.0</code>; this removes the price-tolerance dead zone for the comparison only. Solid lines are GH3 and dashed lines are GH5.</p>
+      <p class="meta" id="comparison-status">Loading same-date GH3/GH5 comparison…</p>
+      <div class="chart-wrap"><div id="comparison-chart" role="img" aria-label="Latest common-date TIP and TLT GH3 versus GH5 fitted volatility smiles"></div></div>
+    </section>
+
       <div id="metrics" class="grid"></div>
       <p class="meta">The effective-duration value is the market-value-weighted average of the iShares holdings <code>Duration</code> field. The holdings file does not expose a separate column named “Effective Duration”, so the source field and calculation convention are shown explicitly.</p>
     </section>
@@ -83,12 +88,55 @@
       margin: { t: 70, r: 30, b: 100, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
     }, { responsive: true, displaylogo: false });
   }
+  function renderComparison(payload) {
+    if (payload.comparison_schema_version !== 'tip_tlt_gh3_gh5_comparison_v1') throw new Error('TIP/TLT GH3/GH5 comparison payload is not supported');
+    const comparison = payload.comparison;
+    if (!comparison || !comparison.symbols || !comparison.raw_date || Number(comparison.cab) !== 0) throw new Error('TIP/TLT GH3/GH5 comparison requires cab=0.0');
+    const traces = [];
+    SYMBOLS.forEach(symbol => {
+      const entry = comparison.symbols[symbol];
+      if (!entry || entry.raw_date !== comparison.raw_date || !entry.fits || !entry.points?.length) throw new Error(`Incomplete same-date comparison for ${symbol}`);
+      const rawPoints = entry.points;
+      traces.push({
+        x: rawPoints.map(point => point.moneyness),
+        y: rawPoints.map(point => point.raw_iv * 100),
+        mode: 'markers', type: 'scatter', name: `${symbol} raw`,
+        marker: { color: COLORS[symbol], size: 7, opacity: 0.35, symbol: symbol === 'TIP' ? 'circle' : 'diamond' },
+        hovertemplate: `${symbol} raw<br>K/F: %{x:.4f}<br>Implied volatility: %{y:.2f}%<extra></extra>`
+      });
+      [
+        { version: 'gh3_v1', label: 'GH3', dash: 'solid' },
+        { version: 'gh5_v1', label: 'GH5', dash: 'dash' }
+      ].forEach(model => {
+        const fit = entry.fits[model.version];
+        if (!fit || fit.model_version !== model.version) throw new Error(`Missing ${model.label} fit for ${symbol}`);
+        const points = rawPoints.filter(point => point[`${model.version}_fitted_iv`] != null);
+        const metadata = points.map(() => [fit.fit_date, fit.b, fit.g, fit.h, fit.c ?? null, fit.q ?? null, fit.mad_err, fit.cab, fit.source]);
+        traces.push({
+          x: points.map(point => point.moneyness),
+          y: points.map(point => point[`${model.version}_fitted_iv`] * 100),
+          customdata: metadata,
+          mode: 'lines+markers', type: 'scatter', name: `${symbol} ${model.label}`,
+          line: { color: COLORS[symbol], width: 2.5, dash: model.dash }, marker: { size: 4 },
+          hovertemplate: `${symbol} ${model.label}<br>K/F: %{x:.4f}<br>Implied volatility: %{y:.2f}%<br>Fit date: %{customdata[0]}<br>b: %{customdata[1]:.6f}<br>g: %{customdata[2]:.6f}<br>h: %{customdata[3]:.6f}<br>c: %{customdata[4]:.6f}<br>q: %{customdata[5]:.6f}<br>Relative price L1 error: %{customdata[6]:.6f}<br>cab: %{customdata[7]:.4f}<br>Source: %{customdata[8]}<extra></extra>`
+        });
+      });
+    });
+    Plotly.newPlot('comparison-chart', traces, {
+      title: { text: `TIP and TLT GH3 versus GH5 — cab=0.0 — common raw date ${comparison.raw_date}` },
+      xaxis: { title: 'Strike / forward', zeroline: false },
+      yaxis: { title: 'Implied volatility (%)', rangemode: 'tozero' },
+      hovermode: 'closest', legend: { orientation: 'h', y: -0.18 },
+      margin: { t: 70, r: 30, b: 100, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
+    }, { responsive: true, displaylogo: false });
+    document.getElementById('comparison-status').textContent = `Common raw smile date: ${comparison.raw_date}. Both GH3 and GH5 are recomputed with cab=0.0 for this diagnostic only.`;
+  }
   fetch(DATA_PATH, { cache: 'no-store' }).then(response => {
     if (!response.ok) throw new Error(`TIP/TLT model data request failed: ${response.status}`);
     return response.json();
   }).then(payload => {
     if (payload.schema_version !== 'tip_tlt_gh5_model_v1') throw new Error('TIP/TLT model payload schema is not supported');
-    renderChart(payload); renderMetrics(payload);
+    renderChart(payload); renderComparison(payload); renderMetrics(payload);
     document.getElementById('status').textContent = `Latest raw smiles: ${payload.latest_date}; generated ${payload.generated_at_utc}.`;
   }).catch(error => { document.getElementById('error').textContent = error.message; document.getElementById('status').textContent = 'Latest TIP/TLT model data is temporarily unavailable.'; });
 </script>

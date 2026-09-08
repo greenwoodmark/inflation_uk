@@ -219,6 +219,8 @@ def _fit_metadata(fit: pd.Series, fit_date: str, *, source: str) -> dict:
         "h": float(fit["h"]),
         "mad_err": float(fit["mad_err"]),
     }
+    if "cab" in fit and pd.notna(fit.get("cab")):
+        metadata["cab"] = float(fit["cab"])
     if "settings_hash" in fit and pd.notna(fit.get("settings_hash")):
         metadata["settings_hash"] = str(fit["settings_hash"])
     if metadata["model_version"] == GH5_VERSION:
@@ -255,24 +257,21 @@ def _comparison_points(raw: pd.DataFrame, gh3_fit: pd.Series, gh5_fit: pd.Series
 
 
 def _build_latest_comparison(common_date: str) -> dict:
-    comparison = {"raw_date": common_date, "symbols": {}}
-    gh3_settings = FitSettings(model_version=GH3_VERSION, cab=0.01)
+    comparison = {"raw_date": common_date, "cab": 0.0, "symbols": {}}
+    gh3_settings = FitSettings(model_version=GH3_VERSION, cab=0.0)
+    gh5_settings = FitSettings(model_version=GH5_VERSION, cab=0.0)
     for symbol in SYMBOLS:
         raw = _read_raw(symbol, common_date)
-        gh5_fit, gh5_fit_date = _read_latest_fit(symbol, common_date, GH5_VERSION, False)
-        if gh5_fit_date != common_date:
-            raise RuntimeError(
-                f"No exact {GH5_VERSION} fit on common raw date {common_date} for {symbol}"
-            )
         gh3_fit = pd.Series(fit_equity_vol_day(symbol, common_date, gh3_settings))
+        gh5_fit = pd.Series(fit_equity_vol_day(symbol, common_date, gh5_settings))
         comparison["symbols"][symbol] = {
             "raw_date": common_date,
             "fits": {
                 GH3_VERSION: _fit_metadata(
-                    gh3_fit, common_date, source="recomputed_from_latest_raw_smile"
+                    gh3_fit, common_date, source="recomputed_from_latest_raw_smile_cab_0"
                 ),
                 GH5_VERSION: _fit_metadata(
-                    gh5_fit, gh5_fit_date, source="persisted_options_data"
+                    gh5_fit, common_date, source="recomputed_from_latest_raw_smile_cab_0"
                 ),
             },
             "points": _comparison_points(raw, gh3_fit, gh5_fit),
