@@ -19,9 +19,11 @@ GS_MARQUEE_ROOT = TRADING_ROOT / "gs_marquee"
 if str(GS_MARQUEE_ROOT) not in sys.path:
     sys.path.insert(0, str(GS_MARQUEE_ROOT))
 
+from infrastructure.equity_vol_gh3 import fit_equity_vol_day  # noqa: E402
 from infrastructure.equity_vol_model import (  # noqa: E402
     GH3_VERSION,
     GH5_VERSION,
+    FitSettings,
     _realisation,
     _zsample,
     gh5_realisation,
@@ -44,16 +46,27 @@ def _blob_names(prefix: str) -> list[str]:
     return [blob.name for blob in client.list_blobs("systematicpositiveskew", prefix=prefix)]
 
 
-def _latest_raw_date(symbol: str) -> str:
+def _raw_dates(symbol: str) -> set[str]:
     prefix = f"gs_marquee_data/equity_vol/symbol={symbol}/"
-    dates = []
+    dates = set()
     for name in _blob_names(prefix):
         match = DATE_RE.search(name)
         if match:
-            dates.append(match.group(2))
+            dates.add(match.group(2))
     if not dates:
         raise RuntimeError(f"No canonical equity-volatility dates found for {symbol}")
-    return max(dates)
+    return dates
+
+
+def _latest_raw_date(symbol: str) -> str:
+    return max(_raw_dates(symbol))
+
+
+def _latest_common_raw_date() -> str:
+    common_dates = _raw_dates(SYMBOLS[0]).intersection(_raw_dates(SYMBOLS[1]))
+    if not common_dates:
+        raise RuntimeError("TIP and TLT have no common canonical equity-volatility date")
+    return max(common_dates)
 
 
 def _read_raw(symbol: str, date_str: str) -> pd.DataFrame:
@@ -194,6 +207,79 @@ def _smile_payload(raw: pd.DataFrame, fit: pd.Series) -> list[dict]:
     return points
 
 
+def _fit_metadata(fit: pd.Series, fit_date: str, *, source: str) -> dict:
+    metadata = {
+        "fit_date": fit_date,
+        "model_version": str(fit.get("model_version", GH3_VERSION)),
+        "source": source,
+        "forward": float(fit["fwd"]),
+        "medcouple": float(fit["medcouple"]),
+        "b": float(fit["b"]),
+        "g": float(fit["g"]),
+        "h": float(fit["h"]),
+        "mad_err": float(fit["mad_err"]),
+    }
+    if "settings_hash" in fit and pd.notna(fit.get("settings_hash")):
+        metadata["settings_hash"] = str(fit["settings_hash"])
+    if metadata["model_version"] == GH5_VERSION:
+        metadata["c"] = float(fit["c"])
+        metadata["q"] = float(fit["q"])
+    return metadata
+
+
+def _comparison_points(raw: pd.DataFrame, gh3_fit: pd.Series, gh5_fit: pd.Series) -> list[dict]:
+    delta = raw.loc[raw["strikeReference"].astype(str).str.lower().eq("delta")].copy()
+    for column in ("absoluteStrike", "impliedVolatility", "relativeStrike"):
+        delta[column] = pd.to_numeric(delta[column], errors="coerce")
+    delta = delta.dropna(subset=["absoluteStrike", "impliedVolatility", "relativeStrike"])
+    comparison_forward = float(gh5_fit["fwd"])
+    delta["right"] = np.where(delta["absoluteStrike"] < comparison_forward, "P", "C")
+    delta = delta.loc[delta["absoluteStrike"] != comparison_forward].sort_values("absoluteStrike")
+    points = []
+    for row in delta.itertuples(index=False):
+        strike = float(row.absoluteStrike)
+        right = str(row.right)
+        point = {
+            "moneyness": strike / comparison_forward,
+            "strike": strike,
+            "right": right,
+            "delta_reference": float(row.relativeStrike),
+            "raw_iv": float(row.impliedVolatility),
+        }
+        for version, fit in ((GH3_VERSION, gh3_fit), (GH5_VERSION, gh5_fit)):
+            forward = float(fit["fwd"])
+            model_price = _model_normalized_price(forward, strike, right, fit)
+            point[f"{version}_fitted_iv"] = _implied_vol(forward, strike, model_price, right)
+        points.append(point)
+    return points
+
+
+def _build_latest_comparison(common_date: str) -> dict:
+    comparison = {"raw_date": common_date, "symbols": {}}
+    gh3_settings = FitSettings(model_version=GH3_VERSION, cab=0.01)
+    for symbol in SYMBOLS:
+        raw = _read_raw(symbol, common_date)
+        gh5_fit, gh5_fit_date = _read_latest_fit(symbol, common_date, GH5_VERSION, False)
+        if gh5_fit_date != common_date:
+            raise RuntimeError(
+                f"No exact {GH5_VERSION} fit on common raw date {common_date} for {symbol}"
+            )
+        gh3_fit = pd.Series(fit_equity_vol_day(symbol, common_date, gh3_settings))
+        comparison["symbols"][symbol] = {
+            "raw_date": common_date,
+            "fits": {
+                GH3_VERSION: _fit_metadata(
+                    gh3_fit, common_date, source="recomputed_from_latest_raw_smile"
+                ),
+                GH5_VERSION: _fit_metadata(
+                    gh5_fit, gh5_fit_date, source="persisted_options_data"
+                ),
+            },
+            "points": _comparison_points(raw, gh3_fit, gh5_fit),
+        }
+    return comparison
+
+
 def build_payload(
     model_version: str = ACTIVE_MODEL_VERSION,
     allow_gh3_fallback: bool = False,
@@ -236,6 +322,10 @@ def build_payload(
         result["symbols"][symbol] = entry
         latest_dates.extend([latest_date, fit_date])
     result["latest_date"] = max(latest_dates)
+    if model_version == GH5_VERSION:
+        comparison_date = _latest_common_raw_date()
+        result["comparison_schema_version"] = "tip_tlt_gh3_gh5_comparison_v1"
+        result["comparison"] = _build_latest_comparison(comparison_date)
     return result
 
 
