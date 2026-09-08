@@ -23,6 +23,7 @@ from infrastructure.equity_vol_gh3 import fit_equity_vol_day  # noqa: E402
 from infrastructure.equity_vol_model import (  # noqa: E402
     GH3_VERSION,
     GH5_VERSION,
+    IV_OBJECTIVE,
     FitSettings,
     _realisation,
     _zsample,
@@ -211,6 +212,7 @@ def _fit_metadata(fit: pd.Series, fit_date: str, *, source: str) -> dict:
     metadata = {
         "fit_date": fit_date,
         "model_version": str(fit.get("model_version", GH3_VERSION)),
+        "objective_name": str(fit.get("objective_name", "legacy_price_objective")),
         "source": source,
         "forward": float(fit["fwd"]),
         "medcouple": float(fit["medcouple"]),
@@ -258,8 +260,30 @@ def _comparison_points(raw: pd.DataFrame, gh3_fit: pd.Series, gh5_fit: pd.Series
 
 def _build_latest_comparison(common_date: str) -> dict:
     comparison = {"raw_date": common_date, "cab": 0.0, "symbols": {}}
-    gh3_settings = FitSettings(model_version=GH3_VERSION, cab=0.0)
-    gh5_settings = FitSettings(model_version=GH5_VERSION, cab=0.0)
+    gh3_settings = FitSettings(
+        model_version=GH3_VERSION,
+        objective_name=IV_OBJECTIVE,
+        cab=0.0,
+        zsteps=800,
+        maxiter=50,
+        popsize=10,
+        tol=1e-5,
+        regularization_h=0.0,
+        regularization_c=0.0,
+        regularization_q=0.0,
+    )
+    gh5_settings = FitSettings(
+        model_version=GH5_VERSION,
+        objective_name=IV_OBJECTIVE,
+        cab=0.0,
+        zsteps=800,
+        maxiter=50,
+        popsize=10,
+        tol=1e-5,
+        regularization_h=0.0,
+        regularization_c=0.0,
+        regularization_q=0.0,
+    )
     for symbol in SYMBOLS:
         raw = _read_raw(symbol, common_date)
         gh3_fit = pd.Series(fit_equity_vol_day(symbol, common_date, gh3_settings))
@@ -303,6 +327,7 @@ def build_payload(
             "raw_date": latest_date,
             "fit_date": fit_date,
             "model_version": symbol_model_version,
+            "objective_name": str(fit.get("objective_name", "legacy_price_objective")),
             "forward": float(fit["fwd"]),
             "medcouple": float(fit["medcouple"]),
             "b": float(fit["b"]),
