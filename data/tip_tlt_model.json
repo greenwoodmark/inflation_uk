@@ -1,0 +1,351 @@
+{
+  "schema_version": "tip_tlt_gh5_model_v1",
+  "model_version": "gh5_v1",
+  "generated_at_utc": "2026-09-08T08:08:53+00:00",
+  "tenor": "1m",
+  "symbols": {
+    "TIP": {
+      "raw_date": "2026-09-04",
+      "fit_date": "2026-09-04",
+      "model_version": "gh5_v1",
+      "forward": 107.3921685024295,
+      "medcouple": 0.01126480522785533,
+      "b": 0.013397806879811345,
+      "g": 0.04877364684498425,
+      "h": 0.17512945577754277,
+      "mad_err": 0.06267259517667471,
+      "effective_duration": 6.349043319209702,
+      "effective_duration_source": "iShares Duration field, market-value weighted",
+      "holdings_as_of_date": "2026-09-04",
+      "holdings_rows": 51,
+      "points": [
+        {
+          "moneyness": 0.9742495626107643,
+          "strike": 104.62677319131345,
+          "right": "P",
+          "delta_reference": 0.95,
+          "raw_iv": 0.07541161763076139,
+          "fitted_iv": 0.06874137745821535
+        },
+        {
+          "moneyness": 0.9799069463338952,
+          "strike": 105.23433189739082,
+          "right": "P",
+          "delta_reference": 0.9,
+          "raw_iv": 0.06828955750195838,
+          "fitted_iv": 0.06457717210635142
+        },
+        {
+          "moneyness": 0.9837425145568296,
+          "strike": 105.64624188629075,
+          "right": "P",
+          "delta_reference": 0.85,
+          "raw_iv": 0.06382475832962423,
+          "fitted_iv": 0.06210682562143077
+        },
+        {
+          "moneyness": 0.9868016080782553,
+          "strike": 105.97476457320839,
+          "right": "P",
+          "delta_reference": 0.8,
+          "raw_iv": 0.06066776235336904,
+          "fitted_iv": 0.06042355690029848
+        },
+        {
+          "moneyness": 0.9894336148596757,
+          "strike": 106.25742148897822,
+          "right": "P",
+          "delta_reference": 0.75,
+          "raw_iv": 0.05839937497354634,
+          "fitted_iv": 0.05921853436457912
+        },
+        {
+          "moneyness": 0.9918032174610955,
+          "strike": 106.5118982508337,
+          "right": "P",
+          "delta_reference": 0.7,
+          "raw_iv": 0.056814248052907315,
+          "fitted_iv": 0.058371080766910485
+        },
+        {
+          "moneyness": 0.9940040724184546,
+          "strike": 106.7482528372638,
+          "right": "P",
+          "delta_reference": 0.65,
+          "raw_iv": 0.05571602670188219,
+          "fitted_iv": 0.05779266637229052
+        },
+        {
+          "moneyness": 0.9960969871026157,
+          "strike": 106.97301548368645,
+          "right": "P",
+          "delta_reference": 0.6,
+          "raw_iv": 0.05500748175865899,
+          "fitted_iv": 0.057464416122046585
+        },
+        {
+          "moneyness": 0.9981261042798641,
+          "strike": 107.19092677749668,
+          "right": "P",
+          "delta_reference": 0.55,
+          "raw_iv": 0.054677123786893225,
+          "fitted_iv": 0.0573462948741888
+        },
+        {
+          "moneyness": 1.000127080842573,
+          "strike": 107.40581598968853,
+          "right": "C",
+          "delta_reference": 0.5,
+          "raw_iv": 0.054719023148931414,
+          "fitted_iv": 0.05742746285545185
+        },
+        {
+          "moneyness": 1.002132068829477,
+          "strike": 107.62113599742348,
+          "right": "C",
+          "delta_reference": 0.45,
+          "raw_iv": 0.055126779351190654,
+          "fitted_iv": 0.05770336636262894
+        },
+        {
+          "moneyness": 1.004173479877861,
+          "strike": 107.84036755671424,
+          "right": "C",
+          "delta_reference": 0.4,
+          "raw_iv": 0.055892996211608995,
+          "fitted_iv": 0.05817568813630995
+        },
+        {
+          "moneyness": 1.0062878066495495,
+          "strike": 108.06742969364862,
+          "right": "C",
+          "delta_reference": 0.35,
+          "raw_iv": 0.05701305081965822,
+          "fitted_iv": 0.05885345595412628
+        },
+        {
+          "moneyness": 1.0085208035473252,
+          "strike": 108.30723607275995,
+          "right": "C",
+          "delta_reference": 0.3,
+          "raw_iv": 0.05849251979168762,
+          "fitted_iv": 0.05976487987385665
+        },
+        {
+          "moneyness": 1.0109361182119787,
+          "strike": 108.5666219522128,
+          "right": "C",
+          "delta_reference": 0.25,
+          "raw_iv": 0.060396328163015045,
+          "fitted_iv": 0.060941412061262065
+        },
+        {
+          "moneyness": 1.0136324967919634,
+          "strike": 108.85619189502087,
+          "right": "C",
+          "delta_reference": 0.2,
+          "raw_iv": 0.06289233738445459,
+          "fitted_iv": 0.06244604107529224
+        },
+        {
+          "moneyness": 1.0167845376544444,
+          "strike": 109.19469639845097,
+          "right": "C",
+          "delta_reference": 0.15,
+          "raw_iv": 0.06619047756819475,
+          "fitted_iv": 0.06442610768783111
+        },
+        {
+          "moneyness": 1.0207644527645365,
+          "strike": 109.62210811257934,
+          "right": "C",
+          "delta_reference": 0.1,
+          "raw_iv": 0.07072094695551773,
+          "fitted_iv": 0.06716664841293743
+        },
+        {
+          "moneyness": 1.026691944468762,
+          "strike": 110.25867430047629,
+          "right": "C",
+          "delta_reference": 0.05,
+          "raw_iv": 0.0778313346980928,
+          "fitted_iv": 0.0716164338051965
+        }
+      ],
+      "c": -0.0017924433078225852,
+      "q": 0.05
+    },
+    "TLT": {
+      "raw_date": "2026-09-04",
+      "fit_date": "2026-09-04",
+      "model_version": "gh5_v1",
+      "forward": 82.37035550966485,
+      "medcouple": -0.006712127940980586,
+      "b": 0.026224843032425116,
+      "g": -0.02798752404340721,
+      "h": 0.0655724388030251,
+      "mad_err": 0.02546148983340368,
+      "effective_duration": 15.05998055675418,
+      "effective_duration_source": "iShares Duration field, market-value weighted",
+      "holdings_as_of_date": "2026-09-04",
+      "holdings_rows": 49,
+      "points": [
+        {
+          "moneyness": 0.9551043489543628,
+          "strike": 78.67228477219786,
+          "right": "P",
+          "delta_reference": 0.95,
+          "raw_iv": 0.11477391832732144,
+          "fitted_iv": 0.11067096818333527
+        },
+        {
+          "moneyness": 0.964928351459305,
+          "strike": 79.48149135105778,
+          "right": "P",
+          "delta_reference": 0.9,
+          "raw_iv": 0.10900656863078297,
+          "fitted_iv": 0.10662172733817653
+        },
+        {
+          "moneyness": 0.9716136007840317,
+          "strike": 80.03215771460627,
+          "right": "P",
+          "delta_reference": 0.85,
+          "raw_iv": 0.1061003875453983,
+          "fitted_iv": 0.10422731946725386
+        },
+        {
+          "moneyness": 0.9769598444936065,
+          "strike": 80.47252970960525,
+          "right": "P",
+          "delta_reference": 0.8,
+          "raw_iv": 0.10397363929265369,
+          "fitted_iv": 0.1025475914596388
+        },
+        {
+          "moneyness": 0.9815698783257659,
+          "strike": 80.85225983527181,
+          "right": "P",
+          "delta_reference": 0.75,
+          "raw_iv": 0.10214700510347895,
+          "fitted_iv": 0.10127595631317242
+        },
+        {
+          "moneyness": 0.9857283621000676,
+          "strike": 81.19479562214221,
+          "right": "P",
+          "delta_reference": 0.7,
+          "raw_iv": 0.10055981066881428,
+          "fitted_iv": 0.10029070034254063
+        },
+        {
+          "moneyness": 0.9895975411320513,
+          "strike": 81.51350127453725,
+          "right": "P",
+          "delta_reference": 0.65,
+          "raw_iv": 0.09923174149720351,
+          "fitted_iv": 0.0995039632714567
+        },
+        {
+          "moneyness": 0.993283060866988,
+          "strike": 81.81707884534187,
+          "right": "P",
+          "delta_reference": 0.6,
+          "raw_iv": 0.09814930055023006,
+          "fitted_iv": 0.09887572247688885
+        },
+        {
+          "moneyness": 0.9968619142396211,
+          "strike": 82.11187026996262,
+          "right": "P",
+          "delta_reference": 0.55,
+          "raw_iv": 0.09728360965759524,
+          "fitted_iv": 0.09839320334190023
+        },
+        {
+          "moneyness": 1.0003966063048073,
+          "strike": 82.4030241119892,
+          "right": "C",
+          "delta_reference": 0.5,
+          "raw_iv": 0.09661959368981089,
+          "fitted_iv": 0.09804502003560592
+        },
+        {
+          "moneyness": 1.003943831748807,
+          "strike": 82.69521033288439,
+          "right": "C",
+          "delta_reference": 0.45,
+          "raw_iv": 0.09615238561200239,
+          "fitted_iv": 0.09781076301265736
+        },
+        {
+          "moneyness": 1.0075610964639148,
+          "strike": 82.99316571344038,
+          "right": "C",
+          "delta_reference": 0.4,
+          "raw_iv": 0.09588601645077972,
+          "fitted_iv": 0.09769685490502719
+        },
+        {
+          "moneyness": 1.0113135171711491,
+          "strike": 83.3022539411171,
+          "right": "C",
+          "delta_reference": 0.35,
+          "raw_iv": 0.09583391363022872,
+          "fitted_iv": 0.09771998711403
+        },
+        {
+          "moneyness": 1.0152831230035955,
+          "strike": 83.62923178476895,
+          "right": "C",
+          "delta_reference": 0.3,
+          "raw_iv": 0.0960219529640245,
+          "fitted_iv": 0.09790387742181275
+        },
+        {
+          "moneyness": 1.0195844351022656,
+          "strike": 83.98353239149442,
+          "right": "C",
+          "delta_reference": 0.25,
+          "raw_iv": 0.09656285832710194,
+          "fitted_iv": 0.09827213907080377
+        },
+        {
+          "moneyness": 1.0243956039205715,
+          "strike": 84.37983007747529,
+          "right": "C",
+          "delta_reference": 0.2,
+          "raw_iv": 0.09770355314350779,
+          "fitted_iv": 0.09890322955832245
+        },
+        {
+          "moneyness": 1.0300322773359674,
+          "strike": 84.84412487059333,
+          "right": "C",
+          "delta_reference": 0.15,
+          "raw_iv": 0.09973406674503944,
+          "fitted_iv": 0.09990687734522381
+        },
+        {
+          "moneyness": 1.0371685818875882,
+          "strike": 85.43194481353558,
+          "right": "C",
+          "delta_reference": 0.1,
+          "raw_iv": 0.10339063550511372,
+          "fitted_iv": 0.10158416939495803
+        },
+        {
+          "moneyness": 1.0478366798369547,
+          "strike": 86.31067983423682,
+          "right": "C",
+          "delta_reference": 0.05,
+          "raw_iv": 0.11096779454610688,
+          "fitted_iv": 0.1048062633086706
+        }
+      ],
+      "c": 0.01017459502113533,
+      "q": 0.029209521953932085
+    }
+  },
+  "latest_date": "2026-09-04"
+}

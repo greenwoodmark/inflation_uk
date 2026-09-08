@@ -1,51 +1,83 @@
 {
   "schema_version": "internal_refresh_status_v1",
-  "run_id": "e0d34689-fc81-4b89-a924-602f1a9d890e",
-  "generated_at_utc": "2026-09-05T08:04:15Z",
-  "started_at_utc": "2026-09-05T08:00:01Z",
-  "overall_status": "success",
+  "run_id": "db5fc772-0561-4286-a226-f9586acb9736",
+  "generated_at_utc": "2026-09-08T08:06:36Z",
+  "started_at_utc": "2026-09-08T08:00:01Z",
+  "overall_status": "degraded",
   "stages": {
+    "jup_share_price_daily": {
+      "status": "success",
+      "started_at_utc": "2026-09-08T08:00:01Z",
+      "output": null,
+      "finished_at_utc": "2026-09-08T08:00:04Z"
+    },
+    "jup_gear_chart_data": {
+      "status": "success",
+      "started_at_utc": "2026-09-08T08:00:04Z",
+      "output": null,
+      "finished_at_utc": "2026-09-08T08:00:10Z"
+    },
+    "tips_fedinvest_status": {
+      "status": "success",
+      "started_at_utc": "2026-09-08T08:00:10Z",
+      "output": null,
+      "finished_at_utc": "2026-09-08T08:00:11Z"
+    },
+    "swaption_status": {
+      "status": "success",
+      "started_at_utc": "2026-09-08T08:00:11Z",
+      "output": null,
+      "finished_at_utc": "2026-09-08T08:01:28Z"
+    },
     "model_logs": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:00:01Z",
+      "started_at_utc": "2026-09-08T08:01:28Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:00:17Z"
+      "finished_at_utc": "2026-09-08T08:01:35Z"
+    },
+    "tip_tlt_model_data": {
+      "status": "failed",
+      "started_at_utc": "2026-09-08T08:01:35Z",
+      "output": null,
+      "error": "Command '['/home/mark/trading_env/venv311/bin/python', '/home/mark/inflation_uk/tools/generate_tip_tlt_model_data.py']' returned non-zero exit status 1.",
+      "finished_at_utc": "2026-09-08T08:03:16Z"
     },
     "etf_bars": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:00:17Z",
+      "started_at_utc": "2026-09-08T08:03:16Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:00:20Z"
+      "finished_at_utc": "2026-09-08T08:03:20Z"
     },
     "short_shadow_export": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:00:20Z",
+      "started_at_utc": "2026-09-08T08:03:20Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:03:36Z"
+      "finished_at_utc": "2026-09-08T08:06:28Z"
     },
     "long_shadow_extension": {
-      "status": "success",
-      "started_at_utc": "2026-09-05T08:03:36Z",
+      "status": "failed",
+      "started_at_utc": "2026-09-08T08:06:28Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:04:10Z"
+      "error": "Command '['/home/mark/trading_env/venv311/bin/python', '/home/mark/trading_env/tools/extend_cpurnsa_long_shadow.py', '--date', '2026-09-07', '--artifact-dir', '/home/mark/trading_env/artifacts/uscpi_long_shadow_history_v4_median_maturity_2026', '--front', '/home/mark/inflation_uk/data/cpurnsa_snapshots/2026-09-07.csv', '--sdr-uri', 'gs://systematicpositiveskew/inflation_data/sdr']' returned non-zero exit status 1.",
+      "finished_at_utc": "2026-09-08T08:06:32Z"
     },
     "cpurnsa_publish": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:04:10Z",
+      "started_at_utc": "2026-09-08T08:06:32Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:04:10Z"
+      "finished_at_utc": "2026-09-08T08:06:32Z"
     },
     "shadow_replay": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:04:10Z",
+      "started_at_utc": "2026-09-08T08:06:32Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:04:15Z"
+      "finished_at_utc": "2026-09-08T08:06:36Z"
     },
     "internal_build": {
       "status": "success",
-      "started_at_utc": "2026-09-05T08:04:15Z",
+      "started_at_utc": "2026-09-08T08:06:36Z",
       "output": null,
-      "finished_at_utc": "2026-09-05T08:04:15Z"
+      "finished_at_utc": "2026-09-08T08:06:36Z"
     }
   }
 }

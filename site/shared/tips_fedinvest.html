@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FedInvest TIPS | Delta Gamma Vega</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    body { margin: 0; }
+    main { max-width: 900px; margin: 0 auto; padding: 28px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px; }
+    h1 { margin: 0 0 8px; }
+    p { color: #475569; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 22px 0; }
+    .metric { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+    .metric strong { display: block; font-size: 1.35rem; color: #0f172a; }
+    .metric span { color: #64748b; font-size: .9rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 9px 8px; text-align: left; }
+    th { color: #475569; font-size: .9rem; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 16px 0; }
+    a { color: #075985; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>FedInvest TIPS prices</h1>
+      <p>State of the Treasury FedInvest TIPS price download.</p>
+      <div id="status" class="notice">Loading status…</div>
+      <div id="summary" class="summary" hidden></div>
+      <h2>Latest collected maturities</h2>
+      <table id="maturities" hidden>
+        <thead><tr><th>Maturity date</th><th>Securities collected</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p id="empty" hidden>No complete FedInvest price file is currently recorded.</p>
+      <p><a href="logs.html">← logs</a></p>
+    </div>
+  </main>
+<script>
+  const text = (value) => document.createTextNode(value == null ? '—' : String(value));
+  fetch('data/tips_fedinvest_status.json', { cache: 'no-store' }).then(response => {
+    if (!response.ok) throw new Error(`Status request failed: ${response.status}`);
+    return response.json();
+  }).then(status => {
+    const notice = document.getElementById('status');
+    notice.hidden = true;
+    const summary = document.getElementById('summary');
+    summary.hidden = false;
+    [[status.latest_price_date, 'Latest price date'], [status.latest_security_count, 'Securities on latest date'], [status.latest_maturity_count, 'Maturities on latest date'], [status.complete_price_dates, 'Complete price dates']].forEach(([value, label]) => {
+      const metric = document.createElement('div'); metric.className = 'metric';
+      metric.appendChild(text(value));
+      const caption = document.createElement('span'); caption.appendChild(text(label)); metric.appendChild(caption);
+      summary.appendChild(metric);
+    });
+    const rows = status.maturities || [];
+    if (!rows.length) { document.getElementById('empty').hidden = false; return; }
+    const tbody = document.querySelector('#maturities tbody');
+    rows.forEach(row => { const tr = document.createElement('tr'); const date = document.createElement('td'); date.appendChild(text(row.maturity_date)); const count = document.createElement('td'); count.appendChild(text(row.security_count)); tr.append(date, count); tbody.appendChild(tr); });
+    document.getElementById('maturities').hidden = false;
+  }).catch(error => {
+    const notice = document.getElementById('status'); notice.hidden = false; notice.textContent = `Status unavailable: ${error.message}`;
+  });
+</script>
+</body>
+</html>

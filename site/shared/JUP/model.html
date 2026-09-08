@@ -29,6 +29,13 @@
   </section>
 
   <section class="card">
+    <h2>E. TIP/TLT GH5 volatility context</h2>
+    <p class="muted">The separate TIP/TLT relative-value model now uses the five-parameter GH5 fit for the one-month Marquee volatility smiles. This summary is included here as a cross-reference; the full interactive smile chart remains on the <a href="../TIP_v_TLT/model.html">TIP/TLT model page</a>.</p>
+    <div class="table-wrap"><table id="tip-tlt-gh5-table" hidden><caption>Latest persisted GH5 fit metadata</caption><thead><tr><th>ETF</th><th>Fit date</th><th>Model</th><th>b</th><th>g</th><th>h</th><th>c</th><th>q</th><th>Price L1 error</th><th>Effective duration</th></tr></thead><tbody></tbody></table></div>
+    <p id="tip-tlt-gh5-error" class="meta"></p>
+  </section>
+
+  <section class="card">
     <h2>A. Performance-fee EPS model: FY2024 and FY2025</h2>
     <p class="muted">Basic historical comparison using the three annual-report AUM anchors. GEAR is the material modelled fund. Jupiter UK Dynamic Long Short Equity is recognised as fee-bearing, but its current AUM is only £50.80m and no annual-report AUM anchor is available, so it is not included in the quantified estimate.</p>
     <div class="notice"><strong>Important:</strong> The estimate is a fee-yield proxy, not an administrator HWM calculation. The KIID documents a 20% contractual fee for GEAR and reports an actual FY2025 fee equal to 2.76% of weighted-average share-class NAV. That 2.76% is used as the calibration yield for this deliberately simple comparison.</div>
@@ -157,7 +164,20 @@
     };
     Plotly.newPlot('jup-gear-scatter', traces, layout, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });
   }
-  fetch('../../data/jup_model_logs.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`JUP payload request failed: ${response.status}`); return response.json(); }).then(payload => { payload.limitations.forEach(item => { const li = document.createElement('li'); li.textContent = item; byId('limitations').appendChild(li); }); payload.assumptions.forEach(item => { const li = document.createElement('li'); li.textContent = item; byId('assumptions').appendChild(li); }); }).catch(() => {});
+  function renderTipTltGH5(payload) {
+    if (payload.schema_version !== 'tip_tlt_gh5_model_v1' || payload.model_version !== 'gh5_v1') throw new Error('TIP/TLT GH5 payload schema is not supported');
+    const body = byId('tip-tlt-gh5-table').querySelector('tbody');
+    ['TIP', 'TLT'].forEach(symbol => {
+      const row = payload.symbols && payload.symbols[symbol];
+      if (!row || row.model_version !== 'gh5_v1') throw new Error(`Missing GH5 fit for ${symbol}`);
+      const cells = [symbol, row.fit_date, row.model_version, Number(row.b).toFixed(6), Number(row.g).toFixed(6), Number(row.h).toFixed(6), Number(row.c).toFixed(6), Number(row.q).toFixed(6), Number(row.mad_err).toFixed(6), Number(row.effective_duration).toFixed(2)];
+      const tr = document.createElement('tr');
+      cells.forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.appendChild(td); });
+      body.appendChild(tr);
+    });
+    byId('tip-tlt-gh5-table').hidden = false;
+  }
+  fetch('../../data/tip_tlt_model.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`TIP/TLT GH5 payload request failed: ${response.status}`); return response.json(); }).then(renderTipTltGH5).catch(error => { byId('tip-tlt-gh5-error').textContent = error.message; });
   fetch('../../data/jup_gear_chart.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`GEAR chart request failed: ${response.status}`); return response.json(); }).then(payload => { renderGearChart(payload); renderJupGearScatter(payload); }).catch(error => { byId('gear-chart-error').textContent = error.message; byId('jup-gear-scatter-error').textContent = error.message; });
 </script>
 </body>

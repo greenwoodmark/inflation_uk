@@ -12,10 +12,10 @@
   "rolling_return_definition": "Trailing 90 calendar-day return using the latest available observation on or before each target date; each point is dated by the GEAR valuation date.",
   "regression": {
     "n": 601,
-    "beta": 1.82067984,
-    "intercept_pct": 4.13222802,
-    "correlation": 0.15858519,
-    "r_squared": 0.02514926,
+    "beta": 1.82064868,
+    "intercept_pct": 4.13235883,
+    "correlation": 0.15858082,
+    "r_squared": 0.02514788,
     "dependent_variable": "JUP trailing 90-day unadjusted share-price return (%)",
     "independent_variable": "GEAR trailing 90-day NAV growth (%)",
     "method": "Ordinary least squares: JUP return = intercept + beta \u00d7 GEAR return"
@@ -7366,9 +7366,9 @@
       "jup_close_asof_date": "2025-03-26",
       "jup_close_prior_date": "2024-12-24",
       "gear_return_pct": 4.525192,
-      "jup_price_return_pct": -11.921296,
+      "jup_price_return_pct": -11.979167,
       "gear_nav": 2.3214,
-      "jup_close_gbp": 76.1
+      "jup_close_gbp": 76.05
     },
     {
       "date": "2025-03-27",
@@ -8015,7 +8015,7 @@
       "jup_close_asof_date": "2025-06-24",
       "jup_close_prior_date": "2025-03-26",
       "gear_return_pct": 3.252348,
-      "jup_price_return_pct": 27.463863,
+      "jup_price_return_pct": 27.547666,
       "gear_nav": 2.3969,
       "jup_close_gbp": 97.0
     },

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TIP vs TLT options relative value | Internal</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    * { box-sizing: border-box; } body { margin: 0; }
+    main { max-width: 1180px; margin: 0 auto; padding: 26px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+    h1, h2 { margin-top: 0; } h1 { margin-bottom: 6px; } h2 { font-size: 1.1rem; margin-bottom: 10px; }
+    .muted, .meta { color: #475569; line-height: 1.5; } a { color: #075985; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; line-height: 1.45; }
+    .chart-wrap { overflow-x: auto; } #smile-chart { width: 100%; min-width: 760px; height: 620px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+    .metric strong { display: block; font-size: 1.12rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; text-align: right; white-space: nowrap; }
+    th { color: #475569; background: #f8fafc; } th:first-child, td:first-child { text-align: left; }
+    #error { color: #b91c1c; }
+    @media (max-width: 650px) { main { padding: 18px 10px 30px; } .grid { grid-template-columns: 1fr; } th, td { padding: 7px 6px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="../logs.html">← All logs</a></p>
+    <section class="card">
+      <h1>TIP vs TLT options relative value</h1>
+      <p class="muted" id="summary">This project studies relative value between TIP, the iShares TIPS Bond ETF, and TLT, the iShares 20+ Year Treasury Bond ETF. It combines daily one-month GS Marquee volatility smiles with GH5 distribution fits and high-frequency ETF returns. The research goal is to model joint TIP/TLT behaviour, including Student-t copula dependence across horizons, then evaluate long-TIP/short-TLT 10-delta put and call trades under explicit risk-neutral and real-world assumptions. The chart below shows the latest raw and GH5-fitted implied-volatility smiles, while hover metadata records fit diagnostics and the market-value-weighted effective-duration proxy from the latest official iShares holdings snapshots for comparison and ongoing monitoring.</p>
+      <p class="meta" id="status">Loading latest canonical smiles and holdings metadata…</p>
+      <p id="error"></p>
+    </section>
+
+    <section class="card">
+      <h2>Latest one-month implied-volatility smiles</h2>
+      <p class="muted">Markers are the raw GS Marquee delta-reference implied volatilities. Lines are the GH5 fitted implied volatilities reconstructed at the same strikes from the persisted <code>b</code>, <code>g</code>, <code>h</code>, <code>c</code>, and <code>q</code> parameters. Hover over any marker or line to see the fit diagnostics and holdings duration metadata.</p>
+      <div class="chart-wrap"><div id="smile-chart" role="img" aria-label="Latest TIP and TLT raw and GH5 fitted one-month implied-volatility smiles"></div></div>
+    </section>
+
+    <section class="card">
+      <h2>Underlying duration metadata</h2>
+      <div id="metrics" class="grid"></div>
+      <p class="meta">The effective-duration value is the market-value-weighted average of the iShares holdings <code>Duration</code> field. The holdings file does not expose a separate column named “Effective Duration”, so the source field and calculation convention are shown explicitly.</p>
+    </section>
+  </main>
+<script>
+  const DATA_PATH = '../data/tip_tlt_model.json';
+  const SYMBOLS = ['TIP', 'TLT'];
+  const COLORS = { TIP: '#075985', TLT: '#b45309' };
+  const fmt = (value, digits = 3) => value == null || !Number.isFinite(Number(value)) ? '—' : Number(value).toFixed(digits);
+  const pct = value => value == null || !Number.isFinite(Number(value)) ? '—' : `${(Number(value) * 100).toFixed(2)}%`;
+  function hoverTemplate(symbol) {
+    return `${symbol} %{customdata[10]}<br>K/F: %{x:.4f}<br>Implied volatility: %{y:.2f}%<br>Medcouple: %{customdata[0]:.4f}<br>b: %{customdata[1]:.6f}<br>g: %{customdata[2]:.6f}<br>h: %{customdata[3]:.6f}<br>c: %{customdata[4]:.6f}<br>q: %{customdata[5]:.6f}<br>Effective duration: %{customdata[6]:.2f}<br>Holdings as of: %{customdata[7]}<br>Fit date: %{customdata[8]}<br>Relative price L1 error: %{customdata[9]:.6f}<extra></extra>`;
+  }
+  function customdata(symbol, payload, point) {
+    const row = payload.symbols[symbol];
+    return [row.medcouple, row.b, row.g, row.h, row.c, row.q, row.effective_duration, row.holdings_as_of_date, row.fit_date, row.mad_err, row.model_version];
+  }
+  function renderMetrics(payload) {
+    document.getElementById('metrics').innerHTML = SYMBOLS.map(symbol => {
+      const row = payload.symbols[symbol];
+      return `<article class="metric"><span>${symbol} effective-duration proxy</span><strong>${fmt(row.effective_duration, 2)}</strong><div class="meta">Holdings as of ${row.holdings_as_of_date}; ${row.holdings_rows} rows; source: ${row.effective_duration_source}</div></article>`;
+    }).join('');
+  }
+  function renderChart(payload) {
+    if (typeof Plotly === 'undefined') throw new Error('Plotly failed to load');
+    const traces = [];
+    SYMBOLS.forEach(symbol => {
+      const row = payload.symbols[symbol];
+      const points = row.points.filter(point => point.fitted_iv != null);
+      const meta = points.map(point => customdata(symbol, payload, point));
+      traces.push({ x: points.map(point => point.moneyness), y: points.map(point => point.raw_iv * 100), customdata: meta, mode: 'markers', type: 'scatter', name: `${symbol} raw`, marker: { color: COLORS[symbol], size: 9, symbol: symbol === 'TIP' ? 'circle' : 'diamond' }, hovertemplate: hoverTemplate(symbol) });
+      traces.push({ x: points.map(point => point.moneyness), y: points.map(point => point.fitted_iv * 100), customdata: meta, mode: 'lines+markers', type: 'scatter', name: `${symbol} GH5 fit`, line: { color: COLORS[symbol], width: 2.5, dash: 'dash' }, marker: { size: 5 }, hovertemplate: hoverTemplate(symbol) });
+    });
+    Plotly.newPlot('smile-chart', traces, {
+      title: { text: `TIP and TLT one-month smiles — raw date ${payload.latest_date}` },
+      xaxis: { title: 'Strike / forward', zeroline: false },
+      yaxis: { title: 'Implied volatility (%)', rangemode: 'tozero' },
+      hovermode: 'closest', legend: { orientation: 'h', y: -0.18 },
+      margin: { t: 70, r: 30, b: 100, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
+    }, { responsive: true, displaylogo: false });
+  }
+  fetch(DATA_PATH, { cache: 'no-store' }).then(response => {
+    if (!response.ok) throw new Error(`TIP/TLT model data request failed: ${response.status}`);
+    return response.json();
+  }).then(payload => {
+    if (payload.schema_version !== 'tip_tlt_gh5_model_v1') throw new Error('TIP/TLT model payload schema is not supported');
+    renderChart(payload); renderMetrics(payload);
+    document.getElementById('status').textContent = `Latest raw smiles: ${payload.latest_date}; generated ${payload.generated_at_utc}.`;
+  }).catch(error => { document.getElementById('error').textContent = error.message; document.getElementById('status').textContent = 'Latest TIP/TLT model data is temporarily unavailable.'; });
+</script>
+</body>
+</html>

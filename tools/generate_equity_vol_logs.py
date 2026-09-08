@@ -18,7 +18,8 @@ SYMBOLS = ("TIP", "TLT")
 DEFAULT_LOG_DIR = Path(os.environ.get("EQUITY_VOL_LOG_DIR", "/home/mark/trading_env/data"))
 WEBSITE_ROOT = Path(os.environ.get("ETF_WEBSITE_ROOT", "/home/mark/inflation_uk"))
 OUTPUT_PATH = WEBSITE_ROOT / "data" / "equity_vol_logs.json"
-OPTIONS_BASE = "gs://systematicpositiveskew/options_data"
+FIT_BASE = "gs://systematicpositiveskew/options_data"
+ACTIVE_MODEL_VERSION = "gh5_v1"
 EVENT_RE = re.compile(r"^(?P<timestamp>\S+) \[EQUITY_VOL\] (?P<body>\{.*\})$")
 
 # Monthly fit files contain one persisted row per valuation date. Cache the
@@ -30,11 +31,7 @@ _PYARROW_WARNING_SHOWN = False
 
 def _fit_uri(symbol: str, date: str) -> str:
     persisted_symbol = {"TIP": "TIP_UP", "TLT": "TLT_UP"}[symbol]
-    month = str(int(date[5:7]))
-    return (
-        f"{OPTIONS_BASE}/symbol={persisted_symbol}/opt_expiry=1m/"
-        f"year={date[:4]}/month={month}/data.parquet"
-    )
+    return f"{FIT_BASE}/ticker={persisted_symbol}/year={date[:4]}/month={date[5:7]}/data.parquet"
 
 
 def _load_persisted_fits(symbol: str) -> dict[str, dict]:
@@ -50,27 +47,30 @@ def _load_persisted_fits(symbol: str) -> dict[str, dict]:
         return _PERSISTED_FITS[symbol]
 
     persisted_symbol = {"TIP": "TIP_UP", "TLT": "TLT_UP"}[symbol]
-    root = f"{OPTIONS_BASE}/symbol={persisted_symbol}/opt_expiry=1m"
+    root = f"{FIT_BASE}/symbol={persisted_symbol}/opt_expiry=1m"
     try:
-        table = ds.dataset(root, format="parquet").to_table(
-            columns=["date", "mad_err", "OTM_puts", "OTM_calls", "fit_datetime"]
+        table = ds.dataset(root, format="parquet", partitioning="hive").to_table(
+            columns=["date", "model_version", "mad_err", "OTM_puts", "OTM_calls", "fit_datetime"]
         )
         columns = table.to_pydict()
         _PERSISTED_FITS[symbol] = {
             str(date): {
+                "model_version": model_version,
                 "mad_err": mad_err,
                 "OTM_puts": otm_puts,
                 "OTM_calls": otm_calls,
                 "fit_datetime": fit_datetime,
             }
-            for date, mad_err, otm_puts, otm_calls, fit_datetime in zip(
+            for date, model_version, mad_err, otm_puts, otm_calls, fit_datetime in zip(
                 columns["date"],
+                columns["model_version"],
                 columns["mad_err"],
                 columns["OTM_puts"],
                 columns["OTM_calls"],
                 columns["fit_datetime"],
                 strict=True,
             )
+            if str(model_version) == ACTIVE_MODEL_VERSION
         }
     except Exception as exc:
         print(f"[INFO] Could not load persisted {symbol} fits from {root}: {exc}")
@@ -120,6 +120,9 @@ def _read_events(symbol: str) -> list[dict]:
 
 def _status(event: str) -> str:
     return {
+        "GH5_WRITTEN": "fit written",
+        "GH5_SKIPPED": "fit already present",
+        "GH5_ERROR": "fit error",
         "GH3_WRITTEN": "fit written",
         "GH3_SKIPPED": "fit already present",
         "GH3_ERROR": "fit error",
@@ -144,6 +147,7 @@ def generate_report() -> dict:
                     "date": date,
                     "status": _status(str(event.get("event", "unknown"))),
                     "event": event.get("event", "unknown"),
+                    "model_version": event.get("model_version", ACTIVE_MODEL_VERSION),
                     "timestamp_utc": event["timestamp_utc"],
                     "rows": event.get("rows"),
                     "mad_err": event.get("mad_err"),
@@ -153,7 +157,7 @@ def generate_report() -> dict:
                     "strike_references": event.get("strike_references"),
                 }
                 if (
-                    report_row["event"] == "GH3_SKIPPED"
+                    report_row["event"] in {"GH3_SKIPPED", "GH5_SKIPPED"}
                     and (report_row["rows"] is None or report_row["mad_err"] is None)
                 ):
                     persisted = _persisted_fit(event, symbol)
@@ -173,7 +177,8 @@ def generate_report() -> dict:
                 "symbol": symbol,
                 "date": date,
                 "status": "fit written",
-                "event": "GH3_WRITTEN",
+                "event": "GH5_WRITTEN",
+                "model_version": ACTIVE_MODEL_VERSION,
                 "timestamp_utc": _persisted_timestamp(fit, date),
                 "rows": int(fit["OTM_puts"] + fit["OTM_calls"]),
                 "mad_err": fit["mad_err"],

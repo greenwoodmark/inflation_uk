@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marquee Swaptions | Delta Gamma Vega</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+    body { margin: 0; }
+    main { max-width: 1000px; margin: 0 auto; padding: 28px 18px 44px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    p { color: #475569; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 22px 0; }
+    .metric { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+    .metric strong { display: block; font-size: 1.35rem; color: #0f172a; }
+    .metric span { color: #64748b; font-size: .9rem; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 9px 8px; text-align: right; white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    th { color: #475569; font-size: .9rem; }
+    .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 16px 0; }
+    .error { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    a { color: #075985; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>Marquee swaption data</h1>
+      <p>Daily collection state for the GS Marquee standard swaption volatility dataset.</p>
+      <div id="status" class="notice">Loading status…</div>
+      <div id="summary" class="summary" hidden></div>
+      <h2>Currency coverage</h2>
+      <div class="table-wrap"><table id="currencies" hidden><thead><tr><th>Currency</th><th>Latest date</th><th>Rows</th><th>Assets</th><th>Days</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+      <h2>Data collected each day</h2>
+      <div class="table-wrap"><table id="daily" hidden><thead><tr><th>Date</th><th>USD rows / assets</th><th>EUR rows / assets</th><th>GBP rows / assets</th><th>JPY rows / assets</th></tr></thead><tbody></tbody></table></div>
+      <p id="empty" hidden>No swaption Parquet data is currently available.</p>
+      <p><a href="logs.html">← logs</a></p>
+    </div>
+  </main>
+<script>
+  const text = (value) => document.createTextNode(value == null ? '—' : String(value));
+  const cell = (row, value) => { const td = document.createElement('td'); td.appendChild(text(value)); row.appendChild(td); };
+  fetch('data/swaption_status.json', { cache: 'no-store' }).then(response => {
+    if (!response.ok) throw new Error(`Status request failed: ${response.status}`);
+    return response.json();
+  }).then(status => {
+    const notice = document.getElementById('status');
+    if (status.currencies_with_errors && status.currencies_with_errors.length) {
+      notice.textContent = `Read warnings for: ${status.currencies_with_errors.join(', ')}`;
+      notice.classList.add('error');
+    } else { notice.hidden = true; }
+    const summary = document.getElementById('summary'); summary.hidden = false;
+    [[status.latest_date, 'Latest data date'], [status.daily.length, 'Days with data'], [status.currency_count, 'Currencies monitored']].forEach(([value, label]) => {
+      const metric = document.createElement('div'); metric.className = 'metric'; const strong = document.createElement('strong'); strong.appendChild(text(value)); metric.appendChild(strong); const caption = document.createElement('span'); caption.appendChild(text(label)); metric.appendChild(caption); summary.appendChild(metric);
+    });
+    const currencies = document.querySelector('#currencies tbody');
+    (status.currencies || []).forEach(item => { const tr = document.createElement('tr'); cell(tr, item.currency); cell(tr, item.latest_date); cell(tr, item.row_count); cell(tr, item.asset_count); cell(tr, item.day_count); cell(tr, item.error ? 'Error' : 'OK'); currencies.appendChild(tr); });
+    if ((status.currencies || []).length) document.getElementById('currencies').hidden = false;
+    const daily = document.querySelector('#daily tbody');
+    (status.daily || []).slice().reverse().forEach(item => { const tr = document.createElement('tr'); cell(tr, item.date); ['USD', 'EUR', 'GBP', 'JPY'].forEach(ccy => { const value = item.currencies[ccy]; cell(tr, value ? `${value.row_count} / ${value.asset_count}` : '—'); }); daily.appendChild(tr); });
+    if ((status.daily || []).length) document.getElementById('daily').hidden = false; else document.getElementById('empty').hidden = false;
+  }).catch(error => { const notice = document.getElementById('status'); notice.textContent = `Status unavailable: ${error.message}`; });
+</script>
+</body>
+</html>

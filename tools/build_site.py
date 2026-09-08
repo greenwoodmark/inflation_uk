@@ -24,9 +24,12 @@ PUBLIC_DATA_FILES = (
 INTERNAL_FILES = (
     "logs.html",
     "bars/logs.html",
+    "tips_fedinvest.html",
+    "swaption_status.html",
     "softs/logs.html",
     "model/logs.html",
     "JUP/model.html",
+    "TIP_v_TLT/model.html",
 )
 INTERNAL_DATA_FILES = (
     "softs_diagnostics.json",
@@ -34,8 +37,9 @@ INTERNAL_DATA_FILES = (
     "equity_vol_logs.json",
     "jup_model_logs.json",
     "jup_gear_chart.json",
+    "tip_tlt_model.json",
 )
-INTERNAL_OPTIONAL_DATA_FILES = ("refresh_status.json",)
+INTERNAL_OPTIONAL_DATA_FILES = ("refresh_status.json", "tips_fedinvest_status.json", "swaption_status.json")
 
 PUBLIC_LOG_TEXT = '<text x="950.48" y="110.08" font-size="192.05px" transform="rotate(-30.83, 950.48, 110.08)">a</text>'
 INTERNAL_LOG_LINK = f'<a href="logs.html" aria-label="Open logs">{PUBLIC_LOG_TEXT}</a>'
