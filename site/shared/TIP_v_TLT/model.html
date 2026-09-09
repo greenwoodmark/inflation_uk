@@ -75,13 +75,16 @@
     const traces = [];
     SYMBOLS.forEach(symbol => {
       const row = payload.symbols[symbol];
+      if (!row || row.raw_date !== row.fit_date || row.raw_date !== payload.latest_date) {
+        throw new Error(`Persisted ${symbol} fit is not aligned with raw date`);
+      }
       const points = row.points.filter(point => point.fitted_iv != null);
       const meta = points.map(point => customdata(symbol, payload, point));
       traces.push({ x: points.map(point => point.moneyness), y: points.map(point => point.raw_iv * 100), customdata: meta, mode: 'markers', type: 'scatter', name: `${symbol} raw`, marker: { color: COLORS[symbol], size: 9, symbol: symbol === 'TIP' ? 'circle' : 'diamond' }, hovertemplate: hoverTemplate(symbol) });
       traces.push({ x: points.map(point => point.moneyness), y: points.map(point => point.fitted_iv * 100), customdata: meta, mode: 'lines+markers', type: 'scatter', name: `${symbol} GH5 fit`, line: { color: COLORS[symbol], width: 2.5, dash: 'dash' }, marker: { size: 5 }, hovertemplate: hoverTemplate(symbol) });
     });
     Plotly.newPlot('smile-chart', traces, {
-      title: { text: `TIP and TLT one-month smiles — raw date ${payload.latest_date}` },
+      title: { text: `TIP and TLT one-month smiles — paired raw/fit date ${payload.latest_date}` },
       xaxis: { title: 'Strike / forward', zeroline: false },
       yaxis: { title: 'Implied volatility (%)', rangemode: 'tozero' },
       hovermode: 'closest', legend: { orientation: 'h', y: -0.18 },
@@ -137,7 +140,7 @@
   }).then(payload => {
     if (payload.schema_version !== 'tip_tlt_gh5_model_v1') throw new Error('TIP/TLT model payload schema is not supported');
     renderChart(payload); renderComparison(payload); renderMetrics(payload);
-    document.getElementById('status').textContent = `Latest raw smiles: ${payload.latest_date}; generated ${payload.generated_at_utc}.`;
+    document.getElementById('status').textContent = `Latest aligned raw/fit smiles: ${payload.latest_date}; generated ${payload.generated_at_utc}.`;
   }).catch(error => { document.getElementById('error').textContent = error.message; document.getElementById('status').textContent = 'Latest TIP/TLT model data is temporarily unavailable.'; });
 </script>
 </body>

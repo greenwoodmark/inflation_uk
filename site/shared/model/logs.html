@@ -66,11 +66,13 @@
   const byId = id => document.getElementById(id);
   const text = value => value === null || value === undefined || value === '' ? '—' : String(value);
   const number = value => value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) ? '—' : Number(value).toFixed(6);
-  const selectedRows = () => (payload.rows || []).filter(row => (byId('symbol').value === 'ALL' || row.symbol === byId('symbol').value) && (byId('status').value === 'ALL' || row.status === byId('status').value));
+  const GH5_EVENTS = new Set(['GH5_WRITTEN', 'GH5_SKIPPED', 'GH5_ERROR']);
+  const gh5Rows = () => (payload.rows || []).filter(row => row.model_version === 'gh5_v1' && GH5_EVENTS.has(row.event));
+  const selectedRows = () => gh5Rows().filter(row => (byId('symbol').value === 'ALL' || row.symbol === byId('symbol').value) && (byId('status').value === 'ALL' || row.status === byId('status').value));
   function renderSummary() {
     const root = byId('summary'); root.replaceChildren();
     for (const symbol of payload.symbols) {
-      const rows = (payload.rows || []).filter(row => row.symbol === symbol).sort((a, b) => b.date.localeCompare(a.date));
+      const rows = gh5Rows().filter(row => row.symbol === symbol).sort((a, b) => b.date.localeCompare(a.date));
       const row = rows[0]; const card = document.createElement('article'); card.className = `summary ${row ? row.status.replaceAll(' ', '-') : ''}`;
       const h = document.createElement('h3'); h.textContent = symbol; card.appendChild(h);
       const dl = document.createElement('dl'); [['Latest date', row && row.date], ['State', row && row.status], ['Event', row && row.event], ['MAD error', row && number(row.mad_err)], ['Quote rows', row && row.rows]].forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = text(value); dl.append(dt, dd); }); card.appendChild(dl); root.appendChild(card);

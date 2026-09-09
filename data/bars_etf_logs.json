@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-09T06:06:13.810615Z",
+  "generated_at_utc": "2026-09-09T08:20:37.247850Z",
   "source": "gs://systematicpositiveskew/etf_data",
   "bar_size": "1 min",
   "expected_session": "2026-09-08",
@@ -71,8 +71,8 @@
     {
       "symbol": "TSLA",
       "first_bar_utc": "2026-01-02T09:00:00Z",
-      "last_bar_utc": "2026-09-08T23:59:00Z",
-      "bar_count": 163618,
+      "last_bar_utc": "2026-09-09T08:04:00Z",
+      "bar_count": 163623,
       "expected_session": "2026-09-08",
       "stale": false,
       "staleness_days": 0,

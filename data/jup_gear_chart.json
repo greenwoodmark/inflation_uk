@@ -4,18 +4,18 @@
   "isin": "IE00BLP5S809",
   "currency": "GBP",
   "start_date": "2024-01-02",
-  "end_date": "2026-09-04",
+  "end_date": "2026-09-07",
   "base_nav": 1.9998010094,
   "nav_source": "Canonical GEAR GBP NAV series: FE fundinfo-derived pre-overlap history and official Jupiter NAV from 2024-11-28 onward.",
   "aum_source": "Linear interpolation of documented annual/current AUM anchors; visualization only.",
   "jup_share_price_source": "IBKR historical daily TRADES bars from gs://systematicpositiveskew/fund_data/jupiter/JUP_LN_share_price_daily/data.parquet; unadjusted close, not dividend-adjusted total return.",
   "rolling_return_definition": "Trailing 90 calendar-day return using the latest available observation on or before each target date; each point is dated by the GEAR valuation date.",
   "regression": {
-    "n": 601,
-    "beta": 1.82064868,
-    "intercept_pct": 4.13235883,
-    "correlation": 0.15858082,
-    "r_squared": 0.02514788,
+    "n": 602,
+    "beta": 1.81131399,
+    "intercept_pct": 4.13776135,
+    "correlation": 0.15782591,
+    "r_squared": 0.02490902,
     "dependent_variable": "JUP trailing 90-day unadjusted share-price return (%)",
     "independent_variable": "GEAR trailing 90-day NAV growth (%)",
     "method": "Ordinary least squares: JUP return = intercept + beta \u00d7 GEAR return"
@@ -4671,6 +4671,13 @@
       "nav": 2.7529,
       "cumulative_return_pct": 37.658696,
       "drawdown_pct": -0.286149,
+      "aum_gbp_m": 9450.0
+    },
+    {
+      "date": "2026-09-07",
+      "nav": 2.7571,
+      "cumulative_return_pct": 37.868717,
+      "drawdown_pct": -0.134019,
       "aum_gbp_m": 9450.0
     }
   ],
@@ -11285,6 +11292,17 @@
       "jup_price_return_pct": -1.973684,
       "gear_nav": 2.7529,
       "jup_close_gbp": 163.9
+    },
+    {
+      "date": "2026-09-07",
+      "gear_nav_asof_date": "2026-09-07",
+      "gear_nav_prior_date": "2026-06-09",
+      "jup_close_asof_date": "2026-09-07",
+      "jup_close_prior_date": "2026-06-09",
+      "gear_return_pct": 4.301279,
+      "jup_price_return_pct": -0.606796,
+      "gear_nav": 2.7571,
+      "jup_close_gbp": 163.8
     }
   ]
 }

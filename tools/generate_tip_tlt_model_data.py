@@ -75,6 +75,28 @@ def _read_raw(symbol: str, date_str: str) -> pd.DataFrame:
     return ds.dataset(uri, format="parquet").to_table().to_pandas()
 
 
+def _read_fit_frame(symbol: str, model_version: str) -> pd.DataFrame:
+    if model_version not in (GH3_VERSION, GH5_VERSION):
+        raise ValueError(f"Unsupported model version: {model_version}")
+    prefix = f"options_data/symbol={symbol}_UP/opt_expiry=1m/"
+    candidates = [
+        f"{GCS_BASE}/{name}"
+        for name in _blob_names(prefix)
+        if name.endswith("/data.parquet")
+    ]
+    if not candidates:
+        raise RuntimeError(f"No {model_version} fit files found for {symbol}")
+    frames = [
+        ds.dataset(uri, format="parquet", partitioning="hive").to_table().to_pandas()
+        for uri in candidates
+    ]
+    fits = pd.concat(frames, ignore_index=True)
+    if "model_version" not in fits.columns:
+        fits["model_version"] = GH3_VERSION
+    fits["date"] = fits["date"].astype(str)
+    return fits.loc[fits["model_version"].astype(str).eq(model_version)].copy()
+
+
 def _read_latest_fit(
     symbol: str,
     latest_date: str,
@@ -82,35 +104,25 @@ def _read_latest_fit(
     allow_gh3_fallback: bool = False,
 ) -> tuple[pd.Series, str]:
     """Read the latest explicitly versioned fit on or before the raw date."""
-    if model_version == GH5_VERSION:
-        prefix = f"options_data/symbol={symbol}_UP/opt_expiry=1m/"
-    elif model_version == GH3_VERSION:
-        prefix = f"options_data/symbol={symbol}_UP/opt_expiry=1m/"
-    else:
-        raise ValueError(f"Unsupported model version: {model_version}")
-    candidates = [
-        f"{GCS_BASE}/{name}"
-        for name in _blob_names(prefix)
-        if name.endswith("/data.parquet")
-    ]
-    if not candidates:
-        if model_version == GH5_VERSION and allow_gh3_fallback:
-            return _read_latest_fit(symbol, latest_date, GH3_VERSION, False)
-        raise RuntimeError(f"No {model_version} fit files found for {symbol}")
-    frames = [ds.dataset(uri, format="parquet", partitioning="hive").to_table().to_pandas() for uri in candidates]
-    fits = pd.concat(frames, ignore_index=True)
-    if "model_version" not in fits.columns:
-        fits["model_version"] = GH3_VERSION
-    fits["date"] = fits["date"].astype(str)
-    eligible = fits.loc[
-        fits["model_version"].astype(str).eq(model_version) & (fits["date"] <= latest_date)
-    ].sort_values("date")
+    fits = _read_fit_frame(symbol, model_version)
+    eligible = fits.loc[fits["date"] <= latest_date].sort_values("date")
     if eligible.empty:
         if model_version == GH5_VERSION and allow_gh3_fallback:
             return _read_latest_fit(symbol, latest_date, GH3_VERSION, False)
         raise RuntimeError(f"No {model_version} fit on or before {latest_date} for {symbol}")
     row = eligible.iloc[-1]
     return row, str(row["date"])
+
+
+def _latest_common_model_date(
+    raw_dates: dict[str, set[str]], fit_dates: dict[str, set[str]]
+) -> str:
+    available = set.intersection(
+        *(raw_dates[symbol] & fit_dates[symbol] for symbol in SYMBOLS)
+    )
+    if not available:
+        raise RuntimeError("TIP and TLT have no common raw date with persisted fits")
+    return max(available)
 
 
 def _read_holdings(symbol: str) -> pd.DataFrame:
@@ -314,17 +326,37 @@ def build_payload(
         "tenor": "1m",
         "symbols": {},
     }
-    latest_dates = []
+    raw_dates = {symbol: _raw_dates(symbol) for symbol in SYMBOLS}
+    fit_frames = {}
+    fit_model_versions = {}
     for symbol in SYMBOLS:
-        latest_date = _latest_raw_date(symbol)
-        raw = _read_raw(symbol, latest_date)
-        fit, fit_date = _read_latest_fit(symbol, latest_date, model_version, allow_gh3_fallback)
+        try:
+            fit_frames[symbol] = _read_fit_frame(symbol, model_version)
+            fit_model_versions[symbol] = model_version
+        except RuntimeError:
+            if model_version == GH5_VERSION and allow_gh3_fallback:
+                fit_frames[symbol] = _read_fit_frame(symbol, GH3_VERSION)
+                fit_model_versions[symbol] = GH3_VERSION
+            else:
+                raise
+    fit_dates = {symbol: set(frame["date"].astype(str)) for symbol, frame in fit_frames.items()}
+    paired_date = _latest_common_model_date(raw_dates, fit_dates)
+
+    for symbol in SYMBOLS:
+        raw = _read_raw(symbol, paired_date)
+        matching_fits = fit_frames[symbol].loc[fit_frames[symbol]["date"].eq(paired_date)].copy()
+        if matching_fits.empty:
+            raise RuntimeError(f"No persisted fit for {symbol} on paired date {paired_date}")
+        if "fit_datetime" in matching_fits.columns:
+            matching_fits = matching_fits.sort_values("fit_datetime")
+        fit = matching_fits.iloc[-1]
+        fit_date = str(fit["date"])
         holdings = _read_holdings(symbol)
         duration, duration_source, holdings_date, holdings_rows = _effective_duration(holdings)
         points = _smile_payload(raw, fit)
-        symbol_model_version = str(fit.get("model_version", GH3_VERSION))
+        symbol_model_version = fit_model_versions[symbol]
         entry = {
-            "raw_date": latest_date,
+            "raw_date": paired_date,
             "fit_date": fit_date,
             "model_version": symbol_model_version,
             "objective_name": str(fit.get("objective_name", "legacy_price_objective")),
@@ -344,8 +376,7 @@ def build_payload(
             entry["c"] = float(fit["c"])
             entry["q"] = float(fit["q"])
         result["symbols"][symbol] = entry
-        latest_dates.extend([latest_date, fit_date])
-    result["latest_date"] = max(latest_dates)
+    result["latest_date"] = paired_date
     if model_version == GH5_VERSION:
         comparison_date = _latest_common_raw_date()
         result["comparison_schema_version"] = "tip_tlt_gh3_gh5_comparison_v1"

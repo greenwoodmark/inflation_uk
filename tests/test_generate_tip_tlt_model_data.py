@@ -6,7 +6,11 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path("/home/mark/inflation_uk/tools")))
-from generate_tip_tlt_model_data import _comparison_points, _model_normalized_price  # noqa: E402
+from generate_tip_tlt_model_data import (  # noqa: E402
+    _comparison_points,
+    _latest_common_model_date,
+    _model_normalized_price,
+)
 
 
 def test_website_reconstruction_uses_gh5_c_and_q():
@@ -67,3 +71,26 @@ def test_comparison_points_reconstruct_both_models_at_same_strikes():
     assert all("gh3_v1_fitted_iv" in point and "gh5_v1_fitted_iv" in point for point in points)
     assert [point["strike"] for point in points] == [95.0, 105.0]
     assert any(point["gh3_v1_fitted_iv"] != point["gh5_v1_fitted_iv"] for point in points)
+
+
+def test_latest_common_model_date_requires_raw_and_persisted_fit_for_both_symbols():
+    raw_dates = {
+        "TIP": {"2026-09-08", "2026-08-31"},
+        "TLT": {"2026-09-08", "2026-08-31"},
+    }
+    fit_dates = {
+        "TIP": {"2026-08-31"},
+        "TLT": {"2026-08-31"},
+    }
+    assert _latest_common_model_date(raw_dates, fit_dates) == "2026-08-31"
+
+
+def test_latest_common_model_date_rejects_missing_common_fit():
+    raw_dates = {"TIP": {"2026-09-08"}, "TLT": {"2026-09-08"}}
+    fit_dates = {"TIP": {"2026-08-31"}, "TLT": {"2026-08-31"}}
+    try:
+        _latest_common_model_date(raw_dates, fit_dates)
+    except RuntimeError as exc:
+        assert "no common raw date with persisted fits" in str(exc)
+    else:
+        raise AssertionError("date mismatch was silently accepted")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the internal TIP/TLT GH3 operational snapshot from structured logs."""
+"""Generate the internal TIP/TLT GH5 operational snapshot from structured logs."""
 
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ WEBSITE_ROOT = Path(os.environ.get("ETF_WEBSITE_ROOT", "/home/mark/inflation_uk"
 OUTPUT_PATH = WEBSITE_ROOT / "data" / "equity_vol_logs.json"
 FIT_BASE = "gs://systematicpositiveskew/options_data"
 ACTIVE_MODEL_VERSION = "gh5_v1"
+GH5_EVENTS = frozenset({"GH5_WRITTEN", "GH5_SKIPPED", "GH5_ERROR"})
 EVENT_RE = re.compile(r"^(?P<timestamp>\S+) \[EQUITY_VOL\] (?P<body>\{.*\})$")
 
 # Monthly fit files contain one persisted row per valuation date. Cache the
@@ -137,6 +138,9 @@ def generate_report() -> dict:
         events = _read_events(symbol)
         by_date: dict[str, dict] = {}
         for event in events:
+            event_name = str(event.get("event", ""))
+            if event_name not in GH5_EVENTS:
+                continue
             date = event.get("date")
             if not date:
                 continue
