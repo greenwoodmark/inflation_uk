@@ -13,7 +13,7 @@
     h1, h2 { margin-top: 0; } h1 { margin-bottom: 6px; } h2 { font-size: 1.1rem; margin-bottom: 10px; }
     .muted, .meta { color: #475569; line-height: 1.5; } a { color: #075985; }
     .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; line-height: 1.45; }
-    .chart-wrap { overflow-x: auto; } #smile-chart, #comparison-chart { width: 100%; min-width: 760px; height: 620px; }
+    .chart-wrap { overflow-x: auto; } #smile-chart, #comparison-chart, #return-scatter { width: 100%; min-width: 760px; height: 620px; }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }
     .metric { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
     .metric strong { display: block; font-size: 1.12rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
@@ -47,6 +47,19 @@
       <div class="chart-wrap"><div id="comparison-chart" role="img" aria-label="Latest common-date TIP and TLT GH3 versus GH5 fitted volatility smiles"></div></div>
     </section>
 
+    <section class="card">
+      <h2>Swaption implied volatility</h2>
+      <p class="muted">Uses Marquee swaption data in GCS to get weighted 1-month expiry vol across every underlying (swaption tail).</p>
+    </section>
+
+    <section class="card">
+      <h2>One-month TIP versus TLT returns</h2>
+      <p class="muted" id="return-scatter-status">Loading dividend-cleaned one-month return observations…</p>
+      <div class="chart-wrap"><div id="return-scatter" role="img" aria-label="Scatterplot of one-month TIP returns against one-month TLT returns"></div></div>
+      <p class="meta">Returns use unadjusted ETF closes. Observations are excluded when either the start or end session is an ex-dividend date for TIP or TLT. A fitted linear trend is shown; a fitted t-copula is planned for a later iteration.</p>
+    </section>
+
+    <section class="card">
       <div id="metrics" class="grid"></div>
       <p class="meta">The effective-duration value is the market-value-weighted average of the iShares holdings <code>Duration</code> field. The holdings file does not expose a separate column named “Effective Duration”, so the source field and calculation convention are shown explicitly.</p>
     </section>
@@ -90,6 +103,39 @@
       hovermode: 'closest', legend: { orientation: 'h', y: -0.18 },
       margin: { t: 70, r: 30, b: 100, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
     }, { responsive: true, displaylogo: false });
+  }
+  function renderReturnScatter(payload) {
+    const scatter = payload.return_scatter;
+    if (!scatter || scatter.schema_version !== 'tip_tlt_one_month_return_scatter_v1' || !Array.isArray(scatter.points) || !scatter.points.length) throw new Error('TIP/TLT return scatter payload is not supported');
+    const points = scatter.points;
+    const x = points.map(point => Number(point.TLT_return));
+    const y = points.map(point => Number(point.TIP_return));
+    const valid = points.every((point, index) => Number.isFinite(x[index]) && Number.isFinite(y[index]));
+    if (!valid) throw new Error('TIP/TLT return scatter contains invalid returns');
+    const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
+    const xMean = mean(x); const yMean = mean(y);
+    const covariance = x.reduce((sum, value, index) => sum + (value - xMean) * (y[index] - yMean), 0);
+    const variance = x.reduce((sum, value) => sum + (value - xMean) ** 2, 0);
+    const slope = variance > 0 ? covariance / variance : 0;
+    const intercept = yMean - slope * xMean;
+    const lineX = [Math.min(...x), Math.max(...x)];
+    const lineY = lineX.map(value => intercept + slope * value);
+    const customdata = points.map(point => [point.start_date, point.end_date]);
+    Plotly.newPlot('return-scatter', [
+      { x, y, customdata, mode: 'markers', type: 'scatter', name: 'Observed returns', marker: { color: '#075985', size: 6, opacity: 0.62 }, hovertemplate: 'Start: %{customdata[0]}<br>End: %{customdata[1]}<br>TLT return: %{x:.2%}<br>TIP return: %{y:.2%}<extra></extra>' },
+      { x: lineX, y: lineY, mode: 'lines', type: 'scatter', name: `Linear fit (slope ${slope.toFixed(2)})`, line: { color: '#b45309', width: 2 } }
+    ], {
+      title: { text: 'One-month TIP and TLT price returns' },
+      xaxis: { title: 'TLT one-month return', tickformat: '.0%' },
+      yaxis: { title: 'TIP one-month return', tickformat: '.0%' },
+      hovermode: 'closest', legend: { orientation: 'h', y: -0.18 },
+      margin: { t: 70, r: 30, b: 100, l: 70 }, paper_bgcolor: 'white', plot_bgcolor: 'white'
+    }, { responsive: true, displaylogo: false });
+    document.getElementById('return-scatter-status').textContent = `${scatter.observations} observations shown; ${scatter.excluded_dividend_observations} endpoint pairs excluded for dividends; raw pairs considered: ${scatter.raw_observations}.`;
+  }
+  function renderSwaptionSummary(payload) {
+    const summary = payload.swaption_summary;
+    if (!summary || !summary.summary) throw new Error('Swaption summary payload is not supported');
   }
   function renderComparison(payload) {
     if (payload.comparison_schema_version !== 'tip_tlt_gh3_gh5_comparison_v1') throw new Error('TIP/TLT GH3/GH5 comparison payload is not supported');
@@ -139,7 +185,7 @@
     return response.json();
   }).then(payload => {
     if (payload.schema_version !== 'tip_tlt_gh5_model_v1') throw new Error('TIP/TLT model payload schema is not supported');
-    renderChart(payload); renderComparison(payload); renderMetrics(payload);
+    renderChart(payload); renderComparison(payload); renderReturnScatter(payload); renderSwaptionSummary(payload); renderMetrics(payload);
     document.getElementById('status').textContent = `Latest aligned raw/fit smiles: ${payload.latest_date}; generated ${payload.generated_at_utc}.`;
   }).catch(error => { document.getElementById('error').textContent = error.message; document.getElementById('status').textContent = 'Latest TIP/TLT model data is temporarily unavailable.'; });
 </script>

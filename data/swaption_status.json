@@ -1,16 +1,16 @@
 {
   "schema_version": "marquee_swaption_status_v1",
-  "generated_at_utc": "2026-09-09T08:01:23Z",
+  "generated_at_utc": "2026-09-10T07:11:18Z",
   "source_base": "gs://systematicpositiveskew/gs_marquee_data/swaptions",
   "lookback_days": 90,
-  "start_date": "2026-06-12",
-  "latest_date": "2026-09-08",
+  "start_date": "2026-06-13",
+  "latest_date": "2026-09-09",
   "currency_count": 4,
   "currencies_with_errors": [],
   "currencies": [
     {
       "currency": "USD",
-      "latest_date": "2026-09-08",
+      "latest_date": "2026-09-09",
       "row_count": 2880,
       "asset_count": 48,
       "day_count": 60,
@@ -18,7 +18,7 @@
     },
     {
       "currency": "EUR",
-      "latest_date": "2026-09-08",
+      "latest_date": "2026-09-09",
       "row_count": 2976,
       "asset_count": 48,
       "day_count": 62,
@@ -26,7 +26,7 @@
     },
     {
       "currency": "GBP",
-      "latest_date": "2026-09-08",
+      "latest_date": "2026-09-09",
       "row_count": 2976,
       "asset_count": 48,
       "day_count": 62,
@@ -34,7 +34,7 @@
     },
     {
       "currency": "JPY",
-      "latest_date": "2026-09-08",
+      "latest_date": "2026-09-09",
       "row_count": 2936,
       "asset_count": 48,
       "day_count": 61,
@@ -42,27 +42,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-06-12",
-      "currencies": {
-        "USD": {
-          "row_count": 48,
-          "asset_count": 48
-        },
-        "EUR": {
-          "row_count": 48,
-          "asset_count": 48
-        },
-        "GBP": {
-          "row_count": 48,
-          "asset_count": 48
-        },
-        "JPY": {
-          "row_count": 48,
-          "asset_count": 48
-        }
-      }
-    },
     {
       "date": "2026-06-15",
       "currencies": {
@@ -1318,6 +1297,27 @@
     },
     {
       "date": "2026-09-08",
+      "currencies": {
+        "USD": {
+          "row_count": 48,
+          "asset_count": 48
+        },
+        "EUR": {
+          "row_count": 48,
+          "asset_count": 48
+        },
+        "GBP": {
+          "row_count": 48,
+          "asset_count": 48
+        },
+        "JPY": {
+          "row_count": 48,
+          "asset_count": 48
+        }
+      }
+    },
+    {
+      "date": "2026-09-09",
       "currencies": {
         "USD": {
           "row_count": 48,

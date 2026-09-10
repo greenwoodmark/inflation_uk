@@ -33,6 +33,8 @@ from infrastructure.equity_vol_model import (  # noqa: E402
 GCS_BASE = "gs://systematicpositiveskew"
 RAW_BASE = f"{GCS_BASE}/gs_marquee_data/equity_vol"
 FIT_BASE = f"{GCS_BASE}/options_data"
+ETF_BASE = f"{GCS_BASE}/etf_data"
+EX_DIVIDEND_BASE = f"{GCS_BASE}/etf_reference/ex_dividend_dates"
 ACTIVE_MODEL_VERSION = "gh5_v1"
 HOLDINGS_BASE = f"{GCS_BASE}/etf_reference/holdings"
 SYMBOLS = ("TIP", "TLT")
@@ -315,6 +317,86 @@ def _build_latest_comparison(common_date: str) -> dict:
     return comparison
 
 
+def _read_daily_closes(symbol: str) -> pd.Series:
+    """Read the last UTC bar in each New York ETF session."""
+    dataset = ds.dataset(
+        ETF_BASE,
+        format="parquet",
+        partitioning="hive",
+        ignore_prefixes=[".", "_", "infrastructure_test"],
+    )
+    table = dataset.to_table(filter=ds.field("symbol") == symbol.upper())
+    bars = table.to_pandas()
+    if bars.empty:
+        return pd.Series(dtype=float, name=symbol)
+    if "close" not in bars.columns or "date" not in bars.columns:
+        raise ValueError(f"ETF bars for {symbol} require date and close columns")
+    bars["date"] = pd.to_datetime(bars["date"], utc=True, errors="raise")
+    bars["session_date"] = bars["date"].dt.tz_convert("America/New_York").dt.date
+    daily = bars.sort_values("date").groupby("session_date")["close"].last()
+    daily = pd.to_numeric(daily, errors="coerce").dropna()
+    daily = daily.loc[daily.gt(0)]
+    daily.name = symbol
+    return daily
+
+
+def _read_ex_dividend_dates() -> set:
+    """Read TIP/TLT ex-dates from the authoritative GCS reference dataset."""
+    dataset = ds.dataset(
+        EX_DIVIDEND_BASE,
+        format="parquet",
+        partitioning="hive",
+        ignore_prefixes=[".", "_", "infrastructure_test"],
+        exclude_invalid_files=True,
+    )
+    table = dataset.to_table(columns=["symbol", "ex_date"])
+    frame = table.to_pandas()
+    if frame.empty:
+        return set()
+    return set(pd.to_datetime(frame["ex_date"], errors="coerce").dt.date.dropna())
+
+
+def _exclude_dividend_points(points: list[dict], dividend_dates: set) -> tuple[list[dict], int]:
+    """Drop one-month observations with an ex-date at either endpoint."""
+    retained = [
+        point for point in points
+        if pd.Timestamp(point["start_date"]).date() not in dividend_dates
+        and pd.Timestamp(point["end_date"]).date() not in dividend_dates
+    ]
+    return retained, len(points) - len(retained)
+
+
+def _return_scatter_payload() -> dict:
+    """Build one-month common-session price returns excluding dividend endpoints."""
+    prices = {symbol: _read_daily_closes(symbol) for symbol in SYMBOLS}
+    common_sessions = sorted(set(prices["TIP"].index).intersection(prices["TLT"].index))
+    dividend_dates = _read_ex_dividend_dates()
+    raw_points = []
+    for entry_date in common_sessions:
+        nominal = (pd.Timestamp(entry_date) + pd.DateOffset(months=1)).date()
+        expiry_candidates = [date for date in common_sessions if date >= nominal]
+        if not expiry_candidates:
+            continue
+        expiry_date = expiry_candidates[0]
+        point = {
+            "start_date": entry_date.isoformat(),
+            "end_date": expiry_date.isoformat(),
+            "TIP_return": float(prices["TIP"].loc[expiry_date] / prices["TIP"].loc[entry_date] - 1.0),
+            "TLT_return": float(prices["TLT"].loc[expiry_date] / prices["TLT"].loc[entry_date] - 1.0),
+        }
+        raw_points.append(point)
+    points, excluded = _exclude_dividend_points(raw_points, dividend_dates)
+    return {
+        "schema_version": "tip_tlt_one_month_return_scatter_v1",
+        "return_definition": "unadjusted ETF close-to-close price return",
+        "dividend_rule": "exclude observations whose start or end session is an ex-dividend date for TIP or TLT",
+        "raw_observations": len(raw_points),
+        "excluded_dividend_observations": excluded,
+        "observations": len(points),
+        "points": points,
+    }
+
+
 def build_payload(
     model_version: str = ACTIVE_MODEL_VERSION,
     allow_gh3_fallback: bool = False,
@@ -376,6 +458,11 @@ def build_payload(
             entry["c"] = float(fit["c"])
             entry["q"] = float(fit["q"])
         result["symbols"][symbol] = entry
+    result["return_scatter"] = _return_scatter_payload()
+    result["swaption_summary"] = {
+        "title": "Swaption implied volatility",
+        "summary": "Uses Marquee swaption data in GCS to get weighted 1-month expiry vol across every underlying (swaption tail)",
+    }
     result["latest_date"] = paired_date
     if model_version == GH5_VERSION:
         comparison_date = _latest_common_raw_date()

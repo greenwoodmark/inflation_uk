@@ -11,6 +11,7 @@
     h1, h2, h3 { margin-top: 0; } h1 { margin-bottom: 6px; } h2 { font-size: 1.1rem; margin-bottom: 10px; }
     .muted, .meta { color: #475569; } .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; }
     .table-wrap { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    .matrix-table { font-size: .63rem; } .matrix-table th, .matrix-table td { padding: 5px; }
     caption { text-align: left; font-weight: 650; padding: 0 0 10px; } th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; text-align: right; white-space: nowrap; vertical-align: top; }
     th { color: #475569; font-weight: 650; background: #f8fafc; } th:first-child, td:first-child { text-align: left; white-space: normal; }
     .grid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 12px; } .metric { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
@@ -77,12 +78,34 @@
   </section>
 
   <section class="card">
-    <h2>F. Delta of JUP share price to GEAR performance</h2>
-    <p class="muted">Each point compares the trailing 90-calendar-day GEAR NAV growth with the trailing 90-calendar-day JUP share-price return. The point date is the GEAR valuation date; each series uses the latest available observation on or before the current and prior dates. JUP return uses the unadjusted IBKR closing price, so it is a share-price return rather than a dividend-adjusted total return. The fitted line is an ordinary-least-squares regression of JUP return on GEAR growth; beta is its slope, measured in JUP percentage points per one percentage point of GEAR growth.</p>
+    <h2>F. Delta of JUP gross total return to GEAR performance</h2>
+    <p class="muted">Each point compares the trailing 90-calendar-day GEAR NAV growth with the trailing 90-calendar-day gross dividend-reinvested JUP total return. The point date is the GEAR valuation date; each series uses the latest available observation on or before the current and prior dates. JUP total return starts from the unadjusted IBKR closing price and attributes pre-tax cash dividends on their ex-dates. The fitted line is an ordinary-least-squares regression of JUP total return on GEAR growth; beta is its slope, measured in JUP percentage points per one percentage point of GEAR growth.</p>
     <div class="chart-wrap" aria-live="polite">
-      <div id="jup-gear-scatter" role="img" aria-label="Rolling 90-day JUP share-price return versus GEAR NAV growth"></div>
+      <div id="jup-gear-scatter" role="img" aria-label="Rolling 90-calendar-day JUP gross total return versus GEAR NAV growth"></div>
     </div>
     <p id="jup-gear-scatter-error" class="meta"></p>
+  </section>
+  <section class="card">
+    <h2>G. P&amp;L opportunity matrix</h2>
+    <p class="muted">The table counts overlapping 90-calendar-day observations by GEAR NAV return bucket (rows) and JUP gross total return bucket (columns). It uses the same as-of alignment as Section F; darker cells indicate more observations in that combination.</p>
+    <div class="table-wrap">
+      <table id="jup-gear-joint-frequency" class="matrix-table" aria-describedby="jup-gear-joint-frequency-note">
+        <caption>Frequency of 90-calendar-day GEAR NAV and JUP gross total return combinations</caption>
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="muted">This is a historical frequency matrix of overlapping 90-calendar-day return windows, not a forecast or a direct P&amp;L estimate. The JUP series is a gross dividend-reinvested total return using unadjusted prices plus pre-tax cash dividends attributed on ex-dates. For a more realistic opportunity analysis, this total performance should also be beta-adjusted for JUP’s exposure to the FTSE 100, separating broad UK equity-market performance from the residual JUP-specific return.</p>
+    <p id="jup-gear-joint-frequency-error" class="meta"></p>
+  </section>
+  <section class="card">
+    <h2>H. JUP dividend-event monitor</h2>
+    <p class="muted">The table shows the four most recent dividend events currently stored, including any future ex-dates already announced. Future dates are not forecast here: the cadence message is only a monthly-review heuristic because Jupiter normally confirms dates and amounts relatively close to declaration.</p>
+    <p id="jup-dividend-monitor-status" class="notice"></p>
+    <div class="table-wrap">
+      <table id="jup-dividend-monitor-table"><caption>Latest stored JUP cash-distribution events</caption><thead><tr><th scope="col">Ex-date</th><th scope="col">Payment date</th><th scope="col">Type</th><th scope="col">GBP/share</th><th scope="col">State</th></tr></thead><tbody></tbody></table>
+    </div>
+    <p id="jup-dividend-monitor-note" class="meta"></p>
   </section>
 </main>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -119,19 +142,31 @@
     if (!regression || typeof regression.beta !== 'number' || typeof regression.intercept_pct !== 'number') throw new Error('JUP/GEAR regression data is missing');
     if (typeof Plotly === 'undefined') throw new Error('Plotly failed to load');
     const xValues = data.map(row => row.gear_return_pct);
-    const yValues = data.map(row => row.jup_price_return_pct);
+    const yValues = data.map(row => row.jup_total_return_pct);
     const xMin = Math.min(...xValues);
     const xMax = Math.max(...xValues);
     const regressionX = [xMin, xMax];
     const regressionY = regressionX.map(value => regression.intercept_pct + regression.beta * value);
+    const pointText = row => `${row.date}<br>GEAR NAV: ${row.gear_return_pct.toFixed(2)}%<br>JUP gross total return: ${row.jup_total_return_pct.toFixed(2)}%`;
+    const historicalData = data.slice(0, -1);
+    const latestData = data[data.length - 1];
     const traces = [
       {
-        x: xValues,
-        y: yValues,
-        text: data.map(row => `${row.date}<br>GEAR NAV: ${row.gear_return_pct.toFixed(2)}%<br>JUP price: ${row.jup_price_return_pct.toFixed(2)}%`),
-        name: 'Rolling 90-day observations',
+        x: historicalData.map(row => row.gear_return_pct),
+        y: historicalData.map(row => row.jup_total_return_pct),
+        text: historicalData.map(pointText),
+        name: 'Rolling 90-calendar-day observations',
         mode: 'markers',
         marker: { color: '#7c3aed', size: 7, opacity: 0.72, line: { color: '#5b21b6', width: 0.5 } },
+        hovertemplate: '%{text}<extra></extra>'
+      },
+      {
+        x: [latestData.gear_return_pct],
+        y: [latestData.jup_total_return_pct],
+        text: [pointText(latestData)],
+        name: 'Latest observation',
+        mode: 'markers',
+        marker: { color: '#dc2626', size: 22, opacity: 1, line: { color: '#7f1d1d', width: 2 } },
         hovertemplate: '%{text}<extra></extra>'
       },
       {
@@ -151,13 +186,38 @@
       plot_bgcolor: '#f8fafc',
       hovermode: 'closest',
       legend: { orientation: 'h', y: -0.18, x: 0 },
-      xaxis: { title: 'GEAR trailing 90-day NAV growth (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
-      yaxis: { title: 'JUP trailing 90-day share-price return (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
-      annotations: [{ x: 0, y: 1.12, xref: 'paper', yref: 'paper', text: `Unadjusted JUP share-price return versus GEAR NAV growth<br><sup>${statistics}</sup>`, showarrow: false, xanchor: 'left', font: { color: '#475569', size: 12 } }]
+      xaxis: { title: 'GEAR trailing 90-calendar-day NAV growth (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
+      yaxis: { title: 'JUP trailing 90-calendar-day gross total return (%)', ticksuffix: '%', zeroline: true, zerolinecolor: '#64748b', gridcolor: '#e2e8f0' },
+      annotations: [{ x: 0, y: 1.12, xref: 'paper', yref: 'paper', text: `Gross JUP total return versus GEAR NAV growth<br><sup>${statistics}</sup>`, showarrow: false, xanchor: 'left', font: { color: '#475569', size: 12 } }]
     };
     Plotly.newPlot('jup-gear-scatter', traces, layout, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });
   }
-  fetch('../../data/jup_gear_chart.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`GEAR chart request failed: ${response.status}`); return response.json(); }).then(payload => { renderGearChart(payload); renderJupGearScatter(payload); }).catch(error => { byId('gear-chart-error').textContent = error.message; byId('jup-gear-scatter-error').textContent = error.message; });
+  function renderJointFrequency(payload) {
+    const matrix = payload.joint_frequency;
+    if (!matrix || !Array.isArray(matrix.counts) || matrix.counts.length !== 10) throw new Error('JUP/GEAR opportunity matrix is missing or incomplete');
+    const table = byId('jup-gear-joint-frequency');
+    const header = table.querySelector('thead');
+    const body = table.querySelector('tbody');
+    const maxCount = Math.max(...matrix.counts.flat());
+    header.innerHTML = `<tr><th scope="col">GEAR NAV growth ↓ / JUP gross total return →</th>${matrix.jup_labels_pct.map(label => `<th scope="col">${label}</th>`).join('')}</tr>`;
+    body.innerHTML = matrix.counts.map((row, rowIndex) => `<tr><th scope="row">${matrix.gear_labels_pct[rowIndex]}</th>${row.map(count => {
+      const intensity = maxCount > 0 ? Math.round(12 + (count / maxCount) * 48) : 12;
+      return `<td style="background-color: hsl(210 75% ${100 - intensity}%);" title="${count} observations (${(count / matrix.n * 100).toFixed(1)}%)">${count}</td>`;
+    }).join('')}</tr>`).join('');
+  }
+  function renderJupDividendMonitor(payload) {
+    const monitor = payload.jup_dividend_monitor;
+    if (!monitor || !Array.isArray(monitor.last_four_events)) throw new Error('JUP dividend monitor data is missing');
+    const status = byId('jup-dividend-monitor-status');
+    status.textContent = monitor.message;
+    status.style.background = monitor.missing_forthcoming_event ? '#fee2e2' : '#f0fdf4';
+    status.style.borderColor = monitor.missing_forthcoming_event ? '#fca5a5' : '#86efac';
+    status.style.color = monitor.missing_forthcoming_event ? '#991b1b' : '#166534';
+    const body = byId('jup-dividend-monitor-table').querySelector('tbody');
+    body.innerHTML = monitor.last_four_events.map(event => `<tr><td>${event.ex_date}</td><td>${event.payment_date || '—'}</td><td>${event.dividend_type}</td><td>${Number(event.amount_gbp_per_share).toFixed(4)}</td><td>${event.status}</td></tr>`).join('');
+    byId('jup-dividend-monitor-note').textContent = monitor.note + (monitor.expected_next_ordinary_ex_date ? ` Historical-cadence review date: ${monitor.expected_next_ordinary_ex_date}.` : '');
+  }
+  fetch('../../data/jup_gear_chart.json', { cache: 'no-store' }).then(response => { if (!response.ok) throw new Error(`GEAR chart request failed: ${response.status}`); return response.json(); }).then(payload => { renderGearChart(payload); renderJupGearScatter(payload); renderJointFrequency(payload); renderJupDividendMonitor(payload); }).catch(error => { byId('gear-chart-error').textContent = error.message; byId('jup-gear-scatter-error').textContent = error.message; byId('jup-gear-joint-frequency-error').textContent = error.message; byId('jup-dividend-monitor-status').textContent = error.message; });
 </script>
 </body>
 </html>

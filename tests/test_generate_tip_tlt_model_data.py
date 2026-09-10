@@ -8,6 +8,7 @@ import pandas as pd
 sys.path.insert(0, str(Path("/home/mark/inflation_uk/tools")))
 from generate_tip_tlt_model_data import (  # noqa: E402
     _comparison_points,
+    _exclude_dividend_points,
     _latest_common_model_date,
     _model_normalized_price,
 )
@@ -94,3 +95,14 @@ def test_latest_common_model_date_rejects_missing_common_fit():
         assert "no common raw date with persisted fits" in str(exc)
     else:
         raise AssertionError("date mismatch was silently accepted")
+
+
+def test_return_scatter_excludes_dividend_endpoints_once():
+    points = [
+        {"start_date": "2024-01-02", "end_date": "2024-02-02", "TIP_return": 0.01, "TLT_return": 0.02},
+        {"start_date": "2024-02-02", "end_date": "2024-03-04", "TIP_return": 0.03, "TLT_return": -0.01},
+        {"start_date": "2024-03-04", "end_date": "2024-04-04", "TIP_return": -0.02, "TLT_return": 0.01},
+    ]
+    retained, excluded = _exclude_dividend_points(points, {pd.Timestamp("2024-02-02").date()})
+    assert excluded == 2
+    assert [point["start_date"] for point in retained] == ["2024-03-04"]

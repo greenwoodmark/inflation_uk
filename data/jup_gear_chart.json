@@ -1,24 +1,366 @@
 {
-  "schema_version": "jup_gear_chart_v3",
+  "schema_version": "jup_gear_chart_v4",
   "fund": "GEAR",
   "isin": "IE00BLP5S809",
   "currency": "GBP",
   "start_date": "2024-01-02",
-  "end_date": "2026-09-07",
+  "end_date": "2026-09-08",
   "base_nav": 1.9998010094,
   "nav_source": "Canonical GEAR GBP NAV series: FE fundinfo-derived pre-overlap history and official Jupiter NAV from 2024-11-28 onward.",
   "aum_source": "Linear interpolation of documented annual/current AUM anchors; visualization only.",
-  "jup_share_price_source": "IBKR historical daily TRADES bars from gs://systematicpositiveskew/fund_data/jupiter/JUP_LN_share_price_daily/data.parquet; unadjusted close, not dividend-adjusted total return.",
-  "rolling_return_definition": "Trailing 90 calendar-day return using the latest available observation on or before each target date; each point is dated by the GEAR valuation date.",
+  "jup_share_price_source": "IBKR historical daily TRADES bars from gs://systematicpositiveskew/fund_data/jupiter/JUP_LN_share_price_daily/data.parquet; unadjusted close.",
+  "jup_dividend_source": "Canonical gross dividend reference from gs://systematicpositiveskew/fund_data/jupiter/equity_reference/dividends; ex-date attribution, cash GBP per share before tax.",
+  "jup_dividend_monitor": {
+    "as_of_date": "2026-09-10",
+    "last_four_events": [
+      {
+        "ex_date": "2025-08-07",
+        "payment_date": "2025-09-05",
+        "amount_gbp_per_share": 0.021,
+        "dividend_type": "ordinary_interim",
+        "status": "past"
+      },
+      {
+        "ex_date": "2026-04-16",
+        "payment_date": "2026-05-19",
+        "amount_gbp_per_share": 0.023,
+        "dividend_type": "ordinary_final",
+        "status": "past"
+      },
+      {
+        "ex_date": "2026-04-16",
+        "payment_date": "2026-05-19",
+        "amount_gbp_per_share": 0.057,
+        "dividend_type": "special",
+        "status": "past"
+      },
+      {
+        "ex_date": "2026-08-06",
+        "payment_date": "2026-09-04",
+        "amount_gbp_per_share": 0.037,
+        "dividend_type": "ordinary_interim",
+        "status": "past"
+      }
+    ],
+    "expected_next_ordinary_ex_date": "2026-11-26",
+    "missing_forthcoming_event": false,
+    "status": "review_due_later",
+    "message": "No future event is stored; review the source around 2026-11-26 based on historical cadence.",
+    "note": "Cadence is a review heuristic, not an issuer-confirmed future date; future dates may only become available with a dividend announcement."
+  },
+  "rolling_days": 90,
+  "rolling_return_definition": "Trailing 90-calendar-day return using the latest available observation on or before each target date; JUP gross total return includes ex-date distributions between the selected prior and current closes.",
   "regression": {
-    "n": 602,
-    "beta": 1.81131399,
-    "intercept_pct": 4.13776135,
-    "correlation": 0.15782591,
-    "r_squared": 0.02490902,
-    "dependent_variable": "JUP trailing 90-day unadjusted share-price return (%)",
-    "independent_variable": "GEAR trailing 90-day NAV growth (%)",
-    "method": "Ordinary least squares: JUP return = intercept + beta \u00d7 GEAR return"
+    "n": 603,
+    "beta": 1.79277108,
+    "intercept_pct": 4.18085526,
+    "correlation": 0.15628802,
+    "r_squared": 0.02442594,
+    "dependent_variable": "JUP trailing 90-calendar-day gross total return (%)",
+    "independent_variable": "GEAR trailing 90-calendar-day NAV growth (%)",
+    "method": "Ordinary least squares: JUP gross total return = intercept + beta \u00d7 GEAR return"
+  },
+  "joint_frequency": {
+    "schema_version": "jup_gear_joint_frequency_v2",
+    "n": 603,
+    "bins": 10,
+    "row_axis": "GEAR trailing 90-calendar-day NAV growth (%)",
+    "column_axis": "JUP trailing 90-calendar-day gross total return (%)",
+    "gear_edges_pct": [
+      -2.433071,
+      -1.45679,
+      -0.48051,
+      0.49577,
+      1.472051,
+      2.448332,
+      3.424612,
+      4.400893,
+      5.377173,
+      6.353454,
+      7.329734
+    ],
+    "jup_edges_pct": [
+      -20.881671,
+      -9.561641,
+      1.75839,
+      13.07842,
+      24.398451,
+      35.718481,
+      47.038512,
+      58.358542,
+      69.678573,
+      80.998604,
+      92.318634
+    ],
+    "gear_labels_pct": [
+      "-2.4% to -1.5%",
+      "-1.5% to -0.5%",
+      "-0.5% to 0.5%",
+      "0.5% to 1.5%",
+      "1.5% to 2.4%",
+      "2.4% to 3.4%",
+      "3.4% to 4.4%",
+      "4.4% to 5.4%",
+      "5.4% to 6.4%",
+      "6.4% to 7.3%"
+    ],
+    "jup_labels_pct": [
+      "-20.9% to -9.6%",
+      "-9.6% to 1.8%",
+      "1.8% to 13.1%",
+      "13.1% to 24.4%",
+      "24.4% to 35.7%",
+      "35.7% to 47.0%",
+      "47.0% to 58.4%",
+      "58.4% to 69.7%",
+      "69.7% to 81.0%",
+      "81.0% to 92.3%"
+    ],
+    "counts": [
+      [
+        16,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        5,
+        9,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        13,
+        2,
+        6,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        10,
+        19,
+        7,
+        4,
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        22,
+        29,
+        25,
+        19,
+        12,
+        10,
+        2,
+        3,
+        0,
+        1
+      ],
+      [
+        10,
+        53,
+        27,
+        14,
+        16,
+        4,
+        1,
+        10,
+        2,
+        7
+      ],
+      [
+        23,
+        51,
+        20,
+        11,
+        17,
+        2,
+        4,
+        1,
+        3,
+        0
+      ],
+      [
+        5,
+        15,
+        22,
+        3,
+        4,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        4,
+        15,
+        6,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        11,
+        6,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "percentages": [
+      [
+        2.65,
+        0.17,
+        0.17,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.83,
+        1.49,
+        0.17,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        2.16,
+        0.33,
+        1.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        1.66,
+        3.15,
+        1.16,
+        0.66,
+        0.66,
+        0.5,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        3.65,
+        4.81,
+        4.15,
+        3.15,
+        1.99,
+        1.66,
+        0.33,
+        0.5,
+        0.0,
+        0.17
+      ],
+      [
+        1.66,
+        8.79,
+        4.48,
+        2.32,
+        2.65,
+        0.66,
+        0.17,
+        1.66,
+        0.33,
+        1.16
+      ],
+      [
+        3.81,
+        8.46,
+        3.32,
+        1.82,
+        2.82,
+        0.33,
+        0.66,
+        0.17,
+        0.5,
+        0.0
+      ],
+      [
+        0.83,
+        2.49,
+        3.65,
+        0.5,
+        0.66,
+        0.0,
+        0.0,
+        0.17,
+        0.0,
+        0.0
+      ],
+      [
+        0.17,
+        0.66,
+        2.49,
+        1.0,
+        0.17,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.82,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "binning": "Equal-width buckets over observed 90-calendar-day return ranges; the final bucket includes the maximum edge."
   },
   "aum_anchors_gbp_m": [
     {
@@ -4679,6 +5021,13 @@
       "cumulative_return_pct": 37.868717,
       "drawdown_pct": -0.134019,
       "aum_gbp_m": 9450.0
+    },
+    {
+      "date": "2026-09-08",
+      "nav": 2.7571,
+      "cumulative_return_pct": 37.868717,
+      "drawdown_pct": -0.134019,
+      "aum_gbp_m": 9450.0
     }
   ],
   "scatter_series": [
@@ -4690,6 +5039,7 @@
       "jup_close_prior_date": "2024-01-03",
       "gear_return_pct": 3.237723,
       "jup_price_return_pct": -0.281373,
+      "jup_total_return_pct": -0.281373,
       "gear_nav": 2.06620041,
       "jup_close_gbp": 88.6
     },
@@ -4701,6 +5051,7 @@
       "jup_close_prior_date": "2024-01-04",
       "gear_return_pct": 3.089059,
       "jup_price_return_pct": -2.874516,
+      "jup_total_return_pct": -2.874516,
       "gear_nav": 2.06910049,
       "jup_close_gbp": 87.85
     },
@@ -4712,6 +5063,7 @@
       "jup_close_prior_date": "2024-01-05",
       "gear_return_pct": 3.150087,
       "jup_price_return_pct": 3.068906,
+      "jup_total_return_pct": 3.068906,
       "gear_nav": 2.06950039,
       "jup_close_gbp": 89.0
     },
@@ -4723,6 +5075,7 @@
       "jup_close_prior_date": "2024-01-05",
       "gear_return_pct": 3.080324,
       "jup_price_return_pct": 1.331789,
+      "jup_total_return_pct": 1.331789,
       "gear_nav": 2.06810074,
       "jup_close_gbp": 87.5
     },
@@ -4734,6 +5087,7 @@
       "jup_close_prior_date": "2024-01-09",
       "gear_return_pct": 3.352751,
       "jup_price_return_pct": 16.150297,
+      "jup_total_return_pct": 16.150297,
       "gear_nav": 2.07149989,
       "jup_close_gbp": 88.1
     },
@@ -4745,6 +5099,7 @@
       "jup_close_prior_date": "2024-01-10",
       "gear_return_pct": 2.962278,
       "jup_price_return_pct": 15.62701,
+      "jup_total_return_pct": 15.62701,
       "gear_nav": 2.06810074,
       "jup_close_gbp": 89.9
     },
@@ -4756,6 +5111,7 @@
       "jup_close_prior_date": "2024-01-11",
       "gear_return_pct": 2.708557,
       "jup_price_return_pct": 16.655865,
+      "jup_total_return_pct": 16.655865,
       "gear_nav": 2.06670109,
       "jup_close_gbp": 90.0
     },
@@ -4767,6 +5123,7 @@
       "jup_close_prior_date": "2024-01-12",
       "gear_return_pct": 2.425584,
       "jup_price_return_pct": 14.471123,
+      "jup_total_return_pct": 14.471123,
       "gear_nav": 2.06489994,
       "jup_close_gbp": 88.2
     },
@@ -4778,6 +5135,7 @@
       "jup_close_prior_date": "2024-01-12",
       "gear_return_pct": 2.951405,
       "jup_price_return_pct": 16.807268,
+      "jup_total_return_pct": 16.807268,
       "gear_nav": 2.07550049,
       "jup_close_gbp": 90.0
     },
@@ -4789,6 +5147,7 @@
       "jup_close_prior_date": "2024-01-16",
       "gear_return_pct": 3.511429,
       "jup_price_return_pct": 10.367032,
+      "jup_total_return_pct": 10.367032,
       "gear_nav": 2.08409994,
       "jup_close_gbp": 85.7
     },
@@ -4800,6 +5159,7 @@
       "jup_close_prior_date": "2024-01-17",
       "gear_return_pct": 3.112625,
       "jup_price_return_pct": 11.59322,
+      "jup_total_return_pct": 11.59322,
       "gear_nav": 2.08040007,
       "jup_close_gbp": 82.3
     },
@@ -4811,6 +5171,7 @@
       "jup_close_prior_date": "2024-01-18",
       "gear_return_pct": 3.020113,
       "jup_price_return_pct": 9.583609,
+      "jup_total_return_pct": 9.583609,
       "gear_nav": 2.08420072,
       "jup_close_gbp": 82.9
     },
@@ -4822,6 +5183,7 @@
       "jup_close_prior_date": "2024-01-19",
       "gear_return_pct": 2.921273,
       "jup_price_return_pct": 9.188464,
+      "jup_total_return_pct": 9.234071,
       "gear_nav": 2.08569954,
       "jup_close_gbp": 81.4
     },
@@ -4833,6 +5195,7 @@
       "jup_close_prior_date": "2024-01-19",
       "gear_return_pct": 3.128555,
       "jup_price_return_pct": 8.78605,
+      "jup_total_return_pct": 8.831489,
       "gear_nav": 2.08990009,
       "jup_close_gbp": 81.1
     },
@@ -4844,6 +5207,7 @@
       "jup_close_prior_date": "2024-01-23",
       "gear_return_pct": 2.763333,
       "jup_price_return_pct": 7.549669,
+      "jup_total_return_pct": 7.594591,
       "gear_nav": 2.08630099,
       "jup_close_gbp": 81.2
     },
@@ -4855,6 +5219,7 @@
       "jup_close_prior_date": "2024-01-24",
       "gear_return_pct": 2.924213,
       "jup_price_return_pct": 2.079142,
+      "jup_total_return_pct": 2.121779,
       "gear_nav": 2.09069989,
       "jup_close_gbp": 76.1
     },
@@ -4866,6 +5231,7 @@
       "jup_close_prior_date": "2024-01-25",
       "gear_return_pct": 2.955149,
       "jup_price_return_pct": -0.78125,
+      "jup_total_return_pct": -0.739807,
       "gear_nav": 2.09729984,
       "jup_close_gbp": 76.2
     },
@@ -4877,6 +5243,7 @@
       "jup_close_prior_date": "2024-01-26",
       "gear_return_pct": 2.800715,
       "jup_price_return_pct": -3.727506,
+      "jup_total_return_pct": -3.687294,
       "gear_nav": 2.09220032,
       "jup_close_gbp": 74.9
     },
@@ -4888,6 +5255,7 @@
       "jup_close_prior_date": "2024-01-26",
       "gear_return_pct": 2.820364,
       "jup_price_return_pct": -2.18509,
+      "jup_total_return_pct": -2.144234,
       "gear_nav": 2.09260022,
       "jup_close_gbp": 76.1
     },
@@ -4899,6 +5267,7 @@
       "jup_close_prior_date": "2024-01-30",
       "gear_return_pct": 2.18782,
       "jup_price_return_pct": -0.506329,
+      "jup_total_return_pct": -0.464772,
       "gear_nav": 2.09250104,
       "jup_close_gbp": 78.6
     },
@@ -4910,6 +5279,7 @@
       "jup_close_prior_date": "2024-01-31",
       "gear_return_pct": 2.34356,
       "jup_price_return_pct": -2.767296,
+      "jup_total_return_pct": -2.726682,
       "gear_nav": 2.09180042,
       "jup_close_gbp": 77.3
     },
@@ -4921,6 +5291,7 @@
       "jup_close_prior_date": "2024-02-01",
       "gear_return_pct": 1.802617,
       "jup_price_return_pct": -1.452937,
+      "jup_total_return_pct": -1.411775,
       "gear_nav": 2.08389999,
       "jup_close_gbp": 78.0
     },
@@ -4932,6 +5303,7 @@
       "jup_close_prior_date": "2024-02-02",
       "gear_return_pct": 1.916018,
       "jup_price_return_pct": -4.459377,
+      "jup_total_return_pct": -4.419471,
       "gear_nav": 2.08509969,
       "jup_close_gbp": 78.2
     },
@@ -4943,6 +5315,7 @@
       "jup_close_prior_date": "2024-02-02",
       "gear_return_pct": 2.077315,
       "jup_price_return_pct": -3.481979,
+      "jup_total_return_pct": -3.441665,
       "gear_nav": 2.08839967,
       "jup_close_gbp": 79.0
     },
@@ -4954,6 +5327,7 @@
       "jup_close_prior_date": "2024-02-07",
       "gear_return_pct": 1.820275,
       "jup_price_return_pct": 3.628262,
+      "jup_total_return_pct": 3.671547,
       "gear_nav": 2.08650094,
       "jup_close_gbp": 81.4
     },
@@ -4965,6 +5339,7 @@
       "jup_close_prior_date": "2024-02-08",
       "gear_return_pct": 1.876649,
       "jup_price_return_pct": 3.396226,
+      "jup_total_return_pct": 3.439414,
       "gear_nav": 2.08460062,
       "jup_close_gbp": 82.2
     },
@@ -4976,6 +5351,7 @@
       "jup_close_prior_date": "2024-02-09",
       "gear_return_pct": 2.168452,
       "jup_price_return_pct": 4.936709,
+      "jup_total_return_pct": 4.98054,
       "gear_nav": 2.08719997,
       "jup_close_gbp": 82.9
     },
@@ -4987,6 +5363,7 @@
       "jup_close_prior_date": "2024-02-09",
       "gear_return_pct": 2.090152,
       "jup_price_return_pct": 7.21519,
+      "jup_total_return_pct": 7.259973,
       "gear_nav": 2.08560037,
       "jup_close_gbp": 84.7
     },
@@ -4998,6 +5375,7 @@
       "jup_close_prior_date": "2024-02-13",
       "gear_return_pct": 2.234013,
       "jup_price_return_pct": 4.259148,
+      "jup_total_return_pct": 4.302696,
       "gear_nav": 2.09129974,
       "jup_close_gbp": 86.9
     },
@@ -5009,6 +5387,7 @@
       "jup_close_prior_date": "2024-02-14",
       "gear_return_pct": 2.370533,
       "jup_price_return_pct": 3.29934,
+      "jup_total_return_pct": 3.342487,
       "gear_nav": 2.09880027,
       "jup_close_gbp": 86.1
     },
@@ -5020,6 +5399,7 @@
       "jup_close_prior_date": "2024-02-15",
       "gear_return_pct": 2.467212,
       "jup_price_return_pct": 2.702703,
+      "jup_total_return_pct": 2.745601,
       "gear_nav": 2.09320007,
       "jup_close_gbp": 85.5
     },
@@ -5031,6 +5411,7 @@
       "jup_close_prior_date": "2024-02-16",
       "gear_return_pct": 2.253121,
       "jup_price_return_pct": 0.5386,
+      "jup_total_return_pct": 0.580594,
       "gear_nav": 2.09209954,
       "jup_close_gbp": 84.0
     },
@@ -5042,6 +5423,7 @@
       "jup_close_prior_date": "2024-02-16",
       "gear_return_pct": 2.062514,
       "jup_price_return_pct": -0.658288,
+      "jup_total_return_pct": -0.616794,
       "gear_nav": 2.08819972,
       "jup_close_gbp": 83.0
     },
@@ -5053,6 +5435,7 @@
       "jup_close_prior_date": "2024-02-20",
       "gear_return_pct": 2.262692,
       "jup_price_return_pct": 0.243902,
+      "jup_total_return_pct": 0.285773,
       "gear_nav": 2.08799977,
       "jup_close_gbp": 82.2
     },
@@ -5064,6 +5447,7 @@
       "jup_close_prior_date": "2024-02-21",
       "gear_return_pct": 2.260825,
       "jup_price_return_pct": 1.343101,
+      "jup_total_return_pct": 1.385431,
       "gear_nav": 2.08520047,
       "jup_close_gbp": 83.0
     },
@@ -5075,6 +5459,7 @@
       "jup_close_prior_date": "2024-02-22",
       "gear_return_pct": 1.883152,
       "jup_price_return_pct": -6.925208,
+      "jup_total_return_pct": -6.886331,
       "gear_nav": 2.08290024,
       "jup_close_gbp": 84.0
     },
@@ -5086,6 +5471,7 @@
       "jup_close_prior_date": "2024-02-23",
       "gear_return_pct": 1.803665,
       "jup_price_return_pct": -3.815937,
+      "jup_total_return_pct": -3.775762,
       "gear_nav": 2.08280107,
       "jup_close_gbp": 85.7
     },
@@ -5097,6 +5483,7 @@
       "jup_close_prior_date": "2024-02-23",
       "gear_return_pct": 2.316876,
       "jup_price_return_pct": -3.479237,
+      "jup_total_return_pct": -3.438921,
       "gear_nav": 2.09330084,
       "jup_close_gbp": 86.0
     },
@@ -5108,6 +5495,7 @@
       "jup_close_prior_date": "2024-02-28",
       "gear_return_pct": 1.742124,
       "jup_price_return_pct": 4.004854,
+      "jup_total_return_pct": 4.048296,
       "gear_nav": 2.09080067,
       "jup_close_gbp": 85.7
     },
@@ -5119,6 +5507,7 @@
       "jup_close_prior_date": "2024-02-29",
       "gear_return_pct": 1.586485,
       "jup_price_return_pct": 1.719902,
+      "jup_total_return_pct": 1.762389,
       "gear_nav": 2.09390069,
       "jup_close_gbp": 82.8
     },
@@ -5130,6 +5519,7 @@
       "jup_close_prior_date": "2024-03-01",
       "gear_return_pct": 1.933618,
       "jup_price_return_pct": 0.532229,
+      "jup_total_return_pct": 0.574221,
       "gear_nav": 2.09809964,
       "jup_close_gbp": 85.0
     },
@@ -5141,6 +5531,7 @@
       "jup_close_prior_date": "2024-03-01",
       "gear_return_pct": 1.923903,
       "jup_price_return_pct": -1.360142,
+      "jup_total_return_pct": -1.318941,
       "gear_nav": 2.09789969,
       "jup_close_gbp": 83.4
     },
@@ -5152,6 +5543,7 @@
       "jup_close_prior_date": "2024-03-06",
       "gear_return_pct": 1.654392,
       "jup_price_return_pct": -8.14978,
+      "jup_total_return_pct": -8.111415,
       "gear_nav": 2.09519957,
       "jup_close_gbp": 83.4
     },
@@ -5163,6 +5555,7 @@
       "jup_close_prior_date": "2024-03-07",
       "gear_return_pct": 1.89353,
       "jup_price_return_pct": -11.706783,
+      "jup_total_return_pct": -11.669904,
       "gear_nav": 2.09330084,
       "jup_close_gbp": 80.7
     },
@@ -5174,6 +5567,7 @@
       "jup_close_prior_date": "2024-03-08",
       "gear_return_pct": 1.81303,
       "jup_price_return_pct": -11.197339,
+      "jup_total_return_pct": -11.160247,
       "gear_nav": 2.09459972,
       "jup_close_gbp": 80.1
     },
@@ -5185,6 +5579,7 @@
       "jup_close_prior_date": "2024-03-08",
       "gear_return_pct": 1.847086,
       "jup_price_return_pct": -13.303769,
+      "jup_total_return_pct": -13.267557,
       "gear_nav": 2.09530034,
       "jup_close_gbp": 78.2
     },
@@ -5196,6 +5591,7 @@
       "jup_close_prior_date": "2024-03-12",
       "gear_return_pct": 2.301613,
       "jup_price_return_pct": -13.194834,
+      "jup_total_return_pct": -13.158577,
       "gear_nav": 2.09350079,
       "jup_close_gbp": 77.3
     },
@@ -5207,6 +5603,7 @@
       "jup_close_prior_date": "2024-03-13",
       "gear_return_pct": 1.738398,
       "jup_price_return_pct": -17.118093,
+      "jup_total_return_pct": -17.083474,
       "gear_nav": 2.08940102,
       "jup_close_gbp": 76.5
     },
@@ -5218,6 +5615,7 @@
       "jup_close_prior_date": "2024-03-14",
       "gear_return_pct": 1.509681,
       "jup_price_return_pct": -15.280044,
+      "jup_total_return_pct": -15.244657,
       "gear_nav": 2.09109979,
       "jup_close_gbp": 77.9
     },
@@ -5229,6 +5627,7 @@
       "jup_close_prior_date": "2024-03-15",
       "gear_return_pct": 1.436217,
       "jup_price_return_pct": -14.742152,
+      "jup_total_return_pct": -14.706541,
       "gear_nav": 2.09049994,
       "jup_close_gbp": 76.05
     },
@@ -5240,6 +5639,7 @@
       "jup_close_prior_date": "2024-03-15",
       "gear_return_pct": 1.494429,
       "jup_price_return_pct": -15.246637,
+      "jup_total_return_pct": -15.211236,
       "gear_nav": 2.09169964,
       "jup_close_gbp": 75.6
     },
@@ -5251,6 +5651,7 @@
       "jup_close_prior_date": "2024-03-19",
       "gear_return_pct": 1.956467,
       "jup_price_return_pct": -14.285714,
+      "jup_total_return_pct": -14.249912,
       "gear_nav": 2.09490044,
       "jup_close_gbp": 75.3
     },
@@ -5262,6 +5663,7 @@
       "jup_close_prior_date": "2024-03-20",
       "gear_return_pct": 2.038968,
       "jup_price_return_pct": -10.657596,
+      "jup_total_return_pct": -10.620279,
       "gear_nav": 2.10190029,
       "jup_close_gbp": 78.8
     },
@@ -5273,6 +5675,7 @@
       "jup_close_prior_date": "2024-03-21",
       "gear_return_pct": 2.074472,
       "jup_price_return_pct": -14.455874,
+      "jup_total_return_pct": -14.420143,
       "gear_nav": 2.10600007,
       "jup_close_gbp": 79.0
     },
@@ -5284,6 +5687,7 @@
       "jup_close_prior_date": "2024-03-22",
       "gear_return_pct": 2.220134,
       "jup_price_return_pct": -11.061947,
+      "jup_total_return_pct": -11.024798,
       "gear_nav": 2.10880097,
       "jup_close_gbp": 80.4
     },
@@ -5295,6 +5699,7 @@
       "jup_close_prior_date": "2024-03-22",
       "gear_return_pct": 2.278287,
       "jup_price_return_pct": -12.610619,
+      "jup_total_return_pct": -12.574118,
       "gear_nav": 2.11000067,
       "jup_close_gbp": 79.0
     },
@@ -5306,6 +5711,7 @@
       "jup_close_prior_date": "2024-03-26",
       "gear_return_pct": 2.493569,
       "jup_price_return_pct": -8.632287,
+      "jup_total_return_pct": -8.594124,
       "gear_nav": 2.11270079,
       "jup_close_gbp": 81.5
     },
@@ -5317,6 +5723,7 @@
       "jup_close_prior_date": "2024-03-27",
       "gear_return_pct": 2.099905,
       "jup_price_return_pct": -9.712644,
+      "jup_total_return_pct": -9.674932,
       "gear_nav": 2.11009984,
       "jup_close_gbp": 78.55
     },
@@ -5328,6 +5735,7 @@
       "jup_close_prior_date": "2024-03-28",
       "gear_return_pct": 2.214068,
       "jup_price_return_pct": -12.197864,
+      "jup_total_return_pct": -12.16119,
       "gear_nav": 2.10980072,
       "jup_close_gbp": 78.1
     },
@@ -5339,6 +5747,7 @@
       "jup_close_prior_date": "2024-03-28",
       "gear_return_pct": 2.344882,
       "jup_price_return_pct": -13.490725,
+      "jup_total_return_pct": -13.454591,
       "gear_nav": 2.11250084,
       "jup_close_gbp": 76.95
     },
@@ -5350,6 +5759,7 @@
       "jup_close_prior_date": "2024-03-28",
       "gear_return_pct": 2.262503,
       "jup_price_return_pct": -13.546936,
+      "jup_total_return_pct": -13.510826,
       "gear_nav": 2.11080047,
       "jup_close_gbp": 76.9
     },
@@ -5361,6 +5771,7 @@
       "jup_close_prior_date": "2024-04-02",
       "gear_return_pct": 2.589305,
       "jup_price_return_pct": -11.625282,
+      "jup_total_return_pct": -11.588369,
       "gear_nav": 2.11970064,
       "jup_close_gbp": 78.3
     },
@@ -5372,6 +5783,7 @@
       "jup_close_prior_date": "2024-04-03",
       "gear_return_pct": 2.527694,
       "jup_price_return_pct": -12.122937,
+      "jup_total_return_pct": -12.086231,
       "gear_nav": 2.12140102,
       "jup_close_gbp": 77.2
     },
@@ -5383,6 +5795,7 @@
       "jup_close_prior_date": "2024-04-04",
       "gear_return_pct": 2.25173,
       "jup_price_return_pct": -11.741573,
+      "jup_total_return_pct": -11.704708,
       "gear_nav": 2.11609994,
       "jup_close_gbp": 78.55
     },
@@ -5394,6 +5807,7 @@
       "jup_close_prior_date": "2024-04-05",
       "gear_return_pct": 2.166239,
       "jup_price_return_pct": -7.085714,
+      "jup_total_return_pct": -7.046905,
       "gear_nav": 2.11290074,
       "jup_close_gbp": 81.3
     },
@@ -5405,6 +5819,7 @@
       "jup_close_prior_date": "2024-04-05",
       "gear_return_pct": 2.117897,
       "jup_price_return_pct": -3.428571,
+      "jup_total_return_pct": -3.388234,
       "gear_nav": 2.11190099,
       "jup_close_gbp": 84.5
     },
@@ -5416,6 +5831,7 @@
       "jup_close_prior_date": "2024-04-09",
       "gear_return_pct": 1.948664,
       "jup_price_return_pct": -6.340378,
+      "jup_total_return_pct": -6.301257,
       "gear_nav": 2.10840107,
       "jup_close_gbp": 84.2
     },
@@ -5427,6 +5843,7 @@
       "jup_close_prior_date": "2024-04-10",
       "gear_return_pct": 1.828932,
       "jup_price_return_pct": -9.0,
+      "jup_total_return_pct": -8.96199,
       "gear_nav": 2.10449964,
       "jup_close_gbp": 81.9
     },
@@ -5438,6 +5855,7 @@
       "jup_close_prior_date": "2024-04-11",
       "gear_return_pct": 2.053397,
       "jup_price_return_pct": -5.498866,
+      "jup_total_return_pct": -5.459394,
       "gear_nav": 2.10730054,
       "jup_close_gbp": 83.35
     },
@@ -5449,6 +5867,7 @@
       "jup_close_prior_date": "2024-04-12",
       "gear_return_pct": 1.464726,
       "jup_price_return_pct": -2.888889,
+      "jup_total_return_pct": -2.848327,
       "gear_nav": 2.10590089,
       "jup_close_gbp": 87.4
     },
@@ -5460,6 +5879,7 @@
       "jup_close_prior_date": "2024-04-12",
       "gear_return_pct": 1.440603,
       "jup_price_return_pct": -2.222222,
+      "jup_total_return_pct": -2.181381,
       "gear_nav": 2.10540022,
       "jup_close_gbp": 88.0
     },
@@ -5471,6 +5891,7 @@
       "jup_close_prior_date": "2024-04-16",
       "gear_return_pct": 0.951733,
       "jup_price_return_pct": 7.654921,
+      "jup_total_return_pct": 7.699887,
       "gear_nav": 2.10019992,
       "jup_close_gbp": 88.6
     },
@@ -5482,6 +5903,7 @@
       "jup_close_prior_date": "2024-04-17",
       "gear_return_pct": 0.81561,
       "jup_price_return_pct": 3.739445,
+      "jup_total_return_pct": 3.782776,
       "gear_nav": 2.10119967,
       "jup_close_gbp": 86.0
     },
@@ -5493,6 +5915,7 @@
       "jup_close_prior_date": "2024-04-18",
       "gear_return_pct": 0.934973,
       "jup_price_return_pct": 4.238329,
+      "jup_total_return_pct": 4.238329,
       "gear_nav": 2.10520027,
       "jup_close_gbp": 84.85
     },
@@ -5504,6 +5927,7 @@
       "jup_close_prior_date": "2024-04-19",
       "gear_return_pct": 0.540675,
       "jup_price_return_pct": 7.151665,
+      "jup_total_return_pct": 7.151665,
       "gear_nav": 2.10119967,
       "jup_close_gbp": 86.9
     },
@@ -5515,6 +5939,7 @@
       "jup_close_prior_date": "2024-04-19",
       "gear_return_pct": 0.607724,
       "jup_price_return_pct": 4.192355,
+      "jup_total_return_pct": 4.192355,
       "gear_nav": 2.10260092,
       "jup_close_gbp": 84.5
     },
@@ -5526,6 +5951,7 @@
       "jup_close_prior_date": "2024-04-23",
       "gear_return_pct": 0.521341,
       "jup_price_return_pct": 11.169514,
+      "jup_total_return_pct": 11.169514,
       "gear_nav": 2.10159957,
       "jup_close_gbp": 84.6
     },
@@ -5537,6 +5963,7 @@
       "jup_close_prior_date": "2024-04-24",
       "gear_return_pct": 0.314688,
       "jup_price_return_pct": 11.023622,
+      "jup_total_return_pct": 11.023622,
       "gear_nav": 2.10389979,
       "jup_close_gbp": 84.6
     },
@@ -5548,6 +5975,7 @@
       "jup_close_prior_date": "2024-04-25",
       "gear_return_pct": 0.564012,
       "jup_price_return_pct": 11.615487,
+      "jup_total_return_pct": 11.615487,
       "gear_nav": 2.10400057,
       "jup_close_gbp": 83.6
     },
@@ -5559,6 +5987,7 @@
       "jup_close_prior_date": "2024-04-26",
       "gear_return_pct": 0.482647,
       "jup_price_return_pct": 8.344284,
+      "jup_total_return_pct": 8.344284,
       "gear_nav": 2.10270009,
       "jup_close_gbp": 82.45
     },
@@ -5570,6 +5999,7 @@
       "jup_close_prior_date": "2024-04-26",
       "gear_return_pct": 0.692936,
       "jup_price_return_pct": 16.688568,
+      "jup_total_return_pct": 16.688568,
       "gear_nav": 2.10710059,
       "jup_close_gbp": 88.8
     },
@@ -5581,6 +6011,7 @@
       "jup_close_prior_date": "2024-04-30",
       "gear_return_pct": 0.822282,
       "jup_price_return_pct": 13.648124,
+      "jup_total_return_pct": 13.648124,
       "gear_nav": 2.10900092,
       "jup_close_gbp": 87.85
     },
@@ -5592,6 +6023,7 @@
       "jup_close_prior_date": "2024-05-01",
       "gear_return_pct": 1.257251,
       "jup_price_return_pct": 13.717949,
+      "jup_total_return_pct": 13.717949,
       "gear_nav": 2.11009984,
       "jup_close_gbp": 88.7
     },
@@ -5603,6 +6035,7 @@
       "jup_close_prior_date": "2024-05-02",
       "gear_return_pct": 0.949588,
       "jup_price_return_pct": 12.723785,
+      "jup_total_return_pct": 12.723785,
       "gear_nav": 2.10489954,
       "jup_close_gbp": 88.15
     },
@@ -5614,6 +6047,7 @@
       "jup_close_prior_date": "2024-05-03",
       "gear_return_pct": 0.646458,
       "jup_price_return_pct": 8.164557,
+      "jup_total_return_pct": 8.164557,
       "gear_nav": 2.10190029,
       "jup_close_gbp": 85.45
     },
@@ -5625,6 +6059,7 @@
       "jup_close_prior_date": "2024-05-03",
       "gear_return_pct": 0.067097,
       "jup_price_return_pct": 4.810127,
+      "jup_total_return_pct": 4.810127,
       "gear_nav": 2.08980092,
       "jup_close_gbp": 82.8
     },
@@ -5636,6 +6071,7 @@
       "jup_close_prior_date": "2024-05-08",
       "gear_return_pct": -0.326197,
       "jup_price_return_pct": -4.744526,
+      "jup_total_return_pct": -4.744526,
       "gear_nav": 2.07780072,
       "jup_close_gbp": 78.3
     },
@@ -5647,6 +6083,7 @@
       "jup_close_prior_date": "2024-05-09",
       "gear_return_pct": 0.124614,
       "jup_price_return_pct": -4.402895,
+      "jup_total_return_pct": -4.402895,
       "gear_nav": 2.08980092,
       "jup_close_gbp": 79.25
     },
@@ -5658,6 +6095,7 @@
       "jup_close_prior_date": "2024-05-10",
       "gear_return_pct": 0.537035,
       "jup_price_return_pct": -10.861865,
+      "jup_total_return_pct": -10.824085,
       "gear_nav": 2.09680077,
       "jup_close_gbp": 75.5
     },
@@ -5669,6 +6107,7 @@
       "jup_close_prior_date": "2024-05-10",
       "gear_return_pct": 0.513029,
       "jup_price_return_pct": -10.094451,
+      "jup_total_return_pct": -10.056345,
       "gear_nav": 2.09630009,
       "jup_close_gbp": 76.15
     },
@@ -5680,6 +6119,7 @@
       "jup_close_prior_date": "2024-05-14",
       "gear_return_pct": 0.290608,
       "jup_price_return_pct": -9.872242,
+      "jup_total_return_pct": -9.834042,
       "gear_nav": 2.10489954,
       "jup_close_gbp": 77.6
     },
@@ -5691,6 +6131,7 @@
       "jup_close_prior_date": "2024-05-15",
       "gear_return_pct": 0.807366,
       "jup_price_return_pct": -7.368421,
+      "jup_total_return_pct": -7.32916,
       "gear_nav": 2.11009984,
       "jup_close_gbp": 79.2
     },
@@ -5702,6 +6143,7 @@
       "jup_close_prior_date": "2024-05-16",
       "gear_return_pct": 0.822165,
       "jup_price_return_pct": -1.011905,
+      "jup_total_return_pct": -0.96995,
       "gear_nav": 2.10930004,
       "jup_close_gbp": 83.15
     },
@@ -5713,6 +6155,7 @@
       "jup_close_prior_date": "2024-05-17",
       "gear_return_pct": 1.067907,
       "jup_price_return_pct": 1.445783,
+      "jup_total_return_pct": 1.48878,
       "gear_nav": 2.11049974,
       "jup_close_gbp": 84.2
     },
@@ -5724,6 +6167,7 @@
       "jup_close_prior_date": "2024-05-17",
       "gear_return_pct": 0.991305,
       "jup_price_return_pct": -0.240964,
+      "jup_total_return_pct": -0.198682,
       "gear_nav": 2.10890014,
       "jup_close_gbp": 82.8
     },
@@ -5735,6 +6179,7 @@
       "jup_close_prior_date": "2024-05-21",
       "gear_return_pct": 1.596992,
       "jup_price_return_pct": 1.385542,
+      "jup_total_return_pct": 1.428514,
       "gear_nav": 2.11850094,
       "jup_close_gbp": 84.15
     },
@@ -5746,6 +6191,7 @@
       "jup_close_prior_date": "2024-05-22",
       "gear_return_pct": 1.709189,
       "jup_price_return_pct": 0.119048,
+      "jup_total_return_pct": 0.161482,
       "gear_nav": 2.11850094,
       "jup_close_gbp": 84.1
     },
@@ -5757,6 +6203,7 @@
       "jup_close_prior_date": "2024-05-23",
       "gear_return_pct": 1.641993,
       "jup_price_return_pct": -0.583431,
+      "jup_total_return_pct": -0.541294,
       "gear_nav": 2.11700052,
       "jup_close_gbp": 85.2
     },
@@ -5768,6 +6215,7 @@
       "jup_close_prior_date": "2024-05-24",
       "gear_return_pct": 1.022283,
       "jup_price_return_pct": -2.093023,
+      "jup_total_return_pct": -2.051526,
       "gear_nav": 2.11470029,
       "jup_close_gbp": 84.2
     },
@@ -5779,6 +6227,7 @@
       "jup_close_prior_date": "2024-05-24",
       "gear_return_pct": 1.347124,
       "jup_price_return_pct": -1.511628,
+      "jup_total_return_pct": -1.469884,
       "gear_nav": 2.12150019,
       "jup_close_gbp": 84.7
     },
@@ -5790,6 +6239,7 @@
       "jup_close_prior_date": "2024-05-29",
       "gear_return_pct": 0.878752,
       "jup_price_return_pct": 2.294686,
+      "jup_total_return_pct": 2.338043,
       "gear_nav": 2.11230089,
       "jup_close_gbp": 84.7
     },
@@ -5801,6 +6251,7 @@
       "jup_close_prior_date": "2024-05-30",
       "gear_return_pct": 1.062868,
       "jup_price_return_pct": -0.470588,
+      "jup_total_return_pct": -0.428404,
       "gear_nav": 2.12039967,
       "jup_close_gbp": 84.6
     },
@@ -5812,6 +6263,7 @@
       "jup_close_prior_date": "2024-05-31",
       "gear_return_pct": 1.377567,
       "jup_price_return_pct": 2.517986,
+      "jup_total_return_pct": 2.561437,
       "gear_nav": 2.12679967,
       "jup_close_gbp": 85.5
     },
@@ -5823,6 +6275,7 @@
       "jup_close_prior_date": "2024-05-31",
       "gear_return_pct": 1.401433,
       "jup_price_return_pct": 3.23741,
+      "jup_total_return_pct": 3.281166,
       "gear_nav": 2.12730034,
       "jup_close_gbp": 86.1
     },
@@ -5834,6 +6287,7 @@
       "jup_close_prior_date": "2024-06-04",
       "gear_return_pct": 1.660983,
       "jup_price_return_pct": 3.23741,
+      "jup_total_return_pct": 3.281166,
       "gear_nav": 2.13000047,
       "jup_close_gbp": 86.1
     },
@@ -5845,6 +6299,7 @@
       "jup_close_prior_date": "2024-06-05",
       "gear_return_pct": 1.738828,
       "jup_price_return_pct": 4.089219,
+      "jup_total_return_pct": 4.133337,
       "gear_nav": 2.12969974,
       "jup_close_gbp": 84.0
     },
@@ -5856,6 +6311,7 @@
       "jup_close_prior_date": "2024-06-06",
       "gear_return_pct": 2.115007,
       "jup_price_return_pct": 4.619226,
+      "jup_total_return_pct": 4.663568,
       "gear_nav": 2.13890065,
       "jup_close_gbp": 83.8
     },
@@ -5867,6 +6323,7 @@
       "jup_close_prior_date": "2024-06-07",
       "gear_return_pct": 2.104681,
       "jup_price_return_pct": 7.033248,
+      "jup_total_return_pct": 7.078613,
       "gear_nav": 2.13939972,
       "jup_close_gbp": 83.7
     },
@@ -5878,6 +6335,7 @@
       "jup_close_prior_date": "2024-06-07",
       "gear_return_pct": 2.071319,
       "jup_price_return_pct": 5.434783,
+      "jup_total_return_pct": 5.47947,
       "gear_nav": 2.1387007,
       "jup_close_gbp": 82.45
     },
@@ -5889,6 +6347,7 @@
       "jup_close_prior_date": "2024-06-11",
       "gear_return_pct": 2.421678,
       "jup_price_return_pct": 8.431373,
+      "jup_total_return_pct": 8.47733,
       "gear_nav": 2.13999957,
       "jup_close_gbp": 82.95
     },
@@ -5900,6 +6359,7 @@
       "jup_close_prior_date": "2024-06-12",
       "gear_return_pct": 2.113728,
       "jup_price_return_pct": 4.300385,
+      "jup_total_return_pct": 4.344592,
       "gear_nav": 2.13529995,
       "jup_close_gbp": 81.25
     },
@@ -5911,6 +6371,7 @@
       "jup_close_prior_date": "2024-06-13",
       "gear_return_pct": 2.334399,
       "jup_price_return_pct": 6.114398,
+      "jup_total_return_pct": 6.159374,
       "gear_nav": 2.13930055,
       "jup_close_gbp": 80.7
     },
@@ -5922,6 +6383,7 @@
       "jup_close_prior_date": "2024-06-14",
       "gear_return_pct": 2.409534,
       "jup_price_return_pct": 7.539683,
+      "jup_total_return_pct": 7.585262,
       "gear_nav": 2.14209985,
       "jup_close_gbp": 81.3
     },
@@ -5933,6 +6395,7 @@
       "jup_close_prior_date": "2024-06-14",
       "gear_return_pct": 2.529062,
       "jup_price_return_pct": 7.275132,
+      "jup_total_return_pct": 7.3206,
       "gear_nav": 2.14460002,
       "jup_close_gbp": 81.1
     },
@@ -5944,6 +6407,7 @@
       "jup_close_prior_date": "2024-06-18",
       "gear_return_pct": 2.164738,
       "jup_price_return_pct": 4.695431,
+      "jup_total_return_pct": 4.739806,
       "gear_nav": 2.14740092,
       "jup_close_gbp": 82.5
     },
@@ -5955,6 +6419,7 @@
       "jup_close_prior_date": "2024-06-19",
       "gear_return_pct": 2.184221,
       "jup_price_return_pct": 5.443038,
+      "jup_total_return_pct": 5.487729,
       "gear_nav": 2.15199977,
       "jup_close_gbp": 83.3
     },
@@ -5966,6 +6431,7 @@
       "jup_close_prior_date": "2024-06-20",
       "gear_return_pct": 2.105467,
       "jup_price_return_pct": 3.233831,
+      "jup_total_return_pct": 3.277586,
       "gear_nav": 2.15320107,
       "jup_close_gbp": 83.0
     },
@@ -5977,6 +6443,7 @@
       "jup_close_prior_date": "2024-06-21",
       "gear_return_pct": 2.42654,
       "jup_price_return_pct": 10.886076,
+      "jup_total_return_pct": 10.933074,
       "gear_nav": 2.16120067,
       "jup_close_gbp": 87.6
     },
@@ -5988,6 +6455,7 @@
       "jup_close_prior_date": "2024-06-21",
       "gear_return_pct": 2.488098,
       "jup_price_return_pct": 8.607595,
+      "jup_total_return_pct": 8.653627,
       "gear_nav": 2.16249955,
       "jup_close_gbp": 85.8
     },
@@ -5999,6 +6467,7 @@
       "jup_close_prior_date": "2024-06-25",
       "gear_return_pct": 2.748681,
       "jup_price_return_pct": 9.611712,
+      "jup_total_return_pct": 9.65817,
       "gear_nav": 2.16809975,
       "jup_close_gbp": 86.1
     },
@@ -6010,6 +6479,7 @@
       "jup_close_prior_date": "2024-06-26",
       "gear_return_pct": 2.459902,
       "jup_price_return_pct": 10.243278,
+      "jup_total_return_pct": 10.290003,
       "gear_nav": 2.16169975,
       "jup_close_gbp": 86.1
     },
@@ -6021,6 +6491,7 @@
       "jup_close_prior_date": "2024-06-27",
       "gear_return_pct": 2.134869,
       "jup_price_return_pct": 11.760884,
+      "jup_total_return_pct": 11.808253,
       "gear_nav": 2.15759997,
       "jup_close_gbp": 86.0
     },
@@ -6032,6 +6503,7 @@
       "jup_close_prior_date": "2024-06-28",
       "gear_return_pct": 1.937662,
       "jup_price_return_pct": 13.784135,
+      "jup_total_return_pct": 13.832362,
       "gear_nav": 2.15170065,
       "jup_close_gbp": 87.5
     },
@@ -6043,6 +6515,7 @@
       "jup_close_prior_date": "2024-06-28",
       "gear_return_pct": 1.103836,
       "jup_price_return_pct": 14.954486,
+      "jup_total_return_pct": 15.003209,
       "gear_nav": 2.13410025,
       "jup_close_gbp": 88.4
     },
@@ -6054,6 +6527,7 @@
       "jup_close_prior_date": "2024-07-02",
       "gear_return_pct": 0.212109,
       "jup_price_return_pct": 12.176166,
+      "jup_total_return_pct": 12.223711,
       "gear_nav": 2.12590069,
       "jup_close_gbp": 86.6
     },
@@ -6065,6 +6539,7 @@
       "jup_close_prior_date": "2024-07-03",
       "gear_return_pct": 0.727799,
       "jup_price_return_pct": 9.993635,
+      "jup_total_return_pct": 10.040254,
       "gear_nav": 2.13150089,
       "jup_close_gbp": 86.4
     },
@@ -6076,6 +6551,7 @@
       "jup_close_prior_date": "2024-07-04",
       "gear_return_pct": 0.894471,
       "jup_price_return_pct": 6.02706,
+      "jup_total_return_pct": 6.071999,
       "gear_nav": 2.13180002,
       "jup_close_gbp": 86.2
     },
@@ -6087,6 +6563,7 @@
       "jup_close_prior_date": "2024-07-05",
       "gear_return_pct": 0.748106,
       "jup_price_return_pct": 1.656805,
+      "jup_total_return_pct": 1.699891,
       "gear_nav": 2.12770024,
       "jup_close_gbp": 85.9
     },
@@ -6098,6 +6575,7 @@
       "jup_close_prior_date": "2024-07-05",
       "gear_return_pct": 0.662896,
       "jup_price_return_pct": 3.313609,
+      "jup_total_return_pct": 3.357398,
       "gear_nav": 2.12590069,
       "jup_close_gbp": 87.3
     },
@@ -6109,6 +6587,7 @@
       "jup_close_prior_date": "2024-07-09",
       "gear_return_pct": 1.092927,
       "jup_price_return_pct": 6.593407,
+      "jup_total_return_pct": 6.638585,
       "gear_nav": 2.12750029,
       "jup_close_gbp": 87.3
     },
@@ -6120,6 +6599,7 @@
       "jup_close_prior_date": "2024-07-10",
       "gear_return_pct": 1.267049,
       "jup_price_return_pct": 3.779244,
+      "jup_total_return_pct": 3.82323,
       "gear_nav": 2.13400107,
       "jup_close_gbp": 86.5
     },
@@ -6131,6 +6611,7 @@
       "jup_close_prior_date": "2024-07-11",
       "gear_return_pct": 1.543239,
       "jup_price_return_pct": 0.0,
+      "jup_total_return_pct": 0.042384,
       "gear_nav": 2.13839997,
       "jup_close_gbp": 87.4
     },
@@ -6142,6 +6623,7 @@
       "jup_close_prior_date": "2024-07-12",
       "gear_return_pct": 1.994904,
       "jup_price_return_pct": -0.568182,
+      "jup_total_return_pct": -0.526039,
       "gear_nav": 2.14740092,
       "jup_close_gbp": 87.5
     },
@@ -6153,6 +6635,7 @@
       "jup_close_prior_date": "2024-07-12",
       "gear_return_pct": 2.118365,
       "jup_price_return_pct": -1.704545,
+      "jup_total_return_pct": -1.662884,
       "gear_nav": 2.15000027,
       "jup_close_gbp": 86.5
     },
@@ -6164,6 +6647,7 @@
       "jup_close_prior_date": "2024-07-16",
       "gear_return_pct": 2.603271,
       "jup_price_return_pct": -0.988372,
+      "jup_total_return_pct": -0.946407,
       "gear_nav": 2.1558996,
       "jup_close_gbp": 85.15
     },
@@ -6175,6 +6659,7 @@
       "jup_close_prior_date": "2024-07-17",
       "gear_return_pct": 2.721797,
       "jup_price_return_pct": 1.591043,
+      "jup_total_return_pct": 1.634101,
       "gear_nav": 2.16249955,
       "jup_close_gbp": 86.2
     },
@@ -6186,6 +6671,7 @@
       "jup_close_prior_date": "2024-07-18",
       "gear_return_pct": 3.274339,
       "jup_price_return_pct": 1.035673,
+      "jup_total_return_pct": 1.078496,
       "gear_nav": 2.17000007,
       "jup_close_gbp": 87.8
     },
@@ -6197,6 +6683,7 @@
       "jup_close_prior_date": "2024-07-19",
       "gear_return_pct": 2.867883,
       "jup_price_return_pct": 3.786982,
+      "jup_total_return_pct": 3.830971,
       "gear_nav": 2.16290105,
       "jup_close_gbp": 87.7
     },
@@ -6208,6 +6695,7 @@
       "jup_close_prior_date": "2024-07-19",
       "gear_return_pct": 2.796522,
       "jup_price_return_pct": 3.431953,
+      "jup_total_return_pct": 3.475791,
       "gear_nav": 2.16140062,
       "jup_close_gbp": 87.4
     },
@@ -6219,6 +6707,7 @@
       "jup_close_prior_date": "2024-07-23",
       "gear_return_pct": 2.699758,
       "jup_price_return_pct": 1.654846,
+      "jup_total_return_pct": 1.697932,
       "gear_nav": 2.1607,
       "jup_close_gbp": 86.0
     },
@@ -6230,6 +6719,7 @@
       "jup_close_prior_date": "2024-07-24",
       "gear_return_pct": 2.889695,
       "jup_price_return_pct": 3.110048,
+      "jup_total_return_pct": 3.15375,
       "gear_nav": 2.16479977,
       "jup_close_gbp": 86.2
     },
@@ -6241,6 +6731,7 @@
       "jup_close_prior_date": "2024-07-25",
       "gear_return_pct": 3.181627,
       "jup_price_return_pct": 2.122498,
+      "jup_total_return_pct": 2.165782,
       "gear_nav": 2.16960017,
       "jup_close_gbp": 84.2
     },
@@ -6252,6 +6743,7 @@
       "jup_close_prior_date": "2024-07-26",
       "gear_return_pct": 2.98512,
       "jup_price_return_pct": -7.995495,
+      "jup_total_return_pct": -7.9565,
       "gear_nav": 2.17000007,
       "jup_close_gbp": 81.7
     },
@@ -6263,6 +6755,7 @@
       "jup_close_prior_date": "2024-07-26",
       "gear_return_pct": 3.080013,
       "jup_price_return_pct": -10.135135,
+      "jup_total_return_pct": -10.097047,
       "gear_nav": 2.17199957,
       "jup_close_gbp": 79.8
     },
@@ -6274,6 +6767,7 @@
       "jup_close_prior_date": "2024-07-31",
       "gear_return_pct": 2.807755,
       "jup_price_return_pct": -8.111174,
+      "jup_total_return_pct": -8.072228,
       "gear_nav": 2.16399997,
       "jup_close_gbp": 81.0
     },
@@ -6285,6 +6779,7 @@
       "jup_close_prior_date": "2024-08-01",
       "gear_return_pct": 3.192351,
       "jup_price_return_pct": -4.622586,
+      "jup_total_return_pct": -4.582161,
       "gear_nav": 2.16900032,
       "jup_close_gbp": 81.5
     },
@@ -6296,6 +6791,7 @@
       "jup_close_prior_date": "2024-08-02",
       "gear_return_pct": 3.88074,
       "jup_price_return_pct": -2.536232,
+      "jup_total_return_pct": -2.494923,
       "gear_nav": 2.17090065,
       "jup_close_gbp": 80.7
     },
@@ -6307,6 +6803,7 @@
       "jup_close_prior_date": "2024-08-02",
       "gear_return_pct": 4.230006,
       "jup_price_return_pct": -3.019324,
+      "jup_total_return_pct": -2.978219,
       "gear_nav": 2.17819962,
       "jup_close_gbp": 80.3
     },
@@ -6318,6 +6815,7 @@
       "jup_close_prior_date": "2024-08-06",
       "gear_return_pct": 4.668386,
       "jup_price_return_pct": 2.043423,
+      "jup_total_return_pct": 2.086673,
       "gear_nav": 2.17480047,
       "jup_close_gbp": 79.9
     },
@@ -6329,6 +6827,7 @@
       "jup_close_prior_date": "2024-08-07",
       "gear_return_pct": 4.21087,
       "jup_price_return_pct": -0.630915,
+      "jup_total_return_pct": -0.588798,
       "gear_nav": 2.17779972,
       "jup_close_gbp": 78.75
     },
@@ -6340,6 +6839,7 @@
       "jup_close_prior_date": "2024-08-08",
       "gear_return_pct": 3.829641,
       "jup_price_return_pct": 1.92053,
+      "jup_total_return_pct": 1.92053,
       "gear_nav": 2.1771007,
       "jup_close_gbp": 76.95
     },
@@ -6351,6 +6851,7 @@
       "jup_close_prior_date": "2024-08-09",
       "gear_return_pct": 3.768518,
       "jup_price_return_pct": 2.823375,
+      "jup_total_return_pct": 2.823375,
       "gear_nav": 2.17529955,
       "jup_close_gbp": 78.3
     },
@@ -6362,6 +6863,7 @@
       "jup_close_prior_date": "2024-08-09",
       "gear_return_pct": 3.85917,
       "jup_price_return_pct": 2.954695,
+      "jup_total_return_pct": 2.954695,
       "gear_nav": 2.17719987,
       "jup_close_gbp": 78.4
     },
@@ -6373,6 +6875,7 @@
       "jup_close_prior_date": "2024-08-13",
       "gear_return_pct": 3.184722,
       "jup_price_return_pct": 0.757576,
+      "jup_total_return_pct": 0.757576,
       "gear_nav": 2.17730065,
       "jup_close_gbp": 79.8
     },
@@ -6384,6 +6887,7 @@
       "jup_close_prior_date": "2024-08-14",
       "gear_return_pct": 3.299683,
       "jup_price_return_pct": -5.532171,
+      "jup_total_return_pct": -5.532171,
       "gear_nav": 2.17890025,
       "jup_close_gbp": 78.55
     },
@@ -6395,6 +6899,7 @@
       "jup_close_prior_date": "2024-08-15",
       "gear_return_pct": 3.591579,
       "jup_price_return_pct": -6.057007,
+      "jup_total_return_pct": -6.057007,
       "gear_nav": 2.1863,
       "jup_close_gbp": 79.1
     },
@@ -6406,6 +6911,7 @@
       "jup_close_prior_date": "2024-08-16",
       "gear_return_pct": 3.845594,
       "jup_price_return_pct": -3.26087,
+      "jup_total_return_pct": -3.26087,
       "gear_nav": 2.18999987,
       "jup_close_gbp": 80.1
     },
@@ -6417,6 +6923,7 @@
       "jup_close_prior_date": "2024-08-16",
       "gear_return_pct": 3.731819,
       "jup_price_return_pct": -1.690821,
+      "jup_total_return_pct": -1.690821,
       "gear_nav": 2.18760047,
       "jup_close_gbp": 81.4
     },
@@ -6428,6 +6935,7 @@
       "jup_close_prior_date": "2024-08-20",
       "gear_return_pct": 3.403292,
       "jup_price_return_pct": -3.448276,
+      "jup_total_return_pct": -3.448276,
       "gear_nav": 2.19059972,
       "jup_close_gbp": 81.2
     },
@@ -6439,6 +6947,7 @@
       "jup_close_prior_date": "2024-08-21",
       "gear_return_pct": 3.415225,
       "jup_price_return_pct": -3.99061,
+      "jup_total_return_pct": -3.99061,
       "gear_nav": 2.18930085,
       "jup_close_gbp": 81.8
     },
@@ -6450,6 +6959,7 @@
       "jup_close_prior_date": "2024-08-22",
       "gear_return_pct": 3.537168,
       "jup_price_return_pct": -3.800475,
+      "jup_total_return_pct": -3.800475,
       "gear_nav": 2.1895008,
       "jup_close_gbp": 81.0
     },
@@ -6461,6 +6971,7 @@
       "jup_close_prior_date": "2024-08-23",
       "gear_return_pct": 3.365531,
       "jup_price_return_pct": -3.896104,
+      "jup_total_return_pct": -3.896104,
       "gear_nav": 2.19289995,
       "jup_close_gbp": 81.4
     },
@@ -6472,6 +6983,7 @@
       "jup_close_prior_date": "2024-08-23",
       "gear_return_pct": 3.271282,
       "jup_price_return_pct": -3.069658,
+      "jup_total_return_pct": -3.069658,
       "gear_nav": 2.19090045,
       "jup_close_gbp": 82.1
     },
@@ -6483,6 +6995,7 @@
       "jup_close_prior_date": "2024-08-27",
       "gear_return_pct": 3.290224,
       "jup_price_return_pct": -0.826446,
+      "jup_total_return_pct": -0.826446,
       "gear_nav": 2.18180032,
       "jup_close_gbp": 84.0
     },
@@ -6494,6 +7007,7 @@
       "jup_close_prior_date": "2024-08-28",
       "gear_return_pct": 3.11735,
       "jup_price_return_pct": -1.77305,
+      "jup_total_return_pct": -1.77305,
       "gear_nav": 2.18649995,
       "jup_close_gbp": 83.1
     },
@@ -6505,6 +7019,7 @@
       "jup_close_prior_date": "2024-08-29",
       "gear_return_pct": 3.131511,
       "jup_price_return_pct": -2.105263,
+      "jup_total_return_pct": -2.105263,
       "gear_nav": 2.19340062,
       "jup_close_gbp": 83.7
     },
@@ -6516,6 +7031,7 @@
       "jup_close_prior_date": "2024-08-30",
       "gear_return_pct": 3.074303,
       "jup_price_return_pct": -2.206736,
+      "jup_total_return_pct": -2.206736,
       "gear_nav": 2.1927,
       "jup_close_gbp": 84.2
     },
@@ -6527,6 +7043,7 @@
       "jup_close_prior_date": "2024-08-30",
       "gear_return_pct": 3.342248,
       "jup_price_return_pct": -3.019744,
+      "jup_total_return_pct": -3.019744,
       "gear_nav": 2.1984,
       "jup_close_gbp": 83.5
     },
@@ -6538,6 +7055,7 @@
       "jup_close_prior_date": "2024-09-03",
       "gear_return_pct": 3.009826,
       "jup_price_return_pct": -0.833333,
+      "jup_total_return_pct": -0.833333,
       "gear_nav": 2.1938,
       "jup_close_gbp": 83.3
     },
@@ -6549,6 +7067,7 @@
       "jup_close_prior_date": "2024-09-04",
       "gear_return_pct": 2.945408,
       "jup_price_return_pct": 0.71599,
+      "jup_total_return_pct": 0.71599,
       "gear_nav": 2.2019,
       "jup_close_gbp": 84.4
     },
@@ -6560,6 +7079,7 @@
       "jup_close_prior_date": "2024-09-05",
       "gear_return_pct": 2.986832,
       "jup_price_return_pct": 1.553166,
+      "jup_total_return_pct": 1.553166,
       "gear_nav": 2.2033,
       "jup_close_gbp": 85.0
     },
@@ -6571,6 +7091,7 @@
       "jup_close_prior_date": "2024-09-06",
       "gear_return_pct": 3.483391,
       "jup_price_return_pct": 2.728927,
+      "jup_total_return_pct": 2.728927,
       "gear_nav": 2.2132,
       "jup_close_gbp": 84.7
     },
@@ -6582,6 +7103,7 @@
       "jup_close_prior_date": "2024-09-06",
       "gear_return_pct": 3.586257,
       "jup_price_return_pct": 5.033354,
+      "jup_total_return_pct": 5.033354,
       "gear_nav": 2.2154,
       "jup_close_gbp": 86.6
     },
@@ -6593,6 +7115,7 @@
       "jup_close_prior_date": "2024-09-10",
       "gear_return_pct": 3.868312,
       "jup_price_return_pct": 5.969231,
+      "jup_total_return_pct": 5.969231,
       "gear_nav": 2.2179,
       "jup_close_gbp": 86.1
     },
@@ -6604,6 +7127,7 @@
       "jup_close_prior_date": "2024-09-11",
       "gear_return_pct": 3.678747,
       "jup_price_return_pct": 5.576208,
+      "jup_total_return_pct": 5.576208,
       "gear_nav": 2.218,
       "jup_close_gbp": 85.2
     },
@@ -6615,6 +7139,7 @@
       "jup_close_prior_date": "2024-09-12",
       "gear_return_pct": 3.440556,
       "jup_price_return_pct": 4.551046,
+      "jup_total_return_pct": 4.551046,
       "gear_nav": 2.2158,
       "jup_close_gbp": 85.0
     },
@@ -6626,6 +7151,7 @@
       "jup_close_prior_date": "2024-09-13",
       "gear_return_pct": 3.212719,
       "jup_price_return_pct": 3.452528,
+      "jup_total_return_pct": 3.452528,
       "gear_nav": 2.2135,
       "jup_close_gbp": 83.9
     },
@@ -6637,6 +7163,7 @@
       "jup_close_prior_date": "2024-09-13",
       "gear_return_pct": 3.254685,
       "jup_price_return_pct": 2.466091,
+      "jup_total_return_pct": 2.466091,
       "gear_nav": 2.2144,
       "jup_close_gbp": 83.1
     },
@@ -6648,6 +7175,7 @@
       "jup_close_prior_date": "2024-09-17",
       "gear_return_pct": 2.783468,
       "jup_price_return_pct": -0.120048,
+      "jup_total_return_pct": -0.120048,
       "gear_nav": 2.2119,
       "jup_close_gbp": 83.2
     },
@@ -6659,6 +7187,7 @@
       "jup_close_prior_date": "2024-09-18",
       "gear_return_pct": 2.707547,
       "jup_price_return_pct": 0.0,
+      "jup_total_return_pct": 0.0,
       "gear_nav": 2.2115,
       "jup_close_gbp": 83.0
     },
@@ -6670,6 +7199,7 @@
       "jup_close_prior_date": "2024-09-19",
       "gear_return_pct": 2.711425,
       "jup_price_return_pct": -1.141553,
+      "jup_total_return_pct": -1.141553,
       "gear_nav": 2.2198,
       "jup_close_gbp": 86.6
     },
@@ -6681,6 +7211,7 @@
       "jup_close_prior_date": "2024-09-20",
       "gear_return_pct": 2.98268,
       "jup_price_return_pct": -3.030303,
+      "jup_total_return_pct": -3.030303,
       "gear_nav": 2.227,
       "jup_close_gbp": 83.2
     },
@@ -6692,6 +7223,7 @@
       "jup_close_prior_date": "2024-09-20",
       "gear_return_pct": 3.264761,
       "jup_price_return_pct": -0.058275,
+      "jup_total_return_pct": -0.058275,
       "gear_nav": 2.2331,
       "jup_close_gbp": 85.75
     },
@@ -6703,6 +7235,7 @@
       "jup_close_prior_date": "2024-09-24",
       "gear_return_pct": 2.946767,
       "jup_price_return_pct": -1.626016,
+      "jup_total_return_pct": -1.626016,
       "gear_nav": 2.2254,
       "jup_close_gbp": 84.7
     },
@@ -6714,6 +7247,7 @@
       "jup_close_prior_date": "2024-09-25",
       "gear_return_pct": 2.933817,
       "jup_price_return_pct": 0.465116,
+      "jup_total_return_pct": 0.465116,
       "gear_nav": 2.2209,
       "jup_close_gbp": 86.4
     },
@@ -6725,6 +7259,7 @@
       "jup_close_prior_date": "2024-10-01",
       "gear_return_pct": 3.987758,
       "jup_price_return_pct": -1.50463,
+      "jup_total_return_pct": -1.50463,
       "gear_nav": 2.2165,
       "jup_close_gbp": 85.1
     },
@@ -6736,6 +7271,7 @@
       "jup_close_prior_date": "2024-10-02",
       "gear_return_pct": 3.916877,
       "jup_price_return_pct": 0.580046,
+      "jup_total_return_pct": 0.580046,
       "gear_nav": 2.2153,
       "jup_close_gbp": 86.7
     },
@@ -6747,6 +7283,7 @@
       "jup_close_prior_date": "2024-10-04",
       "gear_return_pct": 4.021792,
       "jup_price_return_pct": -2.405498,
+      "jup_total_return_pct": -2.405498,
       "gear_nav": 2.2114,
       "jup_close_gbp": 85.2
     },
@@ -6758,6 +7295,7 @@
       "jup_close_prior_date": "2024-10-04",
       "gear_return_pct": 4.228763,
       "jup_price_return_pct": -2.634593,
+      "jup_total_return_pct": -2.634593,
       "gear_nav": 2.2158,
       "jup_close_gbp": 85.0
     },
@@ -6769,6 +7307,7 @@
       "jup_close_prior_date": "2024-10-08",
       "gear_return_pct": 3.734718,
       "jup_price_return_pct": 0.462428,
+      "jup_total_return_pct": 0.462428,
       "gear_nav": 2.2137,
       "jup_close_gbp": 86.9
     },
@@ -6780,6 +7319,7 @@
       "jup_close_prior_date": "2024-10-09",
       "gear_return_pct": 3.446503,
       "jup_price_return_pct": -1.372998,
+      "jup_total_return_pct": -1.372998,
       "gear_nav": 2.2121,
       "jup_close_gbp": 86.2
     },
@@ -6791,6 +7331,7 @@
       "jup_close_prior_date": "2024-10-10",
       "gear_return_pct": 3.138635,
       "jup_price_return_pct": -3.371429,
+      "jup_total_return_pct": -3.371429,
       "gear_nav": 2.2148,
       "jup_close_gbp": 84.55
     },
@@ -6802,6 +7343,7 @@
       "jup_close_prior_date": "2024-10-11",
       "gear_return_pct": 2.962778,
       "jup_price_return_pct": -0.578035,
+      "jup_total_return_pct": -0.578035,
       "gear_nav": 2.2137,
       "jup_close_gbp": 86.0
     },
@@ -6813,6 +7355,7 @@
       "jup_close_prior_date": "2024-10-11",
       "gear_return_pct": 2.841847,
       "jup_price_return_pct": -6.358382,
+      "jup_total_return_pct": -6.358382,
       "gear_nav": 2.2111,
       "jup_close_gbp": 81.0
     },
@@ -6824,6 +7367,7 @@
       "jup_close_prior_date": "2024-10-15",
       "gear_return_pct": 1.821987,
       "jup_price_return_pct": -7.076566,
+      "jup_total_return_pct": -7.076566,
       "gear_nav": 2.2019,
       "jup_close_gbp": 80.1
     },
@@ -6835,6 +7379,7 @@
       "jup_close_prior_date": "2024-10-16",
       "gear_return_pct": 1.548384,
       "jup_price_return_pct": -15.489749,
+      "jup_total_return_pct": -15.489749,
       "gear_nav": 2.2036,
       "jup_close_gbp": 74.2
     },
@@ -6846,6 +7391,7 @@
       "jup_close_prior_date": "2024-10-17",
       "gear_return_pct": 2.219193,
       "jup_price_return_pct": -12.77081,
+      "jup_total_return_pct": -12.77081,
       "gear_nav": 2.2109,
       "jup_close_gbp": 76.5
     },
@@ -6857,6 +7403,7 @@
       "jup_close_prior_date": "2024-10-18",
       "gear_return_pct": 2.322539,
       "jup_price_return_pct": -12.814645,
+      "jup_total_return_pct": -12.814645,
       "gear_nav": 2.2116,
       "jup_close_gbp": 76.2
     },
@@ -6868,6 +7415,7 @@
       "jup_close_prior_date": "2024-10-18",
       "gear_return_pct": 2.428952,
       "jup_price_return_pct": -14.645309,
+      "jup_total_return_pct": -14.645309,
       "gear_nav": 2.2139,
       "jup_close_gbp": 74.6
     },
@@ -6879,6 +7427,7 @@
       "jup_close_prior_date": "2024-10-22",
       "gear_return_pct": 2.674623,
       "jup_price_return_pct": -12.238979,
+      "jup_total_return_pct": -12.238979,
       "gear_nav": 2.2227,
       "jup_close_gbp": 75.65
     },
@@ -6890,6 +7439,7 @@
       "jup_close_prior_date": "2024-10-23",
       "gear_return_pct": 2.521194,
       "jup_price_return_pct": -7.719715,
+      "jup_total_return_pct": -7.719715,
       "gear_nav": 2.2243,
       "jup_close_gbp": 77.7
     },
@@ -6901,6 +7451,7 @@
       "jup_close_prior_date": "2024-10-24",
       "gear_return_pct": 2.456218,
       "jup_price_return_pct": -3.79437,
+      "jup_total_return_pct": -3.79437,
       "gear_nav": 2.2233,
       "jup_close_gbp": 78.6
     },
@@ -6912,6 +7463,7 @@
       "jup_close_prior_date": "2024-10-25",
       "gear_return_pct": 2.1363,
       "jup_price_return_pct": -2.380952,
+      "jup_total_return_pct": -2.380952,
       "gear_nav": 2.2184,
       "jup_close_gbp": 77.9
     },
@@ -6923,6 +7475,7 @@
       "jup_close_prior_date": "2024-10-25",
       "gear_return_pct": 2.15932,
       "jup_price_return_pct": -1.754386,
+      "jup_total_return_pct": -1.754386,
       "gear_nav": 2.2189,
       "jup_close_gbp": 78.4
     },
@@ -6934,6 +7487,7 @@
       "jup_close_prior_date": "2024-10-29",
       "gear_return_pct": 2.573938,
       "jup_price_return_pct": -4.320988,
+      "jup_total_return_pct": -4.320988,
       "gear_nav": 2.2197,
       "jup_close_gbp": 77.5
     },
@@ -6945,6 +7499,7 @@
       "jup_close_prior_date": "2024-10-30",
       "gear_return_pct": 3.010589,
       "jup_price_return_pct": -3.803681,
+      "jup_total_return_pct": -3.803681,
       "gear_nav": 2.2343,
       "jup_close_gbp": 78.4
     },
@@ -6956,6 +7511,7 @@
       "jup_close_prior_date": "2024-10-31",
       "gear_return_pct": 3.473183,
       "jup_price_return_pct": -4.089219,
+      "jup_total_return_pct": -4.089219,
       "gear_nav": 2.2463,
       "jup_close_gbp": 77.4
     },
@@ -6967,6 +7523,7 @@
       "jup_close_prior_date": "2024-11-01",
       "gear_return_pct": 3.089725,
       "jup_price_return_pct": -2.864259,
+      "jup_total_return_pct": -2.864259,
       "gear_nav": 2.2455,
       "jup_close_gbp": 78.0
     },
@@ -6978,6 +7535,7 @@
       "jup_close_prior_date": "2024-11-01",
       "gear_return_pct": 3.098907,
       "jup_price_return_pct": 0.124533,
+      "jup_total_return_pct": 0.124533,
       "gear_nav": 2.2457,
       "jup_close_gbp": 80.4
     },
@@ -6989,6 +7547,7 @@
       "jup_close_prior_date": "2024-11-06",
       "gear_return_pct": 3.692953,
       "jup_price_return_pct": 1.234568,
+      "jup_total_return_pct": 1.234568,
       "gear_nav": 2.2575,
       "jup_close_gbp": 77.9
     },
@@ -7000,6 +7559,7 @@
       "jup_close_prior_date": "2024-11-07",
       "gear_return_pct": 3.935111,
       "jup_price_return_pct": 0.127714,
+      "jup_total_return_pct": 0.127714,
       "gear_nav": 2.2609,
       "jup_close_gbp": 78.4
     },
@@ -7011,6 +7571,7 @@
       "jup_close_prior_date": "2024-11-08",
       "gear_return_pct": 3.968406,
       "jup_price_return_pct": 1.913265,
+      "jup_total_return_pct": 1.913265,
       "gear_nav": 2.2636,
       "jup_close_gbp": 79.9
     },
@@ -7022,6 +7583,7 @@
       "jup_close_prior_date": "2024-11-08",
       "gear_return_pct": 4.684922,
       "jup_price_return_pct": -1.147959,
+      "jup_total_return_pct": -1.147959,
       "gear_nav": 2.2792,
       "jup_close_gbp": 77.5
     },
@@ -7033,6 +7595,7 @@
       "jup_close_prior_date": "2024-11-12",
       "gear_return_pct": 4.782218,
       "jup_price_return_pct": 0.318269,
+      "jup_total_return_pct": 0.318269,
       "gear_nav": 2.2831,
       "jup_close_gbp": 78.8
     },
@@ -7044,6 +7607,7 @@
       "jup_close_prior_date": "2024-11-13",
       "gear_return_pct": 4.28578,
       "jup_price_return_pct": -2.022756,
+      "jup_total_return_pct": -2.022756,
       "gear_nav": 2.28,
       "jup_close_gbp": 77.5
     },
@@ -7055,6 +7619,7 @@
       "jup_close_prior_date": "2024-11-14",
       "gear_return_pct": 3.703202,
       "jup_price_return_pct": -3.308365,
+      "jup_total_return_pct": -3.308365,
       "gear_nav": 2.2711,
       "jup_close_gbp": 77.45
     },
@@ -7066,6 +7631,7 @@
       "jup_close_prior_date": "2024-11-15",
       "gear_return_pct": 3.638668,
       "jup_price_return_pct": -4.422604,
+      "jup_total_return_pct": -4.422604,
       "gear_nav": 2.2672,
       "jup_close_gbp": 77.8
     },
@@ -7077,6 +7643,7 @@
       "jup_close_prior_date": "2024-11-15",
       "gear_return_pct": 3.780376,
       "jup_price_return_pct": -4.791155,
+      "jup_total_return_pct": -4.791155,
       "gear_nav": 2.2703,
       "jup_close_gbp": 77.5
     },
@@ -7088,6 +7655,7 @@
       "jup_close_prior_date": "2024-11-19",
       "gear_return_pct": 3.877912,
       "jup_price_return_pct": -1.283619,
+      "jup_total_return_pct": -1.283619,
       "gear_nav": 2.2742,
       "jup_close_gbp": 80.75
     },
@@ -7099,6 +7667,7 @@
       "jup_close_prior_date": "2024-11-20",
       "gear_return_pct": 4.535244,
       "jup_price_return_pct": 1.111111,
+      "jup_total_return_pct": 1.111111,
       "gear_nav": 2.2888,
       "jup_close_gbp": 81.9
     },
@@ -7110,6 +7679,7 @@
       "jup_close_prior_date": "2024-11-21",
       "gear_return_pct": 4.026634,
       "jup_price_return_pct": 0.737101,
+      "jup_total_return_pct": 0.737101,
       "gear_nav": 2.2812,
       "jup_close_gbp": 82.0
     },
@@ -7121,6 +7691,7 @@
       "jup_close_prior_date": "2024-11-22",
       "gear_return_pct": 3.993771,
       "jup_price_return_pct": -0.730816,
+      "jup_total_return_pct": -0.730816,
       "gear_nav": 2.2784,
       "jup_close_gbp": 81.5
     },
@@ -7132,6 +7703,7 @@
       "jup_close_prior_date": "2024-11-22",
       "gear_return_pct": 4.021157,
       "jup_price_return_pct": -0.121803,
+      "jup_total_return_pct": -0.121803,
       "gear_nav": 2.279,
       "jup_close_gbp": 82.0
     },
@@ -7143,6 +7715,7 @@
       "jup_close_prior_date": "2024-11-26",
       "gear_return_pct": 4.157331,
       "jup_price_return_pct": -1.203369,
+      "jup_total_return_pct": -1.203369,
       "gear_nav": 2.2774,
       "jup_close_gbp": 82.1
     },
@@ -7154,6 +7727,7 @@
       "jup_close_prior_date": "2024-11-27",
       "gear_return_pct": 4.007447,
       "jup_price_return_pct": -2.389486,
+      "jup_total_return_pct": -2.389486,
       "gear_nav": 2.2813,
       "jup_close_gbp": 81.7
     },
@@ -7165,6 +7739,7 @@
       "jup_close_prior_date": "2024-11-28",
       "gear_return_pct": 4.455694,
       "jup_price_return_pct": -4.097387,
+      "jup_total_return_pct": -4.097387,
       "gear_nav": 2.2904,
       "jup_close_gbp": 80.75
     },
@@ -7176,6 +7751,7 @@
       "jup_close_prior_date": "2024-11-29",
       "gear_return_pct": 4.325873,
       "jup_price_return_pct": -9.88024,
+      "jup_total_return_pct": -9.88024,
       "gear_nav": 2.2935,
       "jup_close_gbp": 75.25
     },
@@ -7187,6 +7763,7 @@
       "jup_close_prior_date": "2024-11-29",
       "gear_return_pct": 4.057496,
       "jup_price_return_pct": -11.976048,
+      "jup_total_return_pct": -11.976048,
       "gear_nav": 2.2876,
       "jup_close_gbp": 73.5
     },
@@ -7198,6 +7775,7 @@
       "jup_close_prior_date": "2024-12-03",
       "gear_return_pct": 4.014715,
       "jup_price_return_pct": -11.729858,
+      "jup_total_return_pct": -11.729858,
       "gear_nav": 2.2903,
       "jup_close_gbp": 74.5
     },
@@ -7209,6 +7787,7 @@
       "jup_close_prior_date": "2024-12-04",
       "gear_return_pct": 3.98947,
       "jup_price_return_pct": -12.117647,
+      "jup_total_return_pct": -12.117647,
       "gear_nav": 2.2912,
       "jup_close_gbp": 74.7
     },
@@ -7220,6 +7799,7 @@
       "jup_close_prior_date": "2024-12-05",
       "gear_return_pct": 3.741189,
       "jup_price_return_pct": -8.618654,
+      "jup_total_return_pct": -8.618654,
       "gear_nav": 2.296,
       "jup_close_gbp": 77.4
     },
@@ -7231,6 +7811,7 @@
       "jup_close_prior_date": "2024-12-06",
       "gear_return_pct": 3.999278,
       "jup_price_return_pct": -9.699769,
+      "jup_total_return_pct": -9.699769,
       "gear_nav": 2.304,
       "jup_close_gbp": 78.2
     },
@@ -7242,6 +7823,7 @@
       "jup_close_prior_date": "2024-12-06",
       "gear_return_pct": 4.175318,
       "jup_price_return_pct": -12.124711,
+      "jup_total_return_pct": -12.124711,
       "gear_nav": 2.3079,
       "jup_close_gbp": 76.1
     },
@@ -7253,6 +7835,7 @@
       "jup_close_prior_date": "2024-12-10",
       "gear_return_pct": 3.471596,
       "jup_price_return_pct": -10.798122,
+      "jup_total_return_pct": -10.798122,
       "gear_nav": 2.295,
       "jup_close_gbp": 76.0
     },
@@ -7264,6 +7847,7 @@
       "jup_close_prior_date": "2024-12-11",
       "gear_return_pct": 3.556278,
       "jup_price_return_pct": -11.529412,
+      "jup_total_return_pct": -11.529412,
       "gear_nav": 2.2946,
       "jup_close_gbp": 75.2
     },
@@ -7275,6 +7859,7 @@
       "jup_close_prior_date": "2024-12-12",
       "gear_return_pct": 3.713576,
       "jup_price_return_pct": -10.011919,
+      "jup_total_return_pct": -10.011919,
       "gear_nav": 2.2957,
       "jup_close_gbp": 75.5
     },
@@ -7286,6 +7871,7 @@
       "jup_close_prior_date": "2024-12-13",
       "gear_return_pct": 3.928829,
       "jup_price_return_pct": -11.070999,
+      "jup_total_return_pct": -11.070999,
       "gear_nav": 2.3014,
       "jup_close_gbp": 73.9
     },
@@ -7297,6 +7883,7 @@
       "jup_close_prior_date": "2024-12-13",
       "gear_return_pct": 3.861091,
       "jup_price_return_pct": -8.182912,
+      "jup_total_return_pct": -8.182912,
       "gear_nav": 2.2999,
       "jup_close_gbp": 76.3
     },
@@ -7308,6 +7895,7 @@
       "jup_close_prior_date": "2024-12-18",
       "gear_return_pct": 3.811154,
       "jup_price_return_pct": -12.471132,
+      "jup_total_return_pct": -12.471132,
       "gear_nav": 2.3044,
       "jup_close_gbp": 75.8
     },
@@ -7319,6 +7907,7 @@
       "jup_close_prior_date": "2024-12-19",
       "gear_return_pct": 3.493489,
       "jup_price_return_pct": -8.413462,
+      "jup_total_return_pct": -8.413462,
       "gear_nav": 2.3048,
       "jup_close_gbp": 76.2
     },
@@ -7330,6 +7919,7 @@
       "jup_close_prior_date": "2024-12-20",
       "gear_return_pct": 2.870449,
       "jup_price_return_pct": -12.419825,
+      "jup_total_return_pct": -12.419825,
       "gear_nav": 2.2972,
       "jup_close_gbp": 75.1
     },
@@ -7341,6 +7931,7 @@
       "jup_close_prior_date": "2024-12-20",
       "gear_return_pct": 3.00927,
       "jup_price_return_pct": -12.653061,
+      "jup_total_return_pct": -12.653061,
       "gear_nav": 2.3003,
       "jup_close_gbp": 74.9
     },
@@ -7352,6 +7943,7 @@
       "jup_close_prior_date": "2024-12-24",
       "gear_return_pct": 4.264037,
       "jup_price_return_pct": -12.384259,
+      "jup_total_return_pct": -12.384259,
       "gear_nav": 2.3156,
       "jup_close_gbp": 75.7
     },
@@ -7363,6 +7955,7 @@
       "jup_close_prior_date": "2024-12-24",
       "gear_return_pct": 4.273042,
       "jup_price_return_pct": -11.574074,
+      "jup_total_return_pct": -11.574074,
       "gear_nav": 2.3158,
       "jup_close_gbp": 76.4
     },
@@ -7374,6 +7967,7 @@
       "jup_close_prior_date": "2024-12-24",
       "gear_return_pct": 4.525192,
       "jup_price_return_pct": -11.979167,
+      "jup_total_return_pct": -11.979167,
       "gear_nav": 2.3214,
       "jup_close_gbp": 76.05
     },
@@ -7385,6 +7979,7 @@
       "jup_close_prior_date": "2024-12-27",
       "gear_return_pct": 4.489171,
       "jup_price_return_pct": -11.785298,
+      "jup_total_return_pct": -11.785298,
       "gear_nav": 2.3206,
       "jup_close_gbp": 75.6
     },
@@ -7396,6 +7991,7 @@
       "jup_close_prior_date": "2024-12-27",
       "gear_return_pct": 4.439642,
       "jup_price_return_pct": -12.718786,
+      "jup_total_return_pct": -12.718786,
       "gear_nav": 2.3195,
       "jup_close_gbp": 74.8
     },
@@ -7407,6 +8003,7 @@
       "jup_close_prior_date": "2024-12-31",
       "gear_return_pct": 4.753307,
       "jup_price_return_pct": -17.877739,
+      "jup_total_return_pct": -17.877739,
       "gear_nav": 2.3206,
       "jup_close_gbp": 71.2
     },
@@ -7418,6 +8015,7 @@
       "jup_close_prior_date": "2024-12-31",
       "gear_return_pct": 5.412359,
       "jup_price_return_pct": -16.839677,
+      "jup_total_return_pct": -16.839677,
       "gear_nav": 2.3352,
       "jup_close_gbp": 72.1
     },
@@ -7429,6 +8027,7 @@
       "jup_close_prior_date": "2025-01-02",
       "gear_return_pct": 5.091797,
       "jup_price_return_pct": -15.492958,
+      "jup_total_return_pct": -15.492958,
       "gear_nav": 2.324,
       "jup_close_gbp": 72.0
     },
@@ -7440,6 +8039,7 @@
       "jup_close_prior_date": "2025-01-03",
       "gear_return_pct": 4.309956,
       "jup_price_return_pct": -16.352941,
+      "jup_total_return_pct": -16.352941,
       "gear_nav": 2.3113,
       "jup_close_gbp": 71.1
     },
@@ -7451,6 +8051,7 @@
       "jup_close_prior_date": "2025-01-03",
       "gear_return_pct": 3.502121,
       "jup_price_return_pct": -19.411765,
+      "jup_total_return_pct": -19.411765,
       "gear_nav": 2.2934,
       "jup_close_gbp": 68.5
     },
@@ -7462,6 +8063,7 @@
       "jup_close_prior_date": "2025-01-07",
       "gear_return_pct": 4.226753,
       "jup_price_return_pct": -20.881671,
+      "jup_total_return_pct": -20.881671,
       "gear_nav": 2.3056,
       "jup_close_gbp": 68.2
     },
@@ -7473,6 +8075,7 @@
       "jup_close_prior_date": "2025-01-08",
       "gear_return_pct": 3.837818,
       "jup_price_return_pct": -15.079834,
+      "jup_total_return_pct": -15.079834,
       "gear_nav": 2.2998,
       "jup_close_gbp": 71.8
     },
@@ -7484,6 +8087,7 @@
       "jup_close_prior_date": "2025-01-09",
       "gear_return_pct": 4.083661,
       "jup_price_return_pct": -20.348837,
+      "jup_total_return_pct": -20.348837,
       "gear_nav": 2.3041,
       "jup_close_gbp": 68.5
     },
@@ -7495,6 +8099,7 @@
       "jup_close_prior_date": "2025-01-10",
       "gear_return_pct": 4.052282,
       "jup_price_return_pct": -12.345679,
+      "jup_total_return_pct": -12.345679,
       "gear_nav": 2.3007,
       "jup_close_gbp": 71.0
     },
@@ -7506,6 +8111,7 @@
       "jup_close_prior_date": "2025-01-10",
       "gear_return_pct": 4.011578,
       "jup_price_return_pct": -11.975309,
+      "jup_total_return_pct": -11.975309,
       "gear_nav": 2.2998,
       "jup_close_gbp": 71.3
     },
@@ -7517,6 +8123,7 @@
       "jup_close_prior_date": "2025-01-14",
       "gear_return_pct": 4.338355,
       "jup_price_return_pct": -2.425876,
+      "jup_total_return_pct": -2.425876,
       "gear_nav": 2.2992,
       "jup_close_gbp": 72.4
     },
@@ -7528,6 +8135,7 @@
       "jup_close_prior_date": "2025-01-15",
       "gear_return_pct": 4.247139,
       "jup_price_return_pct": -3.660131,
+      "jup_total_return_pct": -3.660131,
       "gear_nav": 2.3048,
       "jup_close_gbp": 73.7
     },
@@ -7539,6 +8147,7 @@
       "jup_close_prior_date": "2025-01-16",
       "gear_return_pct": 4.435703,
       "jup_price_return_pct": -4.461942,
+      "jup_total_return_pct": -4.461942,
       "gear_nav": 2.3097,
       "jup_close_gbp": 72.8
     },
@@ -7550,6 +8159,7 @@
       "jup_close_prior_date": "2025-01-17",
       "gear_return_pct": 4.241384,
       "jup_price_return_pct": -6.434316,
+      "jup_total_return_pct": -6.404826,
       "gear_nav": 2.3078,
       "jup_close_gbp": 69.8
     },
@@ -7561,6 +8171,7 @@
       "jup_close_prior_date": "2025-01-22",
       "gear_return_pct": 4.137993,
       "jup_price_return_pct": -10.43257,
+      "jup_total_return_pct": -10.40434,
       "gear_nav": 2.3153,
       "jup_close_gbp": 70.4
     },
@@ -7572,6 +8183,7 @@
       "jup_close_prior_date": "2025-01-23",
       "gear_return_pct": 4.142625,
       "jup_price_return_pct": -9.242619,
+      "jup_total_return_pct": -9.214013,
       "gear_nav": 2.3103,
       "jup_close_gbp": 70.7
     },
@@ -7583,6 +8195,7 @@
       "jup_close_prior_date": "2025-01-24",
       "gear_return_pct": 3.875794,
       "jup_price_return_pct": -10.586735,
+      "jup_total_return_pct": -10.558553,
       "gear_nav": 2.3049,
       "jup_close_gbp": 70.1
     },
@@ -7594,6 +8207,7 @@
       "jup_close_prior_date": "2025-01-24",
       "gear_return_pct": 4.001983,
       "jup_price_return_pct": -10.331633,
+      "jup_total_return_pct": -10.30337,
       "gear_nav": 2.3077,
       "jup_close_gbp": 70.3
     },
@@ -7605,6 +8219,7 @@
       "jup_close_prior_date": "2025-01-28",
       "gear_return_pct": 3.491026,
       "jup_price_return_pct": -9.183673,
+      "jup_total_return_pct": -9.155049,
       "gear_nav": 2.3123,
       "jup_close_gbp": 71.2
     },
@@ -7616,6 +8231,7 @@
       "jup_close_prior_date": "2025-01-29",
       "gear_return_pct": 3.22753,
       "jup_price_return_pct": -7.105943,
+      "jup_total_return_pct": -7.076664,
       "gear_nav": 2.3188,
       "jup_close_gbp": 71.9
     },
@@ -7627,6 +8243,7 @@
       "jup_close_prior_date": "2025-01-30",
       "gear_return_pct": 3.264306,
       "jup_price_return_pct": -7.820513,
+      "jup_total_return_pct": -7.791459,
       "gear_nav": 2.3188,
       "jup_close_gbp": 71.9
     },
@@ -7638,6 +8255,7 @@
       "jup_close_prior_date": "2025-01-31",
       "gear_return_pct": 3.531193,
       "jup_price_return_pct": -7.587065,
+      "jup_total_return_pct": -7.557937,
       "gear_nav": 2.325,
       "jup_close_gbp": 74.3
     },
@@ -7649,6 +8267,7 @@
       "jup_close_prior_date": "2025-01-31",
       "gear_return_pct": 3.580175,
       "jup_price_return_pct": -5.348259,
+      "jup_total_return_pct": -5.318426,
       "gear_nav": 2.3261,
       "jup_close_gbp": 76.1
     },
@@ -7660,6 +8279,7 @@
       "jup_close_prior_date": "2025-02-05",
       "gear_return_pct": 3.273033,
       "jup_price_return_pct": -4.846939,
+      "jup_total_return_pct": -4.816948,
       "gear_nav": 2.3349,
       "jup_close_gbp": 74.6
     },
@@ -7671,6 +8291,7 @@
       "jup_close_prior_date": "2025-02-06",
       "gear_return_pct": 3.132179,
       "jup_price_return_pct": -5.757196,
+      "jup_total_return_pct": -5.727492,
       "gear_nav": 2.3345,
       "jup_close_gbp": 75.3
     },
@@ -7682,6 +8303,7 @@
       "jup_close_prior_date": "2025-02-07",
       "gear_return_pct": 2.61934,
       "jup_price_return_pct": -2.064516,
+      "jup_total_return_pct": -2.033648,
       "gear_nav": 2.3389,
       "jup_close_gbp": 75.9
     },
@@ -7693,6 +8315,7 @@
       "jup_close_prior_date": "2025-02-07",
       "gear_return_pct": 2.95279,
       "jup_price_return_pct": -0.258065,
+      "jup_total_return_pct": -0.226627,
       "gear_nav": 2.3465,
       "jup_close_gbp": 77.3
     },
@@ -7704,6 +8327,7 @@
       "jup_close_prior_date": "2025-02-11",
       "gear_return_pct": 3.135965,
       "jup_price_return_pct": -1.16129,
+      "jup_total_return_pct": -1.130138,
       "gear_nav": 2.3515,
       "jup_close_gbp": 76.6
     },
@@ -7715,6 +8339,7 @@
       "jup_close_prior_date": "2025-02-12",
       "gear_return_pct": 3.74268,
       "jup_price_return_pct": 0.322789,
+      "jup_total_return_pct": 0.354409,
       "gear_nav": 2.3561,
       "jup_close_gbp": 77.7
     },
@@ -7726,6 +8351,7 @@
       "jup_close_prior_date": "2025-02-13",
       "gear_return_pct": 3.894672,
       "jup_price_return_pct": -0.642674,
+      "jup_total_return_pct": -0.611357,
       "gear_nav": 2.3555,
       "jup_close_gbp": 77.3
     },
@@ -7737,6 +8363,7 @@
       "jup_close_prior_date": "2025-02-14",
       "gear_return_pct": 3.893759,
       "jup_price_return_pct": 1.032258,
+      "jup_total_return_pct": 1.064102,
       "gear_nav": 2.3587,
       "jup_close_gbp": 78.3
     },
@@ -7748,6 +8375,7 @@
       "jup_close_prior_date": "2025-02-14",
       "gear_return_pct": 4.290182,
       "jup_price_return_pct": 1.419355,
+      "jup_total_return_pct": 1.451321,
       "gear_nav": 2.3677,
       "jup_close_gbp": 78.6
     },
@@ -7759,6 +8387,7 @@
       "jup_close_prior_date": "2025-02-18",
       "gear_return_pct": 3.713736,
       "jup_price_return_pct": -3.418803,
+      "jup_total_return_pct": -3.388362,
       "gear_nav": 2.3738,
       "jup_close_gbp": 79.1
     },
@@ -7770,6 +8399,7 @@
       "jup_close_prior_date": "2025-02-19",
       "gear_return_pct": 4.607224,
       "jup_price_return_pct": -1.95122,
+      "jup_total_return_pct": -1.920316,
       "gear_nav": 2.3863,
       "jup_close_gbp": 80.4
     },
@@ -7781,6 +8411,7 @@
       "jup_close_prior_date": "2025-02-20",
       "gear_return_pct": 5.003511,
       "jup_price_return_pct": -2.822086,
+      "jup_total_return_pct": -2.791457,
       "gear_nav": 2.3924,
       "jup_close_gbp": 79.2
     },
@@ -7792,6 +8423,7 @@
       "jup_close_prior_date": "2025-02-21",
       "gear_return_pct": 5.38394,
       "jup_price_return_pct": 1.219512,
+      "jup_total_return_pct": 1.251415,
       "gear_nav": 2.4017,
       "jup_close_gbp": 83.0
     },
@@ -7803,6 +8435,7 @@
       "jup_close_prior_date": "2025-02-21",
       "gear_return_pct": 5.432207,
       "jup_price_return_pct": 0.487805,
+      "jup_total_return_pct": 0.519477,
       "gear_nav": 2.4028,
       "jup_close_gbp": 82.4
     },
@@ -7814,6 +8447,7 @@
       "jup_close_prior_date": "2025-02-26",
       "gear_return_pct": 4.392246,
       "jup_price_return_pct": 11.950464,
+      "jup_total_return_pct": 11.98575,
       "gear_nav": 2.391,
       "jup_close_gbp": 90.4
     },
@@ -7825,6 +8459,7 @@
       "jup_close_prior_date": "2025-02-27",
       "gear_return_pct": 4.094179,
       "jup_price_return_pct": 17.475083,
+      "jup_total_return_pct": 17.51211,
       "gear_nav": 2.3874,
       "jup_close_gbp": 88.4
     },
@@ -7836,6 +8471,7 @@
       "jup_close_prior_date": "2025-02-28",
       "gear_return_pct": 4.742962,
       "jup_price_return_pct": 25.034014,
+      "jup_total_return_pct": 25.073423,
       "gear_nav": 2.3961,
       "jup_close_gbp": 91.9
     },
@@ -7847,6 +8483,7 @@
       "jup_close_prior_date": "2025-02-28",
       "gear_return_pct": 4.436965,
       "jup_price_return_pct": 23.401361,
+      "jup_total_return_pct": 23.440255,
       "gear_nav": 2.3891,
       "jup_close_gbp": 90.7
     },
@@ -7858,6 +8495,7 @@
       "jup_close_prior_date": "2025-03-05",
       "gear_return_pct": 4.394599,
       "jup_price_return_pct": 17.054264,
+      "jup_total_return_pct": 17.091157,
       "gear_nav": 2.3969,
       "jup_close_gbp": 90.6
     },
@@ -7869,6 +8507,7 @@
       "jup_close_prior_date": "2025-03-06",
       "gear_return_pct": 3.832465,
       "jup_price_return_pct": 17.263427,
+      "jup_total_return_pct": 17.300387,
       "gear_nav": 2.3923,
       "jup_close_gbp": 91.7
     },
@@ -7880,6 +8519,7 @@
       "jup_close_prior_date": "2025-03-07",
       "gear_return_pct": 3.275705,
       "jup_price_return_pct": 21.156373,
+      "jup_total_return_pct": 21.19456,
       "gear_nav": 2.3835,
       "jup_close_gbp": 92.2
     },
@@ -7891,6 +8531,7 @@
       "jup_close_prior_date": "2025-03-07",
       "gear_return_pct": 3.37103,
       "jup_price_return_pct": 21.681997,
+      "jup_total_return_pct": 21.72035,
       "gear_nav": 2.3857,
       "jup_close_gbp": 92.6
     },
@@ -7902,6 +8543,7 @@
       "jup_close_prior_date": "2025-03-11",
       "gear_return_pct": 4.044278,
       "jup_price_return_pct": 24.734043,
+      "jup_total_return_pct": 24.773357,
       "gear_nav": 2.3874,
       "jup_close_gbp": 93.8
     },
@@ -7913,6 +8555,7 @@
       "jup_close_prior_date": "2025-03-12",
       "gear_return_pct": 3.75049,
       "jup_price_return_pct": 26.754967,
+      "jup_total_return_pct": 26.794918,
       "gear_nav": 2.3818,
       "jup_close_gbp": 95.7
     },
@@ -7924,6 +8567,7 @@
       "jup_close_prior_date": "2025-03-13",
       "gear_return_pct": 3.71513,
       "jup_price_return_pct": 31.935047,
+      "jup_total_return_pct": 31.976631,
       "gear_nav": 2.3869,
       "jup_close_gbp": 97.5
     },
@@ -7935,6 +8579,7 @@
       "jup_close_prior_date": "2025-03-14",
       "gear_return_pct": 3.630593,
       "jup_price_return_pct": 26.081258,
+      "jup_total_return_pct": 26.120997,
       "gear_nav": 2.3834,
       "jup_close_gbp": 96.2
     },
@@ -7946,6 +8591,7 @@
       "jup_close_prior_date": "2025-03-14",
       "gear_return_pct": 3.865385,
       "jup_price_return_pct": 24.901704,
+      "jup_total_return_pct": 24.941071,
       "gear_nav": 2.3888,
       "jup_close_gbp": 95.3
     },
@@ -7957,6 +8603,7 @@
       "jup_close_prior_date": "2025-03-18",
       "gear_return_pct": 3.788405,
       "jup_price_return_pct": 27.308707,
+      "jup_total_return_pct": 27.348833,
       "gear_nav": 2.3917,
       "jup_close_gbp": 96.5
     },
@@ -7968,6 +8615,7 @@
       "jup_close_prior_date": "2025-03-19",
       "gear_return_pct": 3.466678,
       "jup_price_return_pct": 26.64042,
+      "jup_total_return_pct": 26.680335,
       "gear_nav": 2.3847,
       "jup_close_gbp": 96.5
     },
@@ -7979,6 +8627,7 @@
       "jup_close_prior_date": "2025-03-20",
       "gear_return_pct": 3.909107,
       "jup_price_return_pct": 28.894807,
+      "jup_total_return_pct": 28.935433,
       "gear_nav": 2.387,
       "jup_close_gbp": 96.8
     },
@@ -7990,6 +8639,7 @@
       "jup_close_prior_date": "2025-03-21",
       "gear_return_pct": 3.612572,
       "jup_price_return_pct": 26.301736,
+      "jup_total_return_pct": 26.341544,
       "gear_nav": 2.3834,
       "jup_close_gbp": 94.6
     },
@@ -8001,6 +8651,7 @@
       "jup_close_prior_date": "2025-03-21",
       "gear_return_pct": 3.682128,
       "jup_price_return_pct": 27.503338,
+      "jup_total_return_pct": 27.543525,
       "gear_nav": 2.385,
       "jup_close_gbp": 95.5
     },
@@ -8012,6 +8663,7 @@
       "jup_close_prior_date": "2025-03-25",
       "gear_return_pct": 2.944987,
       "jup_price_return_pct": 23.560209,
+      "jup_total_return_pct": 23.599154,
       "gear_nav": 2.384,
       "jup_close_gbp": 94.4
     },
@@ -8023,6 +8675,7 @@
       "jup_close_prior_date": "2025-03-26",
       "gear_return_pct": 3.252348,
       "jup_price_return_pct": 27.547666,
+      "jup_total_return_pct": 27.587867,
       "gear_nav": 2.3969,
       "jup_close_gbp": 97.0
     },
@@ -8034,6 +8687,7 @@
       "jup_close_prior_date": "2025-03-27",
       "gear_return_pct": 3.072481,
       "jup_price_return_pct": 28.042328,
+      "jup_total_return_pct": 28.082685,
       "gear_nav": 2.3919,
       "jup_close_gbp": 96.8
     },
@@ -8045,6 +8699,7 @@
       "jup_close_prior_date": "2025-03-28",
       "gear_return_pct": 3.255012,
       "jup_price_return_pct": 33.02139,
+      "jup_total_return_pct": 33.063317,
       "gear_nav": 2.395,
       "jup_close_gbp": 99.5
     },
@@ -8056,6 +8711,7 @@
       "jup_close_prior_date": "2025-03-28",
       "gear_return_pct": 3.233455,
       "jup_price_return_pct": 34.759358,
+      "jup_total_return_pct": 34.801833,
       "gear_nav": 2.3945,
       "jup_close_gbp": 100.8
     },
@@ -8067,6 +8723,7 @@
       "jup_close_prior_date": "2025-04-01",
       "gear_return_pct": 2.505139,
       "jup_price_return_pct": 38.973648,
+      "jup_total_return_pct": 39.01745,
       "gear_nav": 2.3937,
       "jup_close_gbp": 100.2
     },
@@ -8078,6 +8735,7 @@
       "jup_close_prior_date": "2025-04-02",
       "gear_return_pct": 3.270224,
       "jup_price_return_pct": 41.111111,
+      "jup_total_return_pct": 41.155587,
       "gear_nav": 2.4,
       "jup_close_gbp": 101.6
     },
@@ -8089,6 +8747,7 @@
       "jup_close_prior_date": "2025-04-03",
       "gear_return_pct": 3.629992,
       "jup_price_return_pct": 42.053446,
+      "jup_total_return_pct": 42.098219,
       "gear_nav": 2.3952,
       "jup_close_gbp": 101.0
     },
@@ -8100,6 +8759,7 @@
       "jup_close_prior_date": "2025-04-04",
       "gear_return_pct": 3.837098,
       "jup_price_return_pct": 50.948905,
+      "jup_total_return_pct": 50.996482,
       "gear_nav": 2.3814,
       "jup_close_gbp": 103.4
     },
@@ -8111,6 +8771,7 @@
       "jup_close_prior_date": "2025-04-04",
       "gear_return_pct": 3.828377,
       "jup_price_return_pct": 48.759124,
+      "jup_total_return_pct": 48.806011,
       "gear_nav": 2.3812,
       "jup_close_gbp": 101.9
     },
@@ -8122,6 +8783,7 @@
       "jup_close_prior_date": "2025-04-08",
       "gear_return_pct": 3.565527,
       "jup_price_return_pct": 44.568245,
+      "jup_total_return_pct": 44.613811,
       "gear_nav": 2.3818,
       "jup_close_gbp": 103.8
     },
@@ -8133,6 +8795,7 @@
       "jup_close_prior_date": "2025-04-09",
       "gear_return_pct": 3.988542,
       "jup_price_return_pct": 56.49635,
+      "jup_total_return_pct": 56.545676,
       "gear_nav": 2.396,
       "jup_close_gbp": 107.2
     },
@@ -8144,6 +8807,7 @@
       "jup_close_prior_date": "2025-04-10",
       "gear_return_pct": 4.381275,
       "jup_price_return_pct": 53.239437,
+      "jup_total_return_pct": 53.287736,
       "gear_nav": 2.4015,
       "jup_close_gbp": 108.8
     },
@@ -8155,6 +8819,7 @@
       "jup_close_prior_date": "2025-04-11",
       "gear_return_pct": 4.456909,
       "jup_price_return_pct": 68.302945,
+      "jup_total_return_pct": 68.355992,
       "gear_nav": 2.4023,
       "jup_close_gbp": 120.0
     },
@@ -8166,6 +8831,7 @@
       "jup_close_prior_date": "2025-04-11",
       "gear_return_pct": 4.21341,
       "jup_price_return_pct": 73.071529,
+      "jup_total_return_pct": 73.126079,
       "gear_nav": 2.3967,
       "jup_close_gbp": 123.4
     },
@@ -8177,6 +8843,7 @@
       "jup_close_prior_date": "2025-04-15",
       "gear_return_pct": 3.939604,
       "jup_price_return_pct": 68.521031,
+      "jup_total_return_pct": 68.574147,
       "gear_nav": 2.3956,
       "jup_close_gbp": 124.2
     },
@@ -8188,6 +8855,7 @@
       "jup_close_prior_date": "2025-04-16",
       "gear_return_pct": 3.645495,
       "jup_price_return_pct": 70.604396,
+      "jup_total_return_pct": 70.658168,
       "gear_nav": 2.3939,
       "jup_close_gbp": 124.2
     },
@@ -8199,6 +8867,7 @@
       "jup_close_prior_date": "2025-04-17",
       "gear_return_pct": 3.531502,
       "jup_price_return_pct": 78.796562,
+      "jup_total_return_pct": 78.796562,
       "gear_nav": 2.3893,
       "jup_close_gbp": 124.8
     },
@@ -8210,6 +8879,7 @@
       "jup_close_prior_date": "2025-04-17",
       "gear_return_pct": 3.327845,
       "jup_price_return_pct": 84.240688,
+      "jup_total_return_pct": 84.240688,
       "gear_nav": 2.3846,
       "jup_close_gbp": 128.6
     },
@@ -8221,6 +8891,7 @@
       "jup_close_prior_date": "2025-04-17",
       "gear_return_pct": 2.877199,
       "jup_price_return_pct": 87.39255,
+      "jup_total_return_pct": 87.39255,
       "gear_nav": 2.3742,
       "jup_close_gbp": 130.8
     },
@@ -8232,6 +8903,7 @@
       "jup_close_prior_date": "2025-04-22",
       "gear_return_pct": 2.62601,
       "jup_price_return_pct": 88.068182,
+      "jup_total_return_pct": 88.068182,
       "gear_nav": 2.3761,
       "jup_close_gbp": 132.4
     },
@@ -8243,6 +8915,7 @@
       "jup_close_prior_date": "2025-04-23",
       "gear_return_pct": 3.203047,
       "jup_price_return_pct": 85.855728,
+      "jup_total_return_pct": 85.855728,
       "gear_nav": 2.3843,
       "jup_close_gbp": 131.4
     },
@@ -8254,6 +8927,7 @@
       "jup_close_prior_date": "2025-04-24",
       "gear_return_pct": 3.266953,
       "jup_price_return_pct": 89.158345,
+      "jup_total_return_pct": 89.158345,
       "gear_nav": 2.3802,
       "jup_close_gbp": 132.6
     },
@@ -8265,6 +8939,7 @@
       "jup_close_prior_date": "2025-04-25",
       "gear_return_pct": 2.816657,
       "jup_price_return_pct": 92.318634,
+      "jup_total_return_pct": 92.318634,
       "gear_nav": 2.3727,
       "jup_close_gbp": 135.2
     },
@@ -8276,6 +8951,7 @@
       "jup_close_prior_date": "2025-04-25",
       "gear_return_pct": 2.556658,
       "jup_price_return_pct": 85.206259,
+      "jup_total_return_pct": 85.206259,
       "gear_nav": 2.3667,
       "jup_close_gbp": 130.2
     },
@@ -8287,6 +8963,7 @@
       "jup_close_prior_date": "2025-04-29",
       "gear_return_pct": 2.402105,
       "jup_price_return_pct": 82.197497,
+      "jup_total_return_pct": 82.197497,
       "gear_nav": 2.3745,
       "jup_close_gbp": 131.0
     },
@@ -8298,6 +8975,7 @@
       "jup_close_prior_date": "2025-04-30",
       "gear_return_pct": 2.794549,
       "jup_price_return_pct": 79.415855,
+      "jup_total_return_pct": 79.415855,
       "gear_nav": 2.3836,
       "jup_close_gbp": 129.0
     },
@@ -8309,6 +8987,7 @@
       "jup_close_prior_date": "2025-05-01",
       "gear_return_pct": 2.765591,
       "jup_price_return_pct": 74.562584,
+      "jup_total_return_pct": 74.562584,
       "gear_nav": 2.3893,
       "jup_close_gbp": 129.7
     },
@@ -8320,6 +8999,7 @@
       "jup_close_prior_date": "2025-05-02",
       "gear_return_pct": 3.022226,
       "jup_price_return_pct": 69.250986,
+      "jup_total_return_pct": 69.250986,
       "gear_nav": 2.3964,
       "jup_close_gbp": 128.8
     },
@@ -8331,6 +9011,7 @@
       "jup_close_prior_date": "2025-05-02",
       "gear_return_pct": 3.103908,
       "jup_price_return_pct": 65.045992,
+      "jup_total_return_pct": 65.045992,
       "gear_nav": 2.3983,
       "jup_close_gbp": 125.6
     },
@@ -8342,6 +9023,7 @@
       "jup_close_prior_date": "2025-05-07",
       "gear_return_pct": 3.10559,
       "jup_price_return_pct": 63.612218,
+      "jup_total_return_pct": 63.612218,
       "gear_nav": 2.407,
       "jup_close_gbp": 123.2
     },
@@ -8353,6 +9035,7 @@
       "jup_close_prior_date": "2025-05-08",
       "gear_return_pct": 3.065544,
       "jup_price_return_pct": 64.163373,
+      "jup_total_return_pct": 64.163373,
       "gear_nav": 2.4106,
       "jup_close_gbp": 124.6
     },
@@ -8364,6 +9047,7 @@
       "jup_close_prior_date": "2025-05-09",
       "gear_return_pct": 2.63371,
       "jup_price_return_pct": 58.344114,
+      "jup_total_return_pct": 58.371281,
       "gear_nav": 2.4083,
       "jup_close_gbp": 122.4
     },
@@ -8375,6 +9059,7 @@
       "jup_close_prior_date": "2025-05-09",
       "gear_return_pct": 2.944811,
       "jup_price_return_pct": 60.413972,
+      "jup_total_return_pct": 60.441494,
       "gear_nav": 2.4156,
       "jup_close_gbp": 124.0
     },
@@ -8386,6 +9071,7 @@
       "jup_close_prior_date": "2025-05-13",
       "gear_return_pct": 2.415008,
       "jup_price_return_pct": 61.261261,
+      "jup_total_return_pct": 61.288929,
       "gear_nav": 2.413,
       "jup_close_gbp": 125.3
     },
@@ -8397,6 +9083,7 @@
       "jup_close_prior_date": "2025-05-14",
       "gear_return_pct": 2.759499,
       "jup_price_return_pct": 65.588616,
+      "jup_total_return_pct": 65.617026,
       "gear_nav": 2.4205,
       "jup_close_gbp": 128.0
     },
@@ -8408,6 +9095,7 @@
       "jup_close_prior_date": "2025-05-15",
       "gear_return_pct": 2.997414,
       "jup_price_return_pct": 66.028097,
+      "jup_total_return_pct": 66.056582,
       "gear_nav": 2.4294,
       "jup_close_gbp": 130.0
     },
@@ -8419,6 +9107,7 @@
       "jup_close_prior_date": "2025-05-16",
       "gear_return_pct": 2.635469,
       "jup_price_return_pct": 63.867684,
+      "jup_total_return_pct": 63.895799,
       "gear_nav": 2.4301,
       "jup_close_gbp": 128.8
     },
@@ -8430,6 +9119,7 @@
       "jup_close_prior_date": "2025-05-16",
       "gear_return_pct": 2.703045,
       "jup_price_return_pct": 60.559796,
+      "jup_total_return_pct": 60.587343,
       "gear_nav": 2.4317,
       "jup_close_gbp": 126.2
     },
@@ -8441,6 +9131,7 @@
       "jup_close_prior_date": "2025-05-20",
       "gear_return_pct": 1.957005,
       "jup_price_return_pct": 58.457711,
+      "jup_total_return_pct": 58.484898,
       "gear_nav": 2.433,
       "jup_close_gbp": 127.4
     },
@@ -8452,6 +9143,7 @@
       "jup_close_prior_date": "2025-05-21",
       "gear_return_pct": 1.651062,
       "jup_price_return_pct": 60.606061,
+      "jup_total_return_pct": 60.633616,
       "gear_nav": 2.4319,
       "jup_close_gbp": 127.2
     },
@@ -8463,6 +9155,7 @@
       "jup_close_prior_date": "2025-05-22",
       "gear_return_pct": 1.244951,
       "jup_price_return_pct": 52.048193,
+      "jup_total_return_pct": 52.074279,
       "gear_nav": 2.4316,
       "jup_close_gbp": 126.2
     },
@@ -8474,6 +9167,7 @@
       "jup_close_prior_date": "2025-05-23",
       "gear_return_pct": 1.35675,
       "jup_price_return_pct": 53.398058,
+      "jup_total_return_pct": 53.424377,
       "gear_nav": 2.4354,
       "jup_close_gbp": 126.4
     },
@@ -8485,6 +9179,7 @@
       "jup_close_prior_date": "2025-05-23",
       "gear_return_pct": 1.169469,
       "jup_price_return_pct": 57.038835,
+      "jup_total_return_pct": 57.065778,
       "gear_nav": 2.4309,
       "jup_close_gbp": 129.4
     },
@@ -8496,6 +9191,7 @@
       "jup_close_prior_date": "2025-05-28",
       "gear_return_pct": 1.960292,
       "jup_price_return_pct": 44.117647,
+      "jup_total_return_pct": 44.142373,
       "gear_nav": 2.4342,
       "jup_close_gbp": 127.4
     },
@@ -8507,6 +9203,7 @@
       "jup_close_prior_date": "2025-05-29",
       "gear_return_pct": 1.31881,
       "jup_price_return_pct": 39.499456,
+      "jup_total_return_pct": 39.52339,
       "gear_nav": 2.4277,
       "jup_close_gbp": 128.2
     },
@@ -8518,6 +9215,7 @@
       "jup_close_prior_date": "2025-05-30",
       "gear_return_pct": 1.406387,
       "jup_price_return_pct": 41.345094,
+      "jup_total_return_pct": 41.369344,
       "gear_nav": 2.4227,
       "jup_close_gbp": 128.2
     },
@@ -8529,6 +9227,7 @@
       "jup_close_prior_date": "2025-05-30",
       "gear_return_pct": 1.205475,
       "jup_price_return_pct": 38.037486,
+      "jup_total_return_pct": 38.061169,
       "gear_nav": 2.4179,
       "jup_close_gbp": 125.2
     },
@@ -8540,6 +9239,7 @@
       "jup_close_prior_date": "2025-06-03",
       "gear_return_pct": 1.180692,
       "jup_price_return_pct": 36.203091,
+      "jup_total_return_pct": 36.226459,
       "gear_nav": 2.4252,
       "jup_close_gbp": 123.4
     },
@@ -8551,6 +9251,7 @@
       "jup_close_prior_date": "2025-06-04",
       "gear_return_pct": 1.450487,
       "jup_price_return_pct": 29.989095,
+      "jup_total_return_pct": 30.011397,
       "gear_nav": 2.427,
       "jup_close_gbp": 119.2
     },
@@ -8562,6 +9263,7 @@
       "jup_close_prior_date": "2025-06-05",
       "gear_return_pct": 2.114537,
       "jup_price_return_pct": 27.548807,
+      "jup_total_return_pct": 27.57069,
       "gear_nav": 2.4339,
       "jup_close_gbp": 117.6
     },
@@ -8573,6 +9275,7 @@
       "jup_close_prior_date": "2025-06-06",
       "gear_return_pct": 1.974263,
       "jup_price_return_pct": 27.213823,
+      "jup_total_return_pct": 27.235649,
       "gear_nav": 2.4328,
       "jup_close_gbp": 117.8
     },
@@ -8584,6 +9287,7 @@
       "jup_close_prior_date": "2025-06-06",
       "gear_return_pct": 2.22157,
       "jup_price_return_pct": 27.213823,
+      "jup_total_return_pct": 27.235649,
       "gear_nav": 2.4387,
       "jup_close_gbp": 117.8
     },
@@ -8595,6 +9299,7 @@
       "jup_close_prior_date": "2025-06-10",
       "gear_return_pct": 2.208414,
       "jup_price_return_pct": 22.048067,
+      "jup_total_return_pct": 22.069006,
       "gear_nav": 2.4344,
       "jup_close_gbp": 116.8
     },
@@ -8606,6 +9311,7 @@
       "jup_close_prior_date": "2025-06-11",
       "gear_return_pct": 2.358708,
       "jup_price_return_pct": 18.153846,
+      "jup_total_return_pct": 18.174118,
       "gear_nav": 2.4432,
       "jup_close_gbp": 115.2
     },
@@ -8617,6 +9323,7 @@
       "jup_close_prior_date": "2025-06-12",
       "gear_return_pct": 2.936981,
       "jup_price_return_pct": 20.686071,
+      "jup_total_return_pct": 20.706777,
       "gear_nav": 2.4534,
       "jup_close_gbp": 116.1
     },
@@ -8628,6 +9335,7 @@
       "jup_close_prior_date": "2025-06-13",
       "gear_return_pct": 2.783825,
       "jup_price_return_pct": 26.128017,
+      "jup_total_return_pct": 26.149656,
       "gear_nav": 2.4553,
       "jup_close_gbp": 120.2
     },
@@ -8639,6 +9347,7 @@
       "jup_close_prior_date": "2025-06-13",
       "gear_return_pct": 2.737776,
       "jup_price_return_pct": 26.967471,
+      "jup_total_return_pct": 26.989255,
       "gear_nav": 2.4542,
       "jup_close_gbp": 121.0
     },
@@ -8650,6 +9359,7 @@
       "jup_close_prior_date": "2025-06-17",
       "gear_return_pct": 2.5412,
       "jup_price_return_pct": 28.290155,
+      "jup_total_return_pct": 28.312166,
       "gear_nav": 2.4453,
       "jup_close_gbp": 123.8
     },
@@ -8661,6 +9371,7 @@
       "jup_close_prior_date": "2025-06-18",
       "gear_return_pct": 2.128194,
       "jup_price_return_pct": 28.305785,
+      "jup_total_return_pct": 28.327798,
       "gear_nav": 2.4378,
       "jup_close_gbp": 124.2
     },
@@ -8672,6 +9383,7 @@
       "jup_close_prior_date": "2025-06-19",
       "gear_return_pct": 1.95519,
       "jup_price_return_pct": 31.712474,
+      "jup_total_return_pct": 31.735071,
       "gear_nav": 2.43,
       "jup_close_gbp": 124.6
     },
@@ -8683,6 +9395,7 @@
       "jup_close_prior_date": "2025-06-20",
       "gear_return_pct": 1.857442,
       "jup_price_return_pct": 47.329843,
+      "jup_total_return_pct": 47.35512,
       "gear_nav": 2.4293,
       "jup_close_gbp": 140.7
     },
@@ -8694,6 +9407,7 @@
       "jup_close_prior_date": "2025-06-20",
       "gear_return_pct": 2.356394,
       "jup_price_return_pct": 48.272251,
+      "jup_total_return_pct": 48.29769,
       "gear_nav": 2.4412,
       "jup_close_gbp": 141.6
     },
@@ -8705,6 +9419,7 @@
       "jup_close_prior_date": "2025-06-24",
       "gear_return_pct": 2.010931,
       "jup_price_return_pct": 45.154639,
+      "jup_total_return_pct": 45.179543,
       "gear_nav": 2.4451,
       "jup_close_gbp": 140.8
     },
@@ -8716,6 +9431,7 @@
       "jup_close_prior_date": "2025-06-25",
       "gear_return_pct": 2.157281,
       "jup_price_return_pct": 44.628099,
+      "jup_total_return_pct": 44.652913,
       "gear_nav": 2.4435,
       "jup_close_gbp": 140.0
     },
@@ -8727,6 +9443,7 @@
       "jup_close_prior_date": "2025-06-26",
       "gear_return_pct": 2.025052,
       "jup_price_return_pct": 41.306533,
+      "jup_total_return_pct": 41.330776,
       "gear_nav": 2.4435,
       "jup_close_gbp": 140.6
     },
@@ -8738,6 +9455,7 @@
       "jup_close_prior_date": "2025-06-27",
       "gear_return_pct": 2.04218,
       "jup_price_return_pct": 38.888889,
+      "jup_total_return_pct": 38.912718,
       "gear_nav": 2.4434,
       "jup_close_gbp": 140.0
     },
@@ -8749,6 +9467,7 @@
       "jup_close_prior_date": "2025-06-27",
       "gear_return_pct": 2.079766,
       "jup_price_return_pct": 39.087302,
+      "jup_total_return_pct": 39.111165,
       "gear_nav": 2.4443,
       "jup_close_gbp": 140.2
     },
@@ -8760,6 +9479,7 @@
       "jup_close_prior_date": "2025-07-01",
       "gear_return_pct": 1.954167,
       "jup_price_return_pct": 39.566929,
+      "jup_total_return_pct": 39.590874,
       "gear_nav": 2.4469,
       "jup_close_gbp": 141.8
     },
@@ -8771,6 +9491,7 @@
       "jup_close_prior_date": "2025-07-02",
       "gear_return_pct": 2.39646,
       "jup_price_return_pct": 42.277228,
+      "jup_total_return_pct": 42.301638,
       "gear_nav": 2.4526,
       "jup_close_gbp": 143.7
     },
@@ -8782,6 +9503,7 @@
       "jup_close_prior_date": "2025-07-03",
       "gear_return_pct": 3.124213,
       "jup_price_return_pct": 42.359768,
+      "jup_total_return_pct": 42.384192,
       "gear_nav": 2.4558,
       "jup_close_gbp": 147.2
     },
@@ -8793,6 +9515,7 @@
       "jup_close_prior_date": "2025-07-04",
       "gear_return_pct": 3.191668,
       "jup_price_return_pct": 45.829244,
+      "jup_total_return_pct": 45.854264,
       "gear_nav": 2.4572,
       "jup_close_gbp": 148.6
     },
@@ -8804,6 +9527,7 @@
       "jup_close_prior_date": "2025-07-04",
       "gear_return_pct": 3.229464,
       "jup_price_return_pct": 47.595682,
+      "jup_total_return_pct": 47.621005,
       "gear_nav": 2.4581,
       "jup_close_gbp": 150.4
     },
@@ -8815,6 +9539,7 @@
       "jup_close_prior_date": "2025-07-08",
       "gear_return_pct": 1.953255,
       "jup_price_return_pct": 38.992537,
+      "jup_total_return_pct": 39.016384,
       "gear_nav": 2.4428,
       "jup_close_gbp": 149.0
     },
@@ -8826,6 +9551,7 @@
       "jup_close_prior_date": "2025-07-09",
       "gear_return_pct": 1.740579,
       "jup_price_return_pct": 36.764706,
+      "jup_total_return_pct": 36.78817,
       "gear_nav": 2.4433,
       "jup_close_gbp": 148.8
     },
@@ -8837,6 +9563,7 @@
       "jup_close_prior_date": "2025-07-10",
       "gear_return_pct": 1.527703,
       "jup_price_return_pct": 23.666667,
+      "jup_total_return_pct": 23.687884,
       "gear_nav": 2.439,
       "jup_close_gbp": 148.4
     },
@@ -8848,6 +9575,7 @@
       "jup_close_prior_date": "2025-07-11",
       "gear_return_pct": 2.086202,
       "jup_price_return_pct": 21.231767,
+      "jup_total_return_pct": 21.252566,
       "gear_nav": 2.4467,
       "jup_close_gbp": 149.6
     },
@@ -8859,6 +9587,7 @@
       "jup_close_prior_date": "2025-07-11",
       "gear_return_pct": 1.689824,
       "jup_price_return_pct": 20.583468,
+      "jup_total_return_pct": 20.604157,
       "gear_nav": 2.4372,
       "jup_close_gbp": 148.8
     },
@@ -8870,6 +9599,7 @@
       "jup_close_prior_date": "2025-07-15",
       "gear_return_pct": 2.109528,
       "jup_price_return_pct": 21.095008,
+      "jup_total_return_pct": 21.115784,
       "gear_nav": 2.4444,
       "jup_close_gbp": 150.4
     },
@@ -8881,6 +9611,7 @@
       "jup_close_prior_date": "2025-07-16",
       "gear_return_pct": 2.054995,
       "jup_price_return_pct": 21.955128,
+      "jup_total_return_pct": 21.976052,
       "gear_nav": 2.4384,
       "jup_close_gbp": 152.2
     },
@@ -8892,6 +9623,7 @@
       "jup_close_prior_date": "2025-07-17",
       "gear_return_pct": 1.975174,
       "jup_price_return_pct": 14.463453,
+      "jup_total_return_pct": 14.483091,
       "gear_nav": 2.4317,
       "jup_close_gbp": 147.2
     },
@@ -8903,6 +9635,7 @@
       "jup_close_prior_date": "2025-07-18",
       "gear_return_pct": 2.177576,
       "jup_price_return_pct": 10.856269,
+      "jup_total_return_pct": 10.875289,
       "gear_nav": 2.4259,
       "jup_close_gbp": 145.0
     },
@@ -8914,6 +9647,7 @@
       "jup_close_prior_date": "2025-07-18",
       "gear_return_pct": 1.933283,
       "jup_price_return_pct": 9.938838,
+      "jup_total_return_pct": 9.9577,
       "gear_nav": 2.4201,
       "jup_close_gbp": 143.8
     },
@@ -8925,6 +9659,7 @@
       "jup_close_prior_date": "2025-07-22",
       "gear_return_pct": 1.430189,
       "jup_price_return_pct": 12.024353,
+      "jup_total_return_pct": 12.043573,
       "gear_nav": 2.4184,
       "jup_close_gbp": 147.2
     },
@@ -8936,6 +9671,7 @@
       "jup_close_prior_date": "2025-07-23",
       "gear_return_pct": 1.457861,
       "jup_price_return_pct": 9.502262,
+      "jup_total_return_pct": 9.52105,
       "gear_nav": 2.4149,
       "jup_close_gbp": 145.2
     },
@@ -8947,6 +9683,7 @@
       "jup_close_prior_date": "2025-07-24",
       "gear_return_pct": 1.660555,
       "jup_price_return_pct": 8.87574,
+      "jup_total_return_pct": 8.894419,
       "gear_nav": 2.4121,
       "jup_close_gbp": 147.2
     },
@@ -8958,6 +9695,7 @@
       "jup_close_prior_date": "2025-07-25",
       "gear_return_pct": 1.863354,
       "jup_price_return_pct": 14.285714,
+      "jup_total_return_pct": 14.305322,
       "gear_nav": 2.4108,
       "jup_close_gbp": 148.8
     },
@@ -8969,6 +9707,7 @@
       "jup_close_prior_date": "2025-07-25",
       "gear_return_pct": 1.745046,
       "jup_price_return_pct": 15.360983,
+      "jup_total_return_pct": 15.380775,
       "gear_nav": 2.408,
       "jup_close_gbp": 150.2
     },
@@ -8980,6 +9719,7 @@
       "jup_close_prior_date": "2025-07-30",
       "gear_return_pct": 1.008664,
       "jup_price_return_pct": 17.501928,
+      "jup_total_return_pct": 17.522087,
       "gear_nav": 2.4134,
       "jup_close_gbp": 152.4
     },
@@ -8991,6 +9731,7 @@
       "jup_close_prior_date": "2025-07-31",
       "gear_return_pct": 1.264397,
       "jup_price_return_pct": 19.565217,
+      "jup_total_return_pct": 19.585731,
       "gear_nav": 2.4267,
       "jup_close_gbp": 154.0
     },
@@ -9002,6 +9743,7 @@
       "jup_close_prior_date": "2025-08-01",
       "gear_return_pct": 1.53442,
       "jup_price_return_pct": 22.452229,
+      "jup_total_return_pct": 22.473238,
       "gear_nav": 2.4351,
       "jup_close_gbp": 153.8
     },
@@ -9013,6 +9755,7 @@
       "jup_close_prior_date": "2025-08-01",
       "gear_return_pct": 1.667848,
       "jup_price_return_pct": 21.496815,
+      "jup_total_return_pct": 21.51766,
       "gear_nav": 2.4383,
       "jup_close_gbp": 152.6
     },
@@ -9024,6 +9767,7 @@
       "jup_close_prior_date": "2025-08-05",
       "gear_return_pct": 1.89032,
       "jup_price_return_pct": 23.863636,
+      "jup_total_return_pct": 23.884887,
       "gear_nav": 2.4525,
       "jup_close_gbp": 152.6
     },
@@ -9035,6 +9779,7 @@
       "jup_close_prior_date": "2025-08-06",
       "gear_return_pct": 1.563926,
       "jup_price_return_pct": 20.866774,
+      "jup_total_return_pct": 20.887511,
       "gear_nav": 2.4483,
       "jup_close_gbp": 150.6
     },
@@ -9046,6 +9791,7 @@
       "jup_close_prior_date": "2025-08-07",
       "gear_return_pct": 1.665075,
       "jup_price_return_pct": 25.735294,
+      "jup_total_return_pct": 25.735294,
       "gear_nav": 2.4484,
       "jup_close_gbp": 153.9
     },
@@ -9057,6 +9803,7 @@
       "jup_close_prior_date": "2025-08-08",
       "gear_return_pct": 1.966385,
       "jup_price_return_pct": 21.451613,
+      "jup_total_return_pct": 21.451613,
       "gear_nav": 2.4631,
       "jup_close_gbp": 150.6
     },
@@ -9068,6 +9815,7 @@
       "jup_close_prior_date": "2025-08-08",
       "gear_return_pct": 2.471436,
       "jup_price_return_pct": 19.435484,
+      "jup_total_return_pct": 19.435484,
       "gear_nav": 2.4753,
       "jup_close_gbp": 148.1
     },
@@ -9079,6 +9827,7 @@
       "jup_close_prior_date": "2025-08-12",
       "gear_return_pct": 2.243338,
       "jup_price_return_pct": 17.96875,
+      "jup_total_return_pct": 17.96875,
       "gear_nav": 2.4748,
       "jup_close_gbp": 151.0
     },
@@ -9090,6 +9839,7 @@
       "jup_close_prior_date": "2025-08-13",
       "gear_return_pct": 2.292747,
       "jup_price_return_pct": 14.461538,
+      "jup_total_return_pct": 14.461538,
       "gear_nav": 2.4851,
       "jup_close_gbp": 148.8
     },
@@ -9101,6 +9851,7 @@
       "jup_close_prior_date": "2025-08-14",
       "gear_return_pct": 2.637752,
       "jup_price_return_pct": 15.217391,
+      "jup_total_return_pct": 15.217391,
       "gear_nav": 2.4942,
       "jup_close_gbp": 148.4
     },
@@ -9112,6 +9863,7 @@
       "jup_close_prior_date": "2025-08-15",
       "gear_return_pct": 3.01024,
       "jup_price_return_pct": 16.877971,
+      "jup_total_return_pct": 16.877971,
       "gear_nav": 2.5049,
       "jup_close_gbp": 147.5
     },
@@ -9123,6 +9875,7 @@
       "jup_close_prior_date": "2025-08-15",
       "gear_return_pct": 2.767611,
       "jup_price_return_pct": 15.530903,
+      "jup_total_return_pct": 15.530903,
       "gear_nav": 2.499,
       "jup_close_gbp": 145.8
     },
@@ -9134,6 +9887,7 @@
       "jup_close_prior_date": "2025-08-19",
       "gear_return_pct": 2.726263,
       "jup_price_return_pct": 13.993711,
+      "jup_total_return_pct": 13.993711,
       "gear_nav": 2.4982,
       "jup_close_gbp": 145.0
     },
@@ -9145,6 +9899,7 @@
       "jup_close_prior_date": "2025-08-20",
       "gear_return_pct": 2.718375,
       "jup_price_return_pct": 13.232964,
+      "jup_total_return_pct": 13.232964,
       "gear_nav": 2.4977,
       "jup_close_gbp": 142.9
     },
@@ -9156,6 +9911,7 @@
       "jup_close_prior_date": "2025-08-21",
       "gear_return_pct": 2.779831,
       "jup_price_return_pct": 12.341772,
+      "jup_total_return_pct": 12.341772,
       "gear_nav": 2.5031,
       "jup_close_gbp": 142.0
     },
@@ -9167,6 +9923,7 @@
       "jup_close_prior_date": "2025-08-22",
       "gear_return_pct": 3.007117,
       "jup_price_return_pct": 10.973725,
+      "jup_total_return_pct": 10.973725,
       "gear_nav": 2.504,
       "jup_close_gbp": 143.6
     },
@@ -9178,6 +9935,7 @@
       "jup_close_prior_date": "2025-08-22",
       "gear_return_pct": 2.661566,
       "jup_price_return_pct": 9.42813,
+      "jup_total_return_pct": 9.42813,
       "gear_nav": 2.4956,
       "jup_close_gbp": 141.6
     },
@@ -9189,6 +9947,7 @@
       "jup_close_prior_date": "2025-08-26",
       "gear_return_pct": 3.085203,
       "jup_price_return_pct": 8.948195,
+      "jup_total_return_pct": 8.948195,
       "gear_nav": 2.5093,
       "jup_close_gbp": 138.8
     },
@@ -9200,6 +9959,7 @@
       "jup_close_prior_date": "2025-08-27",
       "gear_return_pct": 3.71957,
       "jup_price_return_pct": 12.090484,
+      "jup_total_return_pct": 12.090484,
       "gear_nav": 2.518,
       "jup_close_gbp": 143.7
     },
@@ -9211,6 +9971,7 @@
       "jup_close_prior_date": "2025-08-28",
       "gear_return_pct": 4.065712,
       "jup_price_return_pct": 13.416537,
+      "jup_total_return_pct": 13.416537,
       "gear_nav": 2.5212,
       "jup_close_gbp": 145.4
     },
@@ -9222,6 +9983,7 @@
       "jup_close_prior_date": "2025-08-29",
       "gear_return_pct": 4.264031,
       "jup_price_return_pct": 17.412141,
+      "jup_total_return_pct": 17.412141,
       "gear_nav": 2.521,
       "jup_close_gbp": 147.0
     },
@@ -9233,6 +9995,7 @@
       "jup_close_prior_date": "2025-08-29",
       "gear_return_pct": 4.05724,
       "jup_price_return_pct": 18.210863,
+      "jup_total_return_pct": 18.210863,
       "gear_nav": 2.516,
       "jup_close_gbp": 148.0
     },
@@ -9244,6 +10007,7 @@
       "jup_close_prior_date": "2025-09-02",
       "gear_return_pct": 3.81953,
       "jup_price_return_pct": 22.483221,
+      "jup_total_return_pct": 22.483221,
       "gear_nav": 2.5197,
       "jup_close_gbp": 146.0
     },
@@ -9255,6 +10019,7 @@
       "jup_close_prior_date": "2025-09-03",
       "gear_return_pct": 3.989482,
       "jup_price_return_pct": 24.489796,
+      "jup_total_return_pct": 24.489796,
       "gear_nav": 2.531,
       "jup_close_gbp": 146.4
     },
@@ -9266,6 +10031,7 @@
       "jup_close_prior_date": "2025-09-04",
       "gear_return_pct": 4.085827,
       "jup_price_return_pct": 23.938879,
+      "jup_total_return_pct": 23.938879,
       "gear_nav": 2.5322,
       "jup_close_gbp": 146.0
     },
@@ -9277,6 +10043,7 @@
       "jup_close_prior_date": "2025-09-05",
       "gear_return_pct": 3.440358,
       "jup_price_return_pct": 27.674024,
+      "jup_total_return_pct": 27.674024,
       "gear_nav": 2.5226,
       "jup_close_gbp": 150.4
     },
@@ -9288,6 +10055,7 @@
       "jup_close_prior_date": "2025-09-05",
       "gear_return_pct": 3.489564,
       "jup_price_return_pct": 27.674024,
+      "jup_total_return_pct": 27.674024,
       "gear_nav": 2.5238,
       "jup_close_gbp": 150.4
     },
@@ -9299,6 +10067,7 @@
       "jup_close_prior_date": "2025-09-09",
       "gear_return_pct": 3.679601,
       "jup_price_return_pct": 28.645833,
+      "jup_total_return_pct": 28.645833,
       "gear_nav": 2.5331,
       "jup_close_gbp": 148.2
     },
@@ -9310,6 +10079,7 @@
       "jup_close_prior_date": "2025-09-10",
       "gear_return_pct": 3.358604,
       "jup_price_return_pct": 28.854436,
+      "jup_total_return_pct": 28.854436,
       "gear_nav": 2.5358,
       "jup_close_gbp": 149.6
     },
@@ -9321,6 +10091,7 @@
       "jup_close_prior_date": "2025-09-11",
       "gear_return_pct": 3.441535,
       "jup_price_return_pct": 23.044925,
+      "jup_total_return_pct": 23.044925,
       "gear_nav": 2.5398,
       "jup_close_gbp": 147.9
     },
@@ -9332,6 +10103,7 @@
       "jup_close_prior_date": "2025-09-12",
       "gear_return_pct": 3.650884,
       "jup_price_return_pct": 21.735537,
+      "jup_total_return_pct": 21.735537,
       "gear_nav": 2.5438,
       "jup_close_gbp": 147.3
     },
@@ -9343,6 +10115,7 @@
       "jup_close_prior_date": "2025-09-12",
       "gear_return_pct": 3.948333,
       "jup_price_return_pct": 24.132231,
+      "jup_total_return_pct": 24.132231,
       "gear_nav": 2.5511,
       "jup_close_gbp": 150.2
     },
@@ -9354,6 +10127,7 @@
       "jup_close_prior_date": "2025-09-16",
       "gear_return_pct": 4.709164,
       "jup_price_return_pct": 21.900161,
+      "jup_total_return_pct": 21.900161,
       "gear_nav": 2.5526,
       "jup_close_gbp": 151.4
     },
@@ -9365,6 +10139,7 @@
       "jup_close_prior_date": "2025-09-17",
       "gear_return_pct": 5.193416,
       "jup_price_return_pct": 21.990369,
+      "jup_total_return_pct": 21.990369,
       "gear_nav": 2.5562,
       "jup_close_gbp": 152.0
     },
@@ -9376,6 +10151,7 @@
       "jup_close_prior_date": "2025-09-18",
       "gear_return_pct": 5.787675,
       "jup_price_return_pct": 9.31059,
+      "jup_total_return_pct": 9.31059,
       "gear_nav": 2.5699,
       "jup_close_gbp": 153.8
     },
@@ -9387,6 +10163,7 @@
       "jup_close_prior_date": "2025-09-19",
       "gear_return_pct": 5.169589,
       "jup_price_return_pct": 10.028249,
+      "jup_total_return_pct": 10.028249,
       "gear_nav": 2.5674,
       "jup_close_gbp": 155.8
     },
@@ -9398,6 +10175,7 @@
       "jup_close_prior_date": "2025-09-19",
       "gear_return_pct": 5.333443,
       "jup_price_return_pct": 9.60452,
+      "jup_total_return_pct": 9.60452,
       "gear_nav": 2.5714,
       "jup_close_gbp": 155.2
     },
@@ -9409,6 +10187,7 @@
       "jup_close_prior_date": "2025-09-23",
       "gear_return_pct": 5.717209,
       "jup_price_return_pct": 11.571429,
+      "jup_total_return_pct": 11.571429,
       "gear_nav": 2.5832,
       "jup_close_gbp": 156.2
     },
@@ -9420,6 +10199,7 @@
       "jup_close_prior_date": "2025-09-24",
       "gear_return_pct": 5.414365,
       "jup_price_return_pct": 12.517781,
+      "jup_total_return_pct": 12.517781,
       "gear_nav": 2.5758,
       "jup_close_gbp": 158.2
     },
@@ -9431,6 +10211,7 @@
       "jup_close_prior_date": "2025-09-25",
       "gear_return_pct": 5.43505,
       "jup_price_return_pct": 13.571429,
+      "jup_total_return_pct": 13.571429,
       "gear_nav": 2.5762,
       "jup_close_gbp": 159.0
     },
@@ -9442,6 +10223,7 @@
       "jup_close_prior_date": "2025-10-01",
       "gear_return_pct": 5.151071,
       "jup_price_return_pct": 8.152174,
+      "jup_total_return_pct": 8.152174,
       "gear_nav": 2.5823,
       "jup_close_gbp": 159.2
     },
@@ -9453,6 +10235,7 @@
       "jup_close_prior_date": "2025-10-02",
       "gear_return_pct": 5.078952,
       "jup_price_return_pct": 6.729475,
+      "jup_total_return_pct": 6.729475,
       "gear_nav": 2.582,
       "jup_close_gbp": 158.6
     },
@@ -9464,6 +10247,7 @@
       "jup_close_prior_date": "2025-10-03",
       "gear_return_pct": 5.353728,
       "jup_price_return_pct": 6.117021,
+      "jup_total_return_pct": 6.117021,
       "gear_nav": 2.5897,
       "jup_close_gbp": 159.6
     },
@@ -9475,6 +10259,7 @@
       "jup_close_prior_date": "2025-10-07",
       "gear_return_pct": 6.221094,
       "jup_price_return_pct": 8.870968,
+      "jup_total_return_pct": 8.870968,
       "gear_nav": 2.5953,
       "jup_close_gbp": 162.0
     },
@@ -9486,6 +10271,7 @@
       "jup_close_prior_date": "2025-10-08",
       "gear_return_pct": 6.576466,
       "jup_price_return_pct": 16.846361,
+      "jup_total_return_pct": 16.846361,
       "gear_nav": 2.5994,
       "jup_close_gbp": 173.4
     },
@@ -9497,6 +10283,7 @@
       "jup_close_prior_date": "2025-10-09",
       "gear_return_pct": 6.269669,
       "jup_price_return_pct": 14.171123,
+      "jup_total_return_pct": 14.171123,
       "gear_nav": 2.6001,
       "jup_close_gbp": 170.8
     },
@@ -9508,6 +10295,7 @@
       "jup_close_prior_date": "2025-10-10",
       "gear_return_pct": 6.864435,
       "jup_price_return_pct": 14.784946,
+      "jup_total_return_pct": 14.784946,
       "gear_nav": 2.6045,
       "jup_close_gbp": 170.8
     },
@@ -9519,6 +10307,7 @@
       "jup_close_prior_date": "2025-10-10",
       "gear_return_pct": 6.31052,
       "jup_price_return_pct": 16.061828,
+      "jup_total_return_pct": 16.061828,
       "gear_nav": 2.591,
       "jup_close_gbp": 172.7
     },
@@ -9530,6 +10319,7 @@
       "jup_close_prior_date": "2025-10-14",
       "gear_return_pct": 5.593832,
       "jup_price_return_pct": 14.191853,
+      "jup_total_return_pct": 14.191853,
       "gear_nav": 2.5748,
       "jup_close_gbp": 173.8
     },
@@ -9541,6 +10331,7 @@
       "jup_close_prior_date": "2025-10-15",
       "gear_return_pct": 6.390591,
       "jup_price_return_pct": 16.168478,
+      "jup_total_return_pct": 16.168478,
       "gear_nav": 2.5871,
       "jup_close_gbp": 171.0
     },
@@ -9552,6 +10343,7 @@
       "jup_close_prior_date": "2025-10-16",
       "gear_return_pct": 6.748011,
       "jup_price_return_pct": 21.034483,
+      "jup_total_return_pct": 21.034483,
       "gear_nav": 2.5896,
       "jup_close_gbp": 175.5
     },
@@ -9563,6 +10355,7 @@
       "jup_close_prior_date": "2025-10-17",
       "gear_return_pct": 6.582373,
       "jup_price_return_pct": 27.538248,
+      "jup_total_return_pct": 27.538248,
       "gear_nav": 2.5794,
       "jup_close_gbp": 183.4
     },
@@ -9574,6 +10367,7 @@
       "jup_close_prior_date": "2025-10-17",
       "gear_return_pct": 6.652618,
       "jup_price_return_pct": 30.180807,
+      "jup_total_return_pct": 30.180807,
       "gear_nav": 2.5811,
       "jup_close_gbp": 187.2
     },
@@ -9585,6 +10379,7 @@
       "jup_close_prior_date": "2025-10-21",
       "gear_return_pct": 6.464036,
       "jup_price_return_pct": 26.721763,
+      "jup_total_return_pct": 26.721763,
       "gear_nav": 2.571,
       "jup_close_gbp": 184.0
     },
@@ -9596,6 +10391,7 @@
       "jup_close_prior_date": "2025-10-22",
       "gear_return_pct": 6.85295,
       "jup_price_return_pct": 23.777174,
+      "jup_total_return_pct": 23.777174,
       "gear_nav": 2.5774,
       "jup_close_gbp": 182.2
     },
@@ -9607,6 +10403,7 @@
       "jup_close_prior_date": "2025-10-23",
       "gear_return_pct": 7.225817,
       "jup_price_return_pct": 22.983871,
+      "jup_total_return_pct": 22.983871,
       "gear_nav": 2.585,
       "jup_close_gbp": 183.0
     },
@@ -9618,6 +10415,7 @@
       "jup_close_prior_date": "2025-10-24",
       "gear_return_pct": 7.267442,
       "jup_price_return_pct": 24.766977,
+      "jup_total_return_pct": 24.766977,
       "gear_nav": 2.583,
       "jup_close_gbp": 187.4
     },
@@ -9629,6 +10427,7 @@
       "jup_close_prior_date": "2025-10-24",
       "gear_return_pct": 7.329734,
       "jup_price_return_pct": 25.565912,
+      "jup_total_return_pct": 25.565912,
       "gear_nav": 2.5845,
       "jup_close_gbp": 188.6
     },
@@ -9640,6 +10439,7 @@
       "jup_close_prior_date": "2025-10-28",
       "gear_return_pct": 7.288473,
       "jup_price_return_pct": 23.425197,
+      "jup_total_return_pct": 23.425197,
       "gear_nav": 2.5893,
       "jup_close_gbp": 188.1
     },
@@ -9651,6 +10451,7 @@
       "jup_close_prior_date": "2025-10-29",
       "gear_return_pct": 7.100177,
       "jup_price_return_pct": 21.688312,
+      "jup_total_return_pct": 21.688312,
       "gear_nav": 2.599,
       "jup_close_gbp": 187.4
     },
@@ -9662,6 +10463,7 @@
       "jup_close_prior_date": "2025-10-30",
       "gear_return_pct": 6.632171,
       "jup_price_return_pct": 23.797139,
+      "jup_total_return_pct": 23.797139,
       "gear_nav": 2.5966,
       "jup_close_gbp": 190.4
     },
@@ -9673,6 +10475,7 @@
       "jup_close_prior_date": "2025-10-31",
       "gear_return_pct": 6.56605,
       "jup_price_return_pct": 23.722149,
+      "jup_total_return_pct": 23.722149,
       "gear_nav": 2.5984,
       "jup_close_gbp": 188.8
     },
@@ -9684,6 +10487,7 @@
       "jup_close_prior_date": "2025-10-31",
       "gear_return_pct": 6.832629,
       "jup_price_return_pct": 22.411533,
+      "jup_total_return_pct": 22.411533,
       "gear_nav": 2.6049,
       "jup_close_gbp": 186.8
     },
@@ -9695,6 +10499,7 @@
       "jup_close_prior_date": "2025-11-05",
       "gear_return_pct": 6.926973,
       "jup_price_return_pct": 26.315789,
+      "jup_total_return_pct": 26.315789,
       "gear_nav": 2.618,
       "jup_close_gbp": 194.4
     },
@@ -9706,6 +10511,7 @@
       "jup_close_prior_date": "2025-11-06",
       "gear_return_pct": 6.244164,
       "jup_price_return_pct": 26.759628,
+      "jup_total_return_pct": 26.759628,
       "gear_nav": 2.6169,
       "jup_close_gbp": 190.9
     },
@@ -9717,6 +10523,7 @@
       "jup_close_prior_date": "2025-11-07",
       "gear_return_pct": 4.936775,
       "jup_price_return_pct": 27.346388,
+      "jup_total_return_pct": 27.346388,
       "gear_nav": 2.5975,
       "jup_close_gbp": 188.6
     },
@@ -9728,6 +10535,7 @@
       "jup_close_prior_date": "2025-11-07",
       "gear_return_pct": 5.255929,
       "jup_price_return_pct": 28.764348,
+      "jup_total_return_pct": 28.764348,
       "gear_nav": 2.6054,
       "jup_close_gbp": 190.7
     },
@@ -9739,6 +10547,7 @@
       "jup_close_prior_date": "2025-11-11",
       "gear_return_pct": 4.430405,
       "jup_price_return_pct": 30.510753,
+      "jup_total_return_pct": 30.510753,
       "gear_nav": 2.5952,
       "jup_close_gbp": 194.2
     },
@@ -9750,6 +10559,7 @@
       "jup_close_prior_date": "2025-11-12",
       "gear_return_pct": 3.624409,
       "jup_price_return_pct": 31.671159,
+      "jup_total_return_pct": 31.671159,
       "gear_nav": 2.5846,
       "jup_close_gbp": 195.4
     },
@@ -9761,6 +10571,7 @@
       "jup_close_prior_date": "2025-11-13",
       "gear_return_pct": 2.742624,
       "jup_price_return_pct": 28.271186,
+      "jup_total_return_pct": 28.271186,
       "gear_nav": 2.5736,
       "jup_close_gbp": 189.2
     },
@@ -9772,6 +10583,7 @@
       "jup_close_prior_date": "2025-11-14",
       "gear_return_pct": 2.853141,
       "jup_price_return_pct": 27.297668,
+      "jup_total_return_pct": 27.297668,
       "gear_nav": 2.5703,
       "jup_close_gbp": 185.6
     },
@@ -9783,6 +10595,7 @@
       "jup_close_prior_date": "2025-11-14",
       "gear_return_pct": 2.396959,
       "jup_price_return_pct": 28.257888,
+      "jup_total_return_pct": 28.257888,
       "gear_nav": 2.5589,
       "jup_close_gbp": 187.0
     },
@@ -9794,6 +10607,7 @@
       "jup_close_prior_date": "2025-11-18",
       "gear_return_pct": 2.866637,
       "jup_price_return_pct": 29.741078,
+      "jup_total_return_pct": 29.741078,
       "gear_nav": 2.5693,
       "jup_close_gbp": 185.4
     },
@@ -9805,6 +10619,7 @@
       "jup_close_prior_date": "2025-11-19",
       "gear_return_pct": 3.05621,
       "jup_price_return_pct": 32.394366,
+      "jup_total_return_pct": 32.394366,
       "gear_nav": 2.5796,
       "jup_close_gbp": 188.0
     },
@@ -9816,6 +10631,7 @@
       "jup_close_prior_date": "2025-11-20",
       "gear_return_pct": 3.178914,
       "jup_price_return_pct": 30.362117,
+      "jup_total_return_pct": 30.362117,
       "gear_nav": 2.5836,
       "jup_close_gbp": 187.2
     },
@@ -9827,6 +10643,7 @@
       "jup_close_prior_date": "2025-11-21",
       "gear_return_pct": 3.630389,
       "jup_price_return_pct": 31.567797,
+      "jup_total_return_pct": 31.567797,
       "gear_nav": 2.5862,
       "jup_close_gbp": 186.3
     },
@@ -9838,6 +10655,7 @@
       "jup_close_prior_date": "2025-11-21",
       "gear_return_pct": 3.502164,
       "jup_price_return_pct": 32.768362,
+      "jup_total_return_pct": 32.768362,
       "gear_nav": 2.583,
       "jup_close_gbp": 188.0
     },
@@ -9849,6 +10667,7 @@
       "jup_close_prior_date": "2025-11-25",
       "gear_return_pct": 3.085782,
       "jup_price_return_pct": 27.627001,
+      "jup_total_return_pct": 27.627001,
       "gear_nav": 2.5957,
       "jup_close_gbp": 183.4
     },
@@ -9860,6 +10679,7 @@
       "jup_close_prior_date": "2025-11-26",
       "gear_return_pct": 2.201333,
       "jup_price_return_pct": 27.235213,
+      "jup_total_return_pct": 27.235213,
       "gear_nav": 2.5767,
       "jup_close_gbp": 185.0
     },
@@ -9871,6 +10691,7 @@
       "jup_close_prior_date": "2025-11-27",
       "gear_return_pct": 2.332408,
       "jup_price_return_pct": 27.346939,
+      "jup_total_return_pct": 27.346939,
       "gear_nav": 2.5798,
       "jup_close_gbp": 187.2
     },
@@ -9882,6 +10703,7 @@
       "jup_close_prior_date": "2025-11-28",
       "gear_return_pct": 3.282989,
       "jup_price_return_pct": 32.432432,
+      "jup_total_return_pct": 32.432432,
       "gear_nav": 2.5986,
       "jup_close_gbp": 196.0
     },
@@ -9893,6 +10715,7 @@
       "jup_close_prior_date": "2025-11-28",
       "gear_return_pct": 3.382353,
       "jup_price_return_pct": 27.364865,
+      "jup_total_return_pct": 27.364865,
       "gear_nav": 2.6011,
       "jup_close_gbp": 188.5
     },
@@ -9904,6 +10727,7 @@
       "jup_close_prior_date": "2025-12-02",
       "gear_return_pct": 2.105887,
       "jup_price_return_pct": 32.513661,
+      "jup_total_return_pct": 32.513661,
       "gear_nav": 2.5843,
       "jup_close_gbp": 194.0
     },
@@ -9915,6 +10739,7 @@
       "jup_close_prior_date": "2025-12-03",
       "gear_return_pct": 1.346655,
       "jup_price_return_pct": 28.219178,
+      "jup_total_return_pct": 28.219178,
       "gear_nav": 2.5663,
       "jup_close_gbp": 187.2
     },
@@ -9926,6 +10751,7 @@
       "jup_close_prior_date": "2025-12-04",
       "gear_return_pct": 2.311108,
       "jup_price_return_pct": 26.06383,
+      "jup_total_return_pct": 26.06383,
       "gear_nav": 2.5809,
       "jup_close_gbp": 189.6
     },
@@ -9937,6 +10763,7 @@
       "jup_close_prior_date": "2025-12-05",
       "gear_return_pct": 1.687931,
       "jup_price_return_pct": 26.462766,
+      "jup_total_return_pct": 26.462766,
       "gear_nav": 2.5664,
       "jup_close_gbp": 190.2
     },
@@ -9948,6 +10775,7 @@
       "jup_close_prior_date": "2025-12-05",
       "gear_return_pct": 1.200571,
       "jup_price_return_pct": 23.93617,
+      "jup_total_return_pct": 23.93617,
       "gear_nav": 2.5541,
       "jup_close_gbp": 186.4
     },
@@ -9959,6 +10787,7 @@
       "jup_close_prior_date": "2025-12-09",
       "gear_return_pct": -0.015774,
       "jup_price_return_pct": 19.585561,
+      "jup_total_return_pct": 19.585561,
       "gear_nav": 2.5354,
       "jup_close_gbp": 178.9
     },
@@ -9970,6 +10799,7 @@
       "jup_close_prior_date": "2025-12-10",
       "gear_return_pct": 0.54335,
       "jup_price_return_pct": 27.924273,
+      "jup_total_return_pct": 27.924273,
       "gear_nav": 2.5536,
       "jup_close_gbp": 189.2
     },
@@ -9981,6 +10811,7 @@
       "jup_close_prior_date": "2025-12-11",
       "gear_return_pct": 0.770501,
       "jup_price_return_pct": 26.272912,
+      "jup_total_return_pct": 26.272912,
       "gear_nav": 2.5634,
       "jup_close_gbp": 186.0
     },
@@ -9992,6 +10823,7 @@
       "jup_close_prior_date": "2025-12-12",
       "gear_return_pct": -0.239113,
       "jup_price_return_pct": 23.968043,
+      "jup_total_return_pct": 23.968043,
       "gear_nav": 2.545,
       "jup_close_gbp": 186.2
     },
@@ -10003,6 +10835,7 @@
       "jup_close_prior_date": "2025-12-12",
       "gear_return_pct": -0.415507,
       "jup_price_return_pct": 18.641811,
+      "jup_total_return_pct": 18.641811,
       "gear_nav": 2.5405,
       "jup_close_gbp": 178.2
     },
@@ -10014,6 +10847,7 @@
       "jup_close_prior_date": "2025-12-16",
       "gear_return_pct": -0.578984,
       "jup_price_return_pct": 14.078947,
+      "jup_total_return_pct": 14.078947,
       "gear_nav": 2.5414,
       "jup_close_gbp": 173.4
     },
@@ -10025,6 +10859,7 @@
       "jup_close_prior_date": "2025-12-18",
       "gear_return_pct": -0.370024,
       "jup_price_return_pct": 12.901155,
+      "jup_total_return_pct": 12.901155,
       "gear_nav": 2.5579,
       "jup_close_gbp": 175.9
     },
@@ -10036,6 +10871,7 @@
       "jup_close_prior_date": "2025-12-19",
       "gear_return_pct": -0.723341,
       "jup_price_return_pct": 8.247423,
+      "jup_total_return_pct": 8.247423,
       "gear_nav": 2.5528,
       "jup_close_gbp": 168.0
     },
@@ -10047,6 +10883,7 @@
       "jup_close_prior_date": "2025-12-19",
       "gear_return_pct": -0.412227,
       "jup_price_return_pct": 6.829897,
+      "jup_total_return_pct": 6.829897,
       "gear_nav": 2.5608,
       "jup_close_gbp": 165.8
     },
@@ -10058,6 +10895,7 @@
       "jup_close_prior_date": "2025-12-23",
       "gear_return_pct": -0.578461,
       "jup_price_return_pct": 5.815424,
+      "jup_total_return_pct": 5.815424,
       "gear_nav": 2.5609,
       "jup_close_gbp": 167.4
     },
@@ -10069,6 +10907,7 @@
       "jup_close_prior_date": "2025-12-24",
       "gear_return_pct": -0.733639,
       "jup_price_return_pct": 4.339623,
+      "jup_total_return_pct": 4.339623,
       "gear_nav": 2.5573,
       "jup_close_gbp": 165.9
     },
@@ -10080,6 +10919,7 @@
       "jup_close_prior_date": "2025-12-24",
       "gear_return_pct": -0.916078,
       "jup_price_return_pct": 7.044025,
+      "jup_total_return_pct": 7.044025,
       "gear_nav": 2.5526,
       "jup_close_gbp": 170.2
     },
@@ -10091,6 +10931,7 @@
       "jup_close_prior_date": "2025-12-24",
       "gear_return_pct": -1.366354,
       "jup_price_return_pct": 5.91195,
+      "jup_total_return_pct": 5.91195,
       "gear_nav": 2.541,
       "jup_close_gbp": 168.4
     },
@@ -10102,6 +10943,7 @@
       "jup_close_prior_date": "2025-12-24",
       "gear_return_pct": -1.31201,
       "jup_price_return_pct": 3.773585,
+      "jup_total_return_pct": 3.773585,
       "gear_nav": 2.5424,
       "jup_close_gbp": 165.0
     },
@@ -10113,6 +10955,7 @@
       "jup_close_prior_date": "2025-12-30",
       "gear_return_pct": -1.576114,
       "jup_price_return_pct": 3.015075,
+      "jup_total_return_pct": 3.015075,
       "gear_nav": 2.5416,
       "jup_close_gbp": 164.0
     },
@@ -10124,6 +10967,7 @@
       "jup_close_prior_date": "2025-12-31",
       "gear_return_pct": -1.022463,
       "jup_price_return_pct": 4.791929,
+      "jup_total_return_pct": 4.791929,
       "gear_nav": 2.5556,
       "jup_close_gbp": 166.2
     },
@@ -10135,6 +10979,7 @@
       "jup_close_prior_date": "2025-12-31",
       "gear_return_pct": -0.817196,
       "jup_price_return_pct": 8.385876,
+      "jup_total_return_pct": 8.385876,
       "gear_nav": 2.5609,
       "jup_close_gbp": 171.9
     },
@@ -10146,6 +10991,7 @@
       "jup_close_prior_date": "2026-01-02",
       "gear_return_pct": -1.003977,
       "jup_price_return_pct": 4.260652,
+      "jup_total_return_pct": 4.260652,
       "gear_nav": 2.5637,
       "jup_close_gbp": 166.4
     },
@@ -10157,6 +11003,7 @@
       "jup_close_prior_date": "2026-01-07",
       "gear_return_pct": -1.273028,
       "jup_price_return_pct": -7.845433,
+      "jup_total_return_pct": -7.845433,
       "gear_nav": 2.567,
       "jup_close_gbp": 157.4
     },
@@ -10168,6 +11015,7 @@
       "jup_close_prior_date": "2026-01-08",
       "gear_return_pct": -0.933001,
       "jup_price_return_pct": -3.161593,
+      "jup_total_return_pct": -3.161593,
       "gear_nav": 2.5802,
       "jup_close_gbp": 165.4
     },
@@ -10179,6 +11027,7 @@
       "jup_close_prior_date": "2026-01-09",
       "gear_return_pct": -0.721729,
       "jup_price_return_pct": -8.396063,
+      "jup_total_return_pct": -8.396063,
       "gear_nav": 2.5723,
       "jup_close_gbp": 158.2
     },
@@ -10190,6 +11039,7 @@
       "jup_close_prior_date": "2026-01-09",
       "gear_return_pct": -0.934002,
       "jup_price_return_pct": -8.975101,
+      "jup_total_return_pct": -8.975101,
       "gear_nav": 2.5668,
       "jup_close_gbp": 157.2
     },
@@ -10201,6 +11051,7 @@
       "jup_close_prior_date": "2026-01-13",
       "gear_return_pct": -1.372193,
       "jup_price_return_pct": -7.017544,
+      "jup_total_return_pct": -7.017544,
       "gear_nav": 2.5516,
       "jup_close_gbp": 159.0
     },
@@ -10212,6 +11063,7 @@
       "jup_close_prior_date": "2026-01-14",
       "gear_return_pct": -1.594841,
       "jup_price_return_pct": -7.236467,
+      "jup_total_return_pct": -7.236467,
       "gear_nav": 2.5483,
       "jup_close_gbp": 162.8
     },
@@ -10223,6 +11075,7 @@
       "jup_close_prior_date": "2026-01-15",
       "gear_return_pct": -1.147554,
       "jup_price_return_pct": -11.886587,
+      "jup_total_return_pct": -11.886587,
       "gear_nav": 2.5498,
       "jup_close_gbp": 161.6
     },
@@ -10234,6 +11087,7 @@
       "jup_close_prior_date": "2026-01-16",
       "gear_return_pct": -1.925536,
       "jup_price_return_pct": -19.070513,
+      "jup_total_return_pct": -19.027778,
       "gear_nav": 2.5314,
       "jup_close_gbp": 151.5
     },
@@ -10245,6 +11099,7 @@
       "jup_close_prior_date": "2026-01-16",
       "gear_return_pct": -2.433071,
       "jup_price_return_pct": -17.574786,
+      "jup_total_return_pct": -17.531261,
       "gear_nav": 2.5183,
       "jup_close_gbp": 154.3
     },
@@ -10256,6 +11111,7 @@
       "jup_close_prior_date": "2026-01-20",
       "gear_return_pct": -2.033057,
       "jup_price_return_pct": -15.806806,
+      "jup_total_return_pct": -15.762347,
       "gear_nav": 2.525,
       "jup_close_gbp": 153.4
     },
@@ -10267,6 +11123,7 @@
       "jup_close_prior_date": "2026-01-21",
       "gear_return_pct": -2.205029,
       "jup_price_return_pct": -15.519126,
+      "jup_total_return_pct": -15.474515,
       "gear_nav": 2.528,
       "jup_close_gbp": 154.6
     },
@@ -10278,6 +11135,7 @@
       "jup_close_prior_date": "2026-01-22",
       "gear_return_pct": -1.95122,
       "jup_price_return_pct": -15.581644,
+      "jup_total_return_pct": -15.537066,
       "gear_nav": 2.5326,
       "jup_close_gbp": 158.2
     },
@@ -10289,6 +11147,7 @@
       "jup_close_prior_date": "2026-01-23",
       "gear_return_pct": -1.640549,
       "jup_price_return_pct": -17.28526,
+      "jup_total_return_pct": -17.241582,
       "gear_nav": 2.5421,
       "jup_close_gbp": 156.0
     },
@@ -10300,6 +11159,7 @@
       "jup_close_prior_date": "2026-01-23",
       "gear_return_pct": -1.625073,
       "jup_price_return_pct": -18.345705,
+      "jup_total_return_pct": -18.302587,
       "gear_nav": 2.5425,
       "jup_close_gbp": 154.0
     },
@@ -10311,6 +11171,7 @@
       "jup_close_prior_date": "2026-01-27",
       "gear_return_pct": -2.339361,
       "jup_price_return_pct": -16.542156,
+      "jup_total_return_pct": -16.498086,
       "gear_nav": 2.5382,
       "jup_close_gbp": 156.4
     },
@@ -10322,6 +11183,7 @@
       "jup_close_prior_date": "2026-01-28",
       "gear_return_pct": -2.029577,
       "jup_price_return_pct": -17.436975,
+      "jup_total_return_pct": -17.393377,
       "gear_nav": 2.5439,
       "jup_close_gbp": 157.2
     },
@@ -10333,6 +11195,7 @@
       "jup_close_prior_date": "2026-01-29",
       "gear_return_pct": -1.66641,
       "jup_price_return_pct": -18.75,
+      "jup_total_return_pct": -18.707096,
       "gear_nav": 2.5551,
       "jup_close_gbp": 153.4
     },
@@ -10344,6 +11207,7 @@
       "jup_close_prior_date": "2026-01-30",
       "gear_return_pct": -1.896426,
       "jup_price_return_pct": -17.773019,
+      "jup_total_return_pct": -17.729599,
       "gear_nav": 2.5555,
       "jup_close_gbp": 153.6
     },
@@ -10355,6 +11219,7 @@
       "jup_close_prior_date": "2026-01-30",
       "gear_return_pct": -2.119083,
       "jup_price_return_pct": -18.522484,
+      "jup_total_return_pct": -18.47946,
       "gear_nav": 2.5497,
       "jup_close_gbp": 152.2
     },
@@ -10366,6 +11231,7 @@
       "jup_close_prior_date": "2026-02-04",
       "gear_return_pct": -2.399786,
       "jup_price_return_pct": -20.481928,
+      "jup_total_return_pct": -20.439938,
       "gear_nav": 2.5541,
       "jup_close_gbp": 151.8
     },
@@ -10377,6 +11243,7 @@
       "jup_close_prior_date": "2026-02-05",
       "gear_return_pct": -1.60539,
       "jup_price_return_pct": -15.800636,
+      "jup_total_return_pct": -15.756175,
       "gear_nav": 2.5558,
       "jup_close_gbp": 158.8
     },
@@ -10388,6 +11255,7 @@
       "jup_close_prior_date": "2026-02-06",
       "gear_return_pct": -2.421893,
       "jup_price_return_pct": -16.727845,
+      "jup_total_return_pct": -16.683873,
       "gear_nav": 2.5423,
       "jup_close_gbp": 158.8
     },
@@ -10399,6 +11267,7 @@
       "jup_close_prior_date": "2026-02-06",
       "gear_return_pct": -2.130191,
       "jup_price_return_pct": -17.042475,
+      "jup_total_return_pct": -16.998669,
       "gear_nav": 2.5499,
       "jup_close_gbp": 158.2
     },
@@ -10410,6 +11279,7 @@
       "jup_close_prior_date": "2026-02-10",
       "gear_return_pct": -0.653873,
       "jup_price_return_pct": -18.116684,
+      "jup_total_return_pct": -18.073445,
       "gear_nav": 2.5677,
       "jup_close_gbp": 160.0
     },
@@ -10421,6 +11291,7 @@
       "jup_close_prior_date": "2026-02-11",
       "gear_return_pct": -0.61004,
       "jup_price_return_pct": -17.336152,
+      "jup_total_return_pct": -17.292501,
       "gear_nav": 2.5579,
       "jup_close_gbp": 156.4
     },
@@ -10432,6 +11303,7 @@
       "jup_close_prior_date": "2026-02-12",
       "gear_return_pct": -0.12839,
       "jup_price_return_pct": -15.409483,
+      "jup_total_return_pct": -15.364814,
       "gear_nav": 2.567,
       "jup_close_gbp": 157.0
     },
@@ -10443,6 +11315,7 @@
       "jup_close_prior_date": "2026-02-13",
       "gear_return_pct": 0.109422,
       "jup_price_return_pct": -14.438503,
+      "jup_total_return_pct": -14.393322,
       "gear_nav": 2.5617,
       "jup_close_gbp": 160.0
     },
@@ -10454,6 +11327,7 @@
       "jup_close_prior_date": "2026-02-13",
       "gear_return_pct": -0.105514,
       "jup_price_return_pct": -16.951872,
+      "jup_total_return_pct": -16.908018,
       "gear_nav": 2.5562,
       "jup_close_gbp": 155.3
     },
@@ -10465,6 +11339,7 @@
       "jup_close_prior_date": "2026-02-17",
       "gear_return_pct": -0.042642,
       "jup_price_return_pct": -16.968085,
+      "jup_total_return_pct": -16.92424,
       "gear_nav": 2.5785,
       "jup_close_gbp": 156.1
     },
@@ -10476,6 +11351,7 @@
       "jup_close_prior_date": "2026-02-18",
       "gear_return_pct": -0.015482,
       "jup_price_return_pct": -16.452991,
+      "jup_total_return_pct": -16.408874,
       "gear_nav": 2.5832,
       "jup_close_gbp": 156.4
     },
@@ -10487,6 +11363,7 @@
       "jup_close_prior_date": "2026-02-19",
       "gear_return_pct": -0.158534,
       "jup_price_return_pct": -15.190553,
+      "jup_total_return_pct": -15.145769,
       "gear_nav": 2.5821,
       "jup_close_gbp": 158.0
     },
@@ -10498,6 +11375,7 @@
       "jup_close_prior_date": "2026-02-20",
       "gear_return_pct": 0.216802,
       "jup_price_return_pct": -14.787234,
+      "jup_total_return_pct": -14.742237,
       "gear_nav": 2.5886,
       "jup_close_gbp": 160.2
     },
@@ -10509,6 +11387,7 @@
       "jup_close_prior_date": "2026-02-20",
       "gear_return_pct": -0.139373,
       "jup_price_return_pct": -15.0,
+      "jup_total_return_pct": -14.955116,
       "gear_nav": 2.5794,
       "jup_close_gbp": 159.8
     },
@@ -10520,6 +11399,7 @@
       "jup_close_prior_date": "2026-02-25",
       "gear_return_pct": 0.48841,
       "jup_price_return_pct": -13.354701,
+      "jup_total_return_pct": -13.308948,
       "gear_nav": 2.5924,
       "jup_close_gbp": 162.2
     },
@@ -10531,6 +11411,7 @@
       "jup_close_prior_date": "2026-02-26",
       "gear_return_pct": -0.13084,
       "jup_price_return_pct": -17.142857,
+      "jup_total_return_pct": -17.099104,
       "gear_nav": 2.5952,
       "jup_close_gbp": 162.4
     },
@@ -10542,6 +11423,7 @@
       "jup_close_prior_date": "2026-02-27",
       "gear_return_pct": -0.419053,
       "jup_price_return_pct": -15.543767,
+      "jup_total_return_pct": -15.499169,
       "gear_nav": 2.5902,
       "jup_close_gbp": 159.2
     },
@@ -10553,6 +11435,7 @@
       "jup_close_prior_date": "2026-02-27",
       "gear_return_pct": 0.099958,
       "jup_price_return_pct": -14.376658,
+      "jup_total_return_pct": -14.331444,
       "gear_nav": 2.6037,
       "jup_close_gbp": 161.4
     },
@@ -10564,6 +11447,7 @@
       "jup_close_prior_date": "2026-03-04",
       "gear_return_pct": 2.208532,
       "jup_price_return_pct": -12.130802,
+      "jup_total_return_pct": -12.084402,
       "gear_nav": 2.6379,
       "jup_close_gbp": 166.6
     },
@@ -10575,6 +11459,7 @@
       "jup_close_prior_date": "2026-03-05",
       "gear_return_pct": 3.019794,
       "jup_price_return_pct": -14.511041,
+      "jup_total_return_pct": -14.465898,
       "gear_nav": 2.6439,
       "jup_close_gbp": 162.6
     },
@@ -10586,6 +11471,7 @@
       "jup_close_prior_date": "2026-03-06",
       "gear_return_pct": 3.089151,
       "jup_price_return_pct": -9.549356,
+      "jup_total_return_pct": -9.501594,
       "gear_nav": 2.633,
       "jup_close_gbp": 168.6
     },
@@ -10597,6 +11483,7 @@
       "jup_close_prior_date": "2026-03-06",
       "gear_return_pct": 2.967777,
       "jup_price_return_pct": -10.300429,
+      "jup_total_return_pct": -10.253063,
       "gear_nav": 2.6299,
       "jup_close_gbp": 167.2
     },
@@ -10608,6 +11495,7 @@
       "jup_close_prior_date": "2026-03-10",
       "gear_return_pct": 3.399123,
       "jup_price_return_pct": -10.570825,
+      "jup_total_return_pct": -10.523601,
       "gear_nav": 2.6404,
       "jup_close_gbp": 169.2
     },
@@ -10619,6 +11507,7 @@
       "jup_close_prior_date": "2026-03-11",
       "gear_return_pct": 3.120855,
       "jup_price_return_pct": -11.397849,
+      "jup_total_return_pct": -11.351063,
       "gear_nav": 2.6434,
       "jup_close_gbp": 164.8
     },
@@ -10630,6 +11519,7 @@
       "jup_close_prior_date": "2026-03-12",
       "gear_return_pct": 3.583497,
       "jup_price_return_pct": -9.452202,
+      "jup_total_return_pct": -9.404388,
       "gear_nav": 2.6362,
       "jup_close_gbp": 168.6
     },
@@ -10641,6 +11531,7 @@
       "jup_close_prior_date": "2026-03-13",
       "gear_return_pct": 3.853572,
       "jup_price_return_pct": -4.601571,
+      "jup_total_return_pct": -4.551196,
       "gear_nav": 2.6384,
       "jup_close_gbp": 170.0
     },
@@ -10652,6 +11543,7 @@
       "jup_close_prior_date": "2026-03-13",
       "gear_return_pct": 3.778784,
       "jup_price_return_pct": -0.897868,
+      "jup_total_return_pct": -0.845536,
       "gear_nav": 2.6365,
       "jup_close_gbp": 176.6
     },
@@ -10663,6 +11555,7 @@
       "jup_close_prior_date": "2026-03-17",
       "gear_return_pct": 4.182734,
       "jup_price_return_pct": 2.314815,
+      "jup_total_return_pct": 2.368842,
       "gear_nav": 2.6477,
       "jup_close_gbp": 176.8
     },
@@ -10674,6 +11567,7 @@
       "jup_close_prior_date": "2026-03-18",
       "gear_return_pct": 3.487236,
       "jup_price_return_pct": -1.648664,
+      "jup_total_return_pct": -1.596729,
       "gear_nav": 2.6471,
       "jup_close_gbp": 173.0
     },
@@ -10685,6 +11579,7 @@
       "jup_close_prior_date": "2026-03-19",
       "gear_return_pct": 3.509872,
       "jup_price_return_pct": 2.857143,
+      "jup_total_return_pct": 2.911457,
       "gear_nav": 2.6424,
       "jup_close_gbp": 172.8
     },
@@ -10696,6 +11591,7 @@
       "jup_close_prior_date": "2026-03-20",
       "gear_return_pct": 3.221649,
       "jup_price_return_pct": 3.256936,
+      "jup_total_return_pct": 3.311461,
       "gear_nav": 2.6433,
       "jup_close_gbp": 171.2
     },
@@ -10707,6 +11603,7 @@
       "jup_close_prior_date": "2026-03-20",
       "gear_return_pct": 2.928772,
       "jup_price_return_pct": 1.447527,
+      "jup_total_return_pct": 1.501097,
       "gear_nav": 2.6358,
       "jup_close_gbp": 168.2
     },
@@ -10718,6 +11615,7 @@
       "jup_close_prior_date": "2026-03-24",
       "gear_return_pct": 3.839987,
       "jup_price_return_pct": 2.230259,
+      "jup_total_return_pct": 2.284242,
       "gear_nav": 2.6555,
       "jup_close_gbp": 169.6
     },
@@ -10729,6 +11627,7 @@
       "jup_close_prior_date": "2026-03-25",
       "gear_return_pct": 3.878398,
       "jup_price_return_pct": -2.173913,
+      "jup_total_return_pct": -2.122256,
       "gear_nav": 2.6516,
       "jup_close_gbp": 166.5
     },
@@ -10740,6 +11639,7 @@
       "jup_close_prior_date": "2026-03-26",
       "gear_return_pct": 4.096812,
       "jup_price_return_pct": -4.394299,
+      "jup_total_return_pct": -4.343814,
       "gear_nav": 2.6451,
       "jup_close_gbp": 161.0
     },
@@ -10751,6 +11651,7 @@
       "jup_close_prior_date": "2026-03-27",
       "gear_return_pct": 4.42102,
       "jup_price_return_pct": -0.727273,
+      "jup_total_return_pct": -0.674851,
       "gear_nav": 2.6548,
       "jup_close_gbp": 163.8
     },
@@ -10762,6 +11663,7 @@
       "jup_close_prior_date": "2026-03-27",
       "gear_return_pct": 4.69635,
       "jup_price_return_pct": -0.363636,
+      "jup_total_return_pct": -0.311023,
       "gear_nav": 2.6618,
       "jup_close_gbp": 164.4
     },
@@ -10773,6 +11675,7 @@
       "jup_close_prior_date": "2026-03-31",
       "gear_return_pct": 4.233839,
       "jup_price_return_pct": -2.527076,
+      "jup_total_return_pct": -2.475605,
       "gear_nav": 2.6638,
       "jup_close_gbp": 162.0
     },
@@ -10784,6 +11687,7 @@
       "jup_close_prior_date": "2026-04-01",
       "gear_return_pct": 3.943926,
       "jup_price_return_pct": -4.013962,
+      "jup_total_return_pct": -3.963276,
       "gear_nav": 2.6619,
       "jup_close_gbp": 165.0
     },
@@ -10795,6 +11699,7 @@
       "jup_close_prior_date": "2026-04-02",
       "gear_return_pct": 3.510551,
       "jup_price_return_pct": 2.403846,
+      "jup_total_return_pct": 2.457921,
       "gear_nav": 2.6537,
       "jup_close_gbp": 170.4
     },
@@ -10806,6 +11711,7 @@
       "jup_close_prior_date": "2026-04-02",
       "gear_return_pct": 3.167297,
       "jup_price_return_pct": 3.004808,
+      "jup_total_return_pct": 3.0592,
       "gear_nav": 2.6449,
       "jup_close_gbp": 171.4
     },
@@ -10817,6 +11723,7 @@
       "jup_close_prior_date": "2026-04-02",
       "gear_return_pct": 3.686079,
       "jup_price_return_pct": 5.228365,
+      "jup_total_return_pct": 5.283932,
       "gear_nav": 2.6582,
       "jup_close_gbp": 175.1
     },
@@ -10828,6 +11735,7 @@
       "jup_close_prior_date": "2026-04-07",
       "gear_return_pct": 3.350214,
       "jup_price_return_pct": 11.181703,
+      "jup_total_return_pct": 11.240412,
       "gear_nav": 2.653,
       "jup_close_gbp": 175.0
     },
@@ -10839,6 +11747,7 @@
       "jup_close_prior_date": "2026-04-08",
       "gear_return_pct": 2.534687,
       "jup_price_return_pct": 5.804111,
+      "jup_total_return_pct": 5.859981,
       "gear_nav": 2.6456,
       "jup_close_gbp": 175.0
     },
@@ -10850,6 +11759,7 @@
       "jup_close_prior_date": "2026-04-09",
       "gear_return_pct": 3.176146,
       "jup_price_return_pct": 8.470291,
+      "jup_total_return_pct": 8.527569,
       "gear_nav": 2.654,
       "jup_close_gbp": 171.6
     },
@@ -10861,6 +11771,7 @@
       "jup_close_prior_date": "2026-04-10",
       "gear_return_pct": 3.49852,
       "jup_price_return_pct": 10.178117,
+      "jup_total_return_pct": 10.236297,
       "gear_nav": 2.6566,
       "jup_close_gbp": 173.2
     },
@@ -10872,6 +11783,7 @@
       "jup_close_prior_date": "2026-04-10",
       "gear_return_pct": 3.681627,
       "jup_price_return_pct": 8.524173,
+      "jup_total_return_pct": 8.58148,
       "gear_nav": 2.6613,
       "jup_close_gbp": 170.6
     },
@@ -10883,6 +11795,7 @@
       "jup_close_prior_date": "2026-04-14",
       "gear_return_pct": 4.367618,
       "jup_price_return_pct": 5.282555,
+      "jup_total_return_pct": 5.33815,
       "gear_nav": 2.6596,
       "jup_close_gbp": 171.4
     },
@@ -10894,6 +11807,7 @@
       "jup_close_prior_date": "2026-04-15",
       "gear_return_pct": 4.749392,
       "jup_price_return_pct": 6.188119,
+      "jup_total_return_pct": 6.244192,
       "gear_nav": 2.6709,
       "jup_close_gbp": 171.6
     },
@@ -10905,6 +11819,7 @@
       "jup_close_prior_date": "2026-04-16",
       "gear_return_pct": 5.530536,
       "jup_price_return_pct": 14.851485,
+      "jup_total_return_pct": 14.851485,
       "gear_nav": 2.6714,
       "jup_close_gbp": 174.0
     },
@@ -10916,6 +11831,7 @@
       "jup_close_prior_date": "2026-04-17",
       "gear_return_pct": 6.059643,
       "jup_price_return_pct": 13.156189,
+      "jup_total_return_pct": 13.156189,
       "gear_nav": 2.6709,
       "jup_close_gbp": 174.6
     },
@@ -10927,6 +11843,7 @@
       "jup_close_prior_date": "2026-04-17",
       "gear_return_pct": 6.282016,
       "jup_price_return_pct": 11.47116,
+      "jup_total_return_pct": 11.47116,
       "gear_nav": 2.6765,
       "jup_close_gbp": 172.0
     },
@@ -10938,6 +11855,7 @@
       "jup_close_prior_date": "2026-04-21",
       "gear_return_pct": 6.079905,
       "jup_price_return_pct": 10.219922,
+      "jup_total_return_pct": 10.219922,
       "gear_nav": 2.6817,
       "jup_close_gbp": 170.4
     },
@@ -10949,6 +11867,7 @@
       "jup_close_prior_date": "2026-04-22",
       "gear_return_pct": 6.270236,
       "jup_price_return_pct": 7.269279,
+      "jup_total_return_pct": 7.269279,
       "gear_nav": 2.6914,
       "jup_close_gbp": 169.7
     },
@@ -10960,6 +11879,7 @@
       "jup_close_prior_date": "2026-04-23",
       "gear_return_pct": 6.046182,
       "jup_price_return_pct": 5.25641,
+      "jup_total_return_pct": 5.25641,
       "gear_nav": 2.6958,
       "jup_close_gbp": 164.2
     },
@@ -10971,6 +11891,7 @@
       "jup_close_prior_date": "2026-04-24",
       "gear_return_pct": 5.632252,
       "jup_price_return_pct": 1.298701,
+      "jup_total_return_pct": 1.298701,
       "gear_nav": 2.6857,
       "jup_close_gbp": 156.0
     },
@@ -10982,6 +11903,7 @@
       "jup_close_prior_date": "2026-04-24",
       "gear_return_pct": 5.101278,
       "jup_price_return_pct": 5.714286,
+      "jup_total_return_pct": 5.714286,
       "gear_nav": 2.6722,
       "jup_close_gbp": 162.8
     },
@@ -10993,6 +11915,7 @@
       "jup_close_prior_date": "2026-04-28",
       "gear_return_pct": 5.432603,
       "jup_price_return_pct": 5.979644,
+      "jup_total_return_pct": 5.979644,
       "gear_nav": 2.6821,
       "jup_close_gbp": 166.6
     },
@@ -11004,6 +11927,7 @@
       "jup_close_prior_date": "2026-04-29",
       "gear_return_pct": 4.629956,
       "jup_price_return_pct": 3.520209,
+      "jup_total_return_pct": 3.520209,
       "gear_nav": 2.6734,
       "jup_close_gbp": 158.8
     },
@@ -11015,6 +11939,7 @@
       "jup_close_prior_date": "2026-04-30",
       "gear_return_pct": 4.910976,
       "jup_price_return_pct": 3.255208,
+      "jup_total_return_pct": 3.255208,
       "gear_nav": 2.681,
       "jup_close_gbp": 158.6
     },
@@ -11026,6 +11951,7 @@
       "jup_close_prior_date": "2026-05-01",
       "gear_return_pct": 5.6791,
       "jup_price_return_pct": 5.256242,
+      "jup_total_return_pct": 5.256242,
       "gear_nav": 2.6945,
       "jup_close_gbp": 160.2
     },
@@ -11037,6 +11963,7 @@
       "jup_close_prior_date": "2026-05-01",
       "gear_return_pct": 5.50653,
       "jup_price_return_pct": 4.13929,
+      "jup_total_return_pct": 4.13929,
       "gear_nav": 2.6901,
       "jup_close_gbp": 158.5
     },
@@ -11048,6 +11975,7 @@
       "jup_close_prior_date": "2026-05-06",
       "gear_return_pct": 5.207763,
       "jup_price_return_pct": 2.392947,
+      "jup_total_return_pct": 2.392947,
       "gear_nav": 2.6889,
       "jup_close_gbp": 162.6
     },
@@ -11059,6 +11987,7 @@
       "jup_close_prior_date": "2026-05-07",
       "gear_return_pct": 5.762499,
       "jup_price_return_pct": 3.148615,
+      "jup_total_return_pct": 3.148615,
       "gear_nav": 2.6888,
       "jup_close_gbp": 163.8
     },
@@ -11070,6 +11999,7 @@
       "jup_close_prior_date": "2026-05-08",
       "gear_return_pct": 5.270795,
       "jup_price_return_pct": 2.528445,
+      "jup_total_return_pct": 2.551833,
       "gear_nav": 2.6843,
       "jup_close_gbp": 162.2
     },
@@ -11081,6 +12011,7 @@
       "jup_close_prior_date": "2026-05-08",
       "gear_return_pct": 5.604141,
       "jup_price_return_pct": 2.212389,
+      "jup_total_return_pct": 2.235705,
       "gear_nav": 2.6928,
       "jup_close_gbp": 161.7
     },
@@ -11092,6 +12023,7 @@
       "jup_close_prior_date": "2026-05-12",
       "gear_return_pct": 5.269948,
       "jup_price_return_pct": 2.557545,
+      "jup_total_return_pct": 2.58094,
       "gear_nav": 2.6927,
       "jup_close_gbp": 160.4
     },
@@ -11103,6 +12035,7 @@
       "jup_close_prior_date": "2026-05-13",
       "gear_return_pct": 4.990261,
       "jup_price_return_pct": 2.611465,
+      "jup_total_return_pct": 2.634872,
       "gear_nav": 2.6951,
       "jup_close_gbp": 161.1
     },
@@ -11114,6 +12047,7 @@
       "jup_close_prior_date": "2026-05-14",
       "gear_return_pct": 5.094273,
       "jup_price_return_pct": 0.125,
+      "jup_total_return_pct": 0.14784,
       "gear_nav": 2.6922,
       "jup_close_gbp": 160.2
     },
@@ -11125,6 +12059,7 @@
       "jup_close_prior_date": "2026-05-15",
       "gear_return_pct": 5.445583,
       "jup_price_return_pct": 4.314231,
+      "jup_total_return_pct": 4.338026,
       "gear_nav": 2.6954,
       "jup_close_gbp": 162.0
     },
@@ -11136,6 +12071,7 @@
       "jup_close_prior_date": "2026-05-15",
       "gear_return_pct": 5.750724,
       "jup_price_return_pct": 4.443014,
+      "jup_total_return_pct": 4.466838,
       "gear_nav": 2.7032,
       "jup_close_gbp": 162.2
     },
@@ -11147,6 +12083,7 @@
       "jup_close_prior_date": "2026-05-19",
       "gear_return_pct": 5.024775,
       "jup_price_return_pct": 4.859335,
+      "jup_total_return_pct": 4.883255,
       "gear_nav": 2.713,
       "jup_close_gbp": 164.0
     },
@@ -11158,6 +12095,7 @@
       "jup_close_prior_date": "2026-05-20",
       "gear_return_pct": 4.868131,
       "jup_price_return_pct": 2.025316,
+      "jup_total_return_pct": 2.04859,
       "gear_nav": 2.7078,
       "jup_close_gbp": 161.2
     },
@@ -11169,6 +12107,7 @@
       "jup_close_prior_date": "2026-05-21",
       "gear_return_pct": 4.481187,
       "jup_price_return_pct": 2.122347,
+      "jup_total_return_pct": 2.145643,
       "gear_nav": 2.7046,
       "jup_close_gbp": 163.6
     },
@@ -11180,6 +12119,7 @@
       "jup_close_prior_date": "2026-05-22",
       "gear_return_pct": 5.094208,
       "jup_price_return_pct": 2.12766,
+      "jup_total_return_pct": 2.150956,
       "gear_nav": 2.7108,
       "jup_close_gbp": 163.2
     },
@@ -11191,6 +12131,7 @@
       "jup_close_prior_date": "2026-05-22",
       "gear_return_pct": 5.470264,
       "jup_price_return_pct": 1.501877,
+      "jup_total_return_pct": 1.525031,
       "gear_nav": 2.7205,
       "jup_close_gbp": 162.2
     },
@@ -11202,6 +12143,7 @@
       "jup_close_prior_date": "2026-05-26",
       "gear_return_pct": 4.844931,
       "jup_price_return_pct": 1.233046,
+      "jup_total_return_pct": 1.256138,
       "gear_nav": 2.718,
       "jup_close_gbp": 164.2
     },
@@ -11213,6 +12155,7 @@
       "jup_close_prior_date": "2026-05-27",
       "gear_return_pct": 4.982275,
       "jup_price_return_pct": 5.418719,
+      "jup_total_return_pct": 5.442767,
       "gear_nav": 2.7245,
       "jup_close_gbp": 171.2
     },
@@ -11224,6 +12167,7 @@
       "jup_close_prior_date": "2026-05-28",
       "gear_return_pct": 5.099992,
       "jup_price_return_pct": 8.040201,
+      "jup_total_return_pct": 8.064846,
       "gear_nav": 2.7223,
       "jup_close_gbp": 172.0
     },
@@ -11235,6 +12179,7 @@
       "jup_close_prior_date": "2026-05-29",
       "gear_return_pct": 4.85463,
       "jup_price_return_pct": 7.187113,
+      "jup_total_return_pct": 7.211564,
       "gear_nav": 2.7301,
       "jup_close_gbp": 173.0
     },
@@ -11246,6 +12191,7 @@
       "jup_close_prior_date": "2026-05-29",
       "gear_return_pct": 4.716365,
       "jup_price_return_pct": 5.204461,
+      "jup_total_return_pct": 5.22846,
       "gear_nav": 2.7265,
       "jup_close_gbp": 169.8
     },
@@ -11257,6 +12203,7 @@
       "jup_close_prior_date": "2026-06-03",
       "gear_return_pct": 3.982753,
       "jup_price_return_pct": 1.353014,
+      "jup_total_return_pct": 1.376134,
       "gear_nav": 2.7492,
       "jup_close_gbp": 164.8
     },
@@ -11268,6 +12215,7 @@
       "jup_close_prior_date": "2026-06-04",
       "gear_return_pct": 4.530953,
       "jup_price_return_pct": -2.846975,
+      "jup_total_return_pct": -2.824813,
       "gear_nav": 2.7523,
       "jup_close_gbp": 163.8
     },
@@ -11279,6 +12227,7 @@
       "jup_close_prior_date": "2026-06-05",
       "gear_return_pct": 4.977376,
       "jup_price_return_pct": -2.212919,
+      "jup_total_return_pct": -2.190612,
       "gear_nav": 2.7608,
       "jup_close_gbp": 163.5
     },
@@ -11290,6 +12239,7 @@
       "jup_close_prior_date": "2026-06-05",
       "gear_return_pct": 4.676984,
       "jup_price_return_pct": -1.973684,
+      "jup_total_return_pct": -1.951323,
       "gear_nav": 2.7529,
       "jup_close_gbp": 163.9
     },
@@ -11301,8 +12251,21 @@
       "jup_close_prior_date": "2026-06-09",
       "gear_return_pct": 4.301279,
       "jup_price_return_pct": -0.606796,
+      "jup_total_return_pct": -0.584123,
       "gear_nav": 2.7571,
       "jup_close_gbp": 163.8
+    },
+    {
+      "date": "2026-09-08",
+      "gear_nav_asof_date": "2026-09-08",
+      "gear_nav_prior_date": "2026-06-10",
+      "jup_close_asof_date": "2026-09-08",
+      "jup_close_prior_date": "2026-06-10",
+      "gear_return_pct": 4.586147,
+      "jup_price_return_pct": -5.338078,
+      "jup_total_return_pct": -5.316485,
+      "gear_nav": 2.7571,
+      "jup_close_gbp": 159.6
     }
   ]
 }
