@@ -1,81 +1,82 @@
 {
   "schema_version": "internal_refresh_status_v1",
-  "run_id": "6c6653e6-ed2d-444d-9747-a3b087b0d61d",
-  "generated_at_utc": "2026-09-09T08:08:07Z",
-  "started_at_utc": "2026-09-09T08:00:01Z",
-  "overall_status": "success",
+  "run_id": "6454a79e-bd74-4a78-a971-7d7d4b719415",
+  "generated_at_utc": "2026-09-10T07:22:14Z",
+  "started_at_utc": "2026-09-10T07:10:01Z",
+  "overall_status": "degraded",
   "stages": {
     "jup_share_price_daily": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:00:01Z",
+      "started_at_utc": "2026-09-10T07:10:01Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:00:04Z"
+      "finished_at_utc": "2026-09-10T07:10:04Z"
     },
     "jup_gear_chart_data": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:00:04Z",
+      "started_at_utc": "2026-09-10T07:10:04Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:00:09Z"
+      "finished_at_utc": "2026-09-10T07:10:10Z"
     },
     "tips_fedinvest_status": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:00:09Z",
+      "started_at_utc": "2026-09-10T07:10:10Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:00:10Z"
+      "finished_at_utc": "2026-09-10T07:10:11Z"
     },
     "swaption_status": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:00:10Z",
+      "started_at_utc": "2026-09-10T07:10:11Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:01:23Z"
+      "finished_at_utc": "2026-09-10T07:11:18Z"
     },
     "model_logs": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:01:23Z",
+      "started_at_utc": "2026-09-10T07:11:18Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:01:37Z"
+      "finished_at_utc": "2026-09-10T07:11:33Z"
     },
     "tip_tlt_model_data": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:01:37Z",
+      "started_at_utc": "2026-09-10T07:11:33Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:04:18Z"
+      "finished_at_utc": "2026-09-10T07:18:25Z"
     },
     "etf_bars": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:04:18Z",
+      "started_at_utc": "2026-09-10T07:18:25Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:04:22Z"
+      "finished_at_utc": "2026-09-10T07:18:28Z"
     },
     "short_shadow_export": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:04:22Z",
+      "started_at_utc": "2026-09-10T07:18:28Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:07:36Z"
+      "finished_at_utc": "2026-09-10T07:21:42Z"
     },
     "long_shadow_extension": {
-      "status": "success",
-      "started_at_utc": "2026-09-09T08:07:36Z",
+      "status": "failed",
+      "started_at_utc": "2026-09-10T07:21:42Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:08:03Z"
+      "error": "Command '['/home/mark/trading_env/venv311/bin/python', '/home/mark/trading_env/tools/extend_cpurnsa_long_shadow.py', '--date', '2026-09-09', '--artifact-dir', '/home/mark/trading_env/artifacts/uscpi_long_shadow_history_v4_median_maturity_2026', '--front', '/home/mark/inflation_uk/data/cpurnsa_snapshots/2026-09-09.csv', '--sdr-uri', 'gs://systematicpositiveskew/inflation_data/sdr']' returned non-zero exit status 1.",
+      "finished_at_utc": "2026-09-10T07:22:09Z"
     },
     "cpurnsa_publish": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:08:03Z",
+      "started_at_utc": "2026-09-10T07:22:09Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:08:03Z"
+      "finished_at_utc": "2026-09-10T07:22:09Z"
     },
     "shadow_replay": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:08:03Z",
+      "started_at_utc": "2026-09-10T07:22:09Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:08:07Z"
+      "finished_at_utc": "2026-09-10T07:22:14Z"
     },
     "internal_build": {
       "status": "success",
-      "started_at_utc": "2026-09-09T08:08:07Z",
+      "started_at_utc": "2026-09-10T07:22:14Z",
       "output": null,
-      "finished_at_utc": "2026-09-09T08:08:07Z"
+      "finished_at_utc": "2026-09-10T07:22:14Z"
     }
   }
 }
