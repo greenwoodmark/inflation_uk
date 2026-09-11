@@ -14,6 +14,7 @@
     .muted, .meta { color: #475569; line-height: 1.5; } a { color: #075985; }
     .notice { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 12px; border-radius: 7px; margin: 14px 0; line-height: 1.45; }
     .chart-wrap { overflow-x: auto; } #smile-chart, #comparison-chart, #return-scatter { width: 100%; min-width: 760px; height: 620px; }
+    .research-notes-frame { display: block; width: 100%; min-height: 720px; height: 3600px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }
     .metric { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
     .metric strong { display: block; font-size: 1.12rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
@@ -62,6 +63,19 @@
     <section class="card">
       <div id="metrics" class="grid"></div>
       <p class="meta">The effective-duration value is the market-value-weighted average of the iShares holdings <code>Duration</code> field. The holdings file does not expose a separate column named “Effective Duration”, so the source field and calculation convention are shown explicitly.</p>
+    </section>
+
+    <section class="card">
+      <h2>Research Notes</h2>
+      <p class="muted">Detailed methodology and research notes for the ETF options relative-value model, including the Q-to-P update, block-bootstrap uncertainty, GH projection, and rolling TLT research results.</p>
+      <iframe
+        title="ETF options relative-value research notes"
+        src="/TIP_v_TLT/research_notes.html"
+        loading="lazy"
+        class="research-notes-frame"
+        onload="this.style.height = this.contentDocument.documentElement.scrollHeight + 'px'"
+      ></iframe>
+      <p class="meta"><a href="/TIP_v_TLT/research_notes.html">Open Research Notes as a standalone page →</a></p>
     </section>
   </main>
 <script>

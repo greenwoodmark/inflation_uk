@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    processEscapes: true
+  },
+  svg: { fontCache: "global" }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root { color-scheme: light; }
+body {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 3rem 4rem;
+  color: #1f2937;
+  background: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+h1 { color: #17365d; border-bottom: 2px solid #2f75b5; padding-bottom: .4rem; }
+h2 { color: #244062; margin-top: 2.2rem; }
+h3 { color: #365f91; margin-top: 1.6rem; }
+pre { overflow-x: auto; padding: 1rem; border: 1px solid #d1d5db; border-radius: 5px; background: #f3f4f6; }
+code { padding: .1rem .25rem; background: #f3f4f6; border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th, td { border: 1px solid #9ca3af; padding: .45rem .6rem; text-align: left; vertical-align: top; }
+th { background: #d9eaf7; color: #17365d; }
+blockquote { margin-left: 0; padding: .6rem 1rem; border-left: 4px solid #5b9bd5; background: #eef5fb; color: #334e68; }
+@media print {
+  body { max-width: none; padding: 0; }
+  pre, table, blockquote { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<h1 id="etf-options-relative-value-model">ETF options relative-value model</h1>
+<h2 id="phase-1-discrete-q-distribution">Phase 1: discrete Q distribution</h2>
+<p>The option-implied GH distribution is represented on the existing latent normal grid. The existing GH3/GH5 implementation supplies the grid probabilities, GH realization, and forward-centering convention. The adapter in <code>q_distribution.py</code> converts the normalized terminal-price support <code>U = P_T / F</code> into spot-based log returns:</p>
+\[
+X = \log\left(\frac{F}{S_0}\right) + \log(U)
+\]
+<p>The support is accepted only when every normalized terminal price is positive. The Q forward invariant is:</p>
+\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]
+<h2 id="phase-2-decisions">Phase 2 decisions</h2>
+<p>The first physical-view implementation is in <code>physical_views.py</code>.</p>
+<h3 id="point-estimate-data">Point-estimate data</h3>
+<ul>
+<li>Input: an hourly, positive ETF price series or a one-column DataFrame.</li>
+<li>Timestamps are normalized to a sorted UTC <code>DatetimeIndex</code>, consistent with the ETF storage layer.</li>
+<li>The estimator uses overlapping hourly one-calendar-month terminal returns:</li>
+</ul>
+<p><code>text
+  X_s = log(P_(s + 1 calendar month) / P_s)</code></p>
+<ul>
+<li>The initial endpoint policy is <code>exact</code>: the endpoint must exist at exactly the same UTC hour one calendar month later. Missing endpoints are omitted rather than forward-filled.</li>
+<li>The estimator is as-of aware: prices at or after the as-of timestamp are excluded.</li>
+<li>The lookback default is one calendar year, and the horizon default is one calendar month.</li>
+</ul>
+<h3 id="physical-statistics">Physical statistics</h3>
+<p>The point estimates are calculated directly from all valid overlapping terminal returns:</p>
+<ul>
+<li>Scale: interquartile range divided by <code>1.349</code>.</li>
+<li>Skew: Tukey medcouple, using <code>statsmodels.stats.stattools.medcouple</code>.</li>
+</ul>
+<p>No ordinary third standardized moment is used in this phase.</p>
+<h3 id="dependence-aware-uncertainty">Dependence-aware uncertainty</h3>
+<p>Overlapping terminal returns are strongly dependent, so their count is not treated as an independent sample size. The module still reports the diagnostic effective sample size:</p>
+<pre><code class="language-text">n_eff = n / (1 + 2 * sum positive autocorrelations)
+</code></pre>
+<p>The default uncertainty method is now a circular moving-block bootstrap of consecutive observed hourly log returns:</p>
+<ol>
+<li>Compute consecutive hourly log returns from the as-of-filtered price path.</li>
+<li>Sample circular contiguous blocks, with a default block length of 24 observed hourly returns.</li>
+<li>Reconstruct a synthetic log-price path from each sampled hourly-return sequence.</li>
+<li>Recalculate the same overlapping one-month terminal-return windows, preserving their observed window lengths and endpoint policy.</li>
+<li>Recalculate IQR scale and medcouple skew for each bootstrap path.</li>
+</ol>
+<p>The covariance of the bootstrap statistic pairs <code>[IQR scale, medcouple skew]</code> is used directly, without additional ESS inflation because dependence is already represented by the blocks. The result also records marginal standard errors and percentile 95% confidence intervals. The block length is configurable and is capped at the number of available hourly returns.</p>
+<p>The former iid terminal-window bootstrap remains available explicitly as <code>bootstrap_method="iid"</code>; only that legacy method applies the <code>n / n_eff</code> covariance inflation. This permits controlled comparison but is no longer the default.</p>
+<p>The result records:</p>
+<ul>
+<li>point targets;</li>
+<li>covariance, standard errors, and 95% bootstrap confidence intervals;</li>
+<li>number of overlapping observations;</li>
+<li>effective sample size and autocorrelation sum;</li>
+<li>lookback/as-of timestamps;</li>
+<li>sampling and uncertainty method versions;</li>
+<li>bootstrap method, block length, seed, and replicate count.</li>
+</ul>
+<p>The bootstrap operates on the observed sequence of hourly closes after storage-layer resampling. If the ETF series contains gaps, a block step represents the next observed close rather than an imputed calendar hour; no prices are forward-filled.</p>
+<h2 id="future-phases">Future phases</h2>
+<p>The next phase will use these physical scale/skew views in a relative-entropy update of the discrete Q distribution. The forward constraint remains hard:</p>
+\[
+\sum_i p_i U_i = 1
+\]
+<p>Physical scale and skew will initially be soft, uncertainty-weighted views. The entropy posterior will subsequently be approximated by a GH3 terminal-price distribution.</p>
+<h2 id="phase-3-decisions">Phase 3 decisions</h2>
+<p>Phase 3 is implemented in <code>entropy_update.py</code> as a fixed-support relative-entropy Q-to-P update.</p>
+<h3 id="support-and-hard-constraint">Support and hard constraint</h3>
+<ul>
+<li>The Q support is unchanged: the update changes only node probabilities.</li>
+<li><code>U = P_T / F</code> and <code>X = log(P_T / S0)</code> come from the phase-1 <code>DiscreteQDistribution</code>.</li>
+<li>P must remain absolutely continuous with respect to Q; every Q probability is required to be strictly positive.</li>
+<li>The posterior satisfies the hard forward constraint:</li>
+</ul>
+\[
+\sum_i p_i U_i = 1
+\]
+<p>This is enforced to numerical tolerance and is equivalent to <code>log(E_P[exp(X)]) = log(F/S0)</code>.</p>
+<h3 id="entropy-parameterization">Entropy parameterization</h3>
+<p>The posterior is an exponential tilt of Q. Two bounded support features provide scale/skew directions; a scalar forward multiplier is solved by a root finder for every pair of shape multipliers. This keeps optimization low-dimensional while enforcing the forward exactly.</p>
+<p>The objective is:</p>
+\[
+\begin{aligned}
+D_{\mathrm{KL}}(P\|Q)
++ \frac{1}{2}\left(\operatorname{statistics}(P)-\operatorname{targets}\right)^\top
+\operatorname{covariance}^{-1}
+\left(\operatorname{statistics}(P)-\operatorname{targets}\right)
+\end{aligned}
+\]
+<p>The physical targets are the phase-2 IQR scale and medcouple skew. They are evaluated as probability-weighted statistics on the fixed support. The phase-2 covariance is regularized only numerically before inversion; the original covariance is retained in the result.</p>
+<p>The support-statistics implementation uses weighted empirical quantiles and a probability-weighted medcouple. The latter is a discrete-support extension of the phase-2 <code>statsmodels</code> medcouple and is deliberately exposed for testing.</p>
+<h3 id="diagnostics-and-failure-behavior">Diagnostics and failure behavior</h3>
+<p>The result records posterior probabilities, weighted target statistics, residuals, KL divergence, forward residual, exponential-tilt multipliers, optimizer status, and effective posterior node count (<code>1 / sum(p_i^2)</code>). Non-finite inputs, invalid covariance, non-positive Q probabilities, infeasible forward support, invalid probabilities, or a non-finite optimizer result fail explicitly.</p>
+<p>This phase does not yet refit the posterior to GH3 parameters, write GCS data, or add joint TIP/TLT dependence. The entropy result is the discrete P distribution consumed by the next GH3 reprojection phase.</p>
+<h3 id="phase-3-fixed-point-test">Phase-3 fixed-point test</h3>
+<p>The entropy tests include a fixed-point case using the same GH3 distribution for Q and for the physical information view:</p>
+<pre><code class="language-text">b = 0.05, g = -0.3, h = 0.25
+F = 1.010, S0 = 1.0
+</code></pre>
+<p>Under the current normalized GH convention, the location is derived by centering and the supplied forward. Therefore <code>E[P_T] = 1.010</code> is checked directly. The phase-2 statistics are calculated from the same Q support and supplied as the P views; the entropy update must return the original Q probabilities, zero KL divergence, and zero forward residual.</p>
+<p>For this fixed-point case, the default 4.5-sigma grid is not admissible: these parameters generate a non-positive centered terminal-price node at that truncation. The test therefore uses <code>truncpoint=3.25</code>, the widest tested grid that keeps the normalized terminal-price support positive. This is an intentional log-return-domain validity check, not a parameter change.</p>
+<h2 id="phase-4-decisions">Phase 4 decisions</h2>
+<p>Phase 4 is implemented in <code>gh_projection.py</code> and reprojections the discrete entropy posterior into both GH3 and GH5.</p>
+<h3 id="candidate-construction">Candidate construction</h3>
+<ul>
+<li>The latent <code>z</code> grid and base normal-grid probabilities come from the original <code>DiscreteQDistribution</code>.</li>
+<li>Candidate GH3/GH5 raw realizations reuse the existing <code>_model_realisation()</code> implementation.</li>
+<li>Candidate normalized terminal prices are centered with the base GH quadrature probabilities:</li>
+</ul>
+<p><code>text
+  U_candidate = 1 + raw_candidate - E_base[raw_candidate]</code></p>
+<ul>
+<li>Candidates with non-finite or non-positive terminal prices are rejected.</li>
+<li>The candidate GH distribution therefore preserves the forward exactly:</li>
+</ul>
+<p><code>text
+  E_base[U_candidate] = 1</code></p>
+<h3 id="reprojection-objective">Reprojection objective</h3>
+<p>The entropy posterior is the target distribution, with its posterior probabilities used for target weighted quantiles. Candidate GH quantiles use the canonical normal-grid probabilities. The fitting objective is the mean squared normalized error across quantiles from 1% to 99%:</p>
+<pre><code class="language-text">fixed_support_entropy_quantile_l2_v1
+</code></pre>
+<p>This is deliberately separate from the production option-IV fitting objectives.</p>
+<h3 id="gh3-versus-gh5">GH3 versus GH5</h3>
+<p>Both versions are fitted under the same support, quantile levels, bounds, and objective. GH5 adds the existing <code>c</code> and <code>q</code> deformation parameters. <code>GHProjectionComparison</code> reports GH3 loss, GH5 loss, signed loss difference, loss ratio, and preferred model. A lower GH5 projection loss is evidence that the entropy deformation is not adequately represented by GH3; it is not by itself evidence that GH5 is preferable out of sample.</p>
+<p>The output records parameters, quantile residuals, forward error, minimum terminal price, monotonicity violations, boundary hits, optimizer diagnostics, and settings hash. This phase remains research-only and does not alter production option fits or write GCS data.</p>
+<h2 id="phase-5-decisions-tlt-rolling-research-runner">Phase 5 decisions: TLT rolling research runner</h2>
+<p>Phase 5 is implemented in <code>tlt_research.py</code> as a research-only, TLT-specific rolling runner. It composes the persisted Q adapter, physical views, entropy update, and GH3/GH5 reprojection for each fit date.</p>
+<ul>
+<li>The core runner accepts fits and hourly bars in memory; <code>run_tlt_research_from_storage()</code> is a separate local/GCS read wrapper. Phase 5 writes only an optional local CSV artifact and does not schedule jobs or mutate GCS.</li>
+<li>Fit dates are evaluated with <code>as_of = fit_date + 1 UTC calendar day</code>, so the fit-date session is available while later observations are excluded. Fits are de-duplicated by date, and the latest <code>fit_datetime</code> is retained by the storage loader.</li>
+<li>Physical views use one year of overlapping hourly one-month returns and the phase-2 IQR scale/medcouple skew diagnostics. The runner defaults to <code>endpoint_policy="next"</code> for irregular ETF sessions; exact endpoints remain available through settings.</li>
+<li>The realized diagnostic uses the first available hourly observation at or after the one-month target from the selected spot timestamp. It is reported only when future bars exist.</li>
+<li>Every successful row records physical effective sample size, entropy KL, forward errors, GH3/GH5 quantile projection losses, the preferred projection, Q/P/GH quantiles, and realized terminal-return fields. <code>summarize_tlt_research()</code> reports medians, GH5's lower-loss fraction, forward-error bounds, and empirical quantile coverage.</li>
+<li>GH5's lower projection loss is interpreted as additional in-sample deformation capacity, not out-of-sample superiority. Overlapping returns are dependent, the ESS-adjusted iid bootstrap is only a first uncertainty diagnostic, and endpoint policy plus dividend/price-adjustment conventions can materially affect results.</li>
+</ul>
+<h2 id="phase-5-block-length-selection-diagnostic">Phase 5 block-length selection diagnostic</h2>
+<p>For the Q1 2025 TLT sensitivity, block length was selected from the dependence of consecutive observed hourly log returns. The selection diagnostic examined both raw returns and absolute returns; absolute returns were used as the volatility-clustering measure. The rule was:</p>
+<pre><code class="language-text">block_length = ceil(1 + 2 * sum positive ACF(abs(hourly_log_returns)))
+block_length = clamp(block_length, 6, 120)
+</code></pre>
+<p>For the Q1 sample, raw-return lag-1 ACF was <code>-0.0080</code>, absolute-return lag-1 ACF was <code>0.0330</code>, positive absolute-return autocorrelation ended by lag 2, and the integrated absolute-return time was <code>1.089</code>. The rule therefore selected the six-hour floor. This is a research sensitivity rule, not a claim that six hours is a universal optimal block length.</p>
+<p>The selected-length Phase 5 run used 400 bootstrap replicates and produced the local artifact <code>artifacts/tlt_phase5_2025Q1_data_driven_6h_400rep.csv</code>. It attempted 60 dates, succeeded on 56, and retained the same four fit/support errors as the shorter sensitivity runs. The median entropy KL was <code>7.8694</code>, median GH3/GH5 projection losses were <code>0.11579</code>/<code>0.11554</code>, and GH5 had lower loss on <code>82.1%</code> of successful dates. The point physical scale/skew targets are unchanged by bootstrap replication count; covariance, confidence intervals, entropy movement, and projection diagnostics are not.</p>
+<p>The six-hour 20-replicate and 400-replicate runs differed materially in covariance-driven entropy results, so 400 replicates should be treated as a minimum for this diagnostic and the bootstrap covariance should be checked for stability with additional seeds and replicates before drawing model conclusions.</p>
+<h1 id="analogy-for-this-procedure-using-a-biased-coin">analogy for this procedure using a biased coin</h1>
+<p>One thing that worries me about the procedure we have in place for the prior GH3 based on Q-measure to be updated to posterior P-measure is that we are taking out evidence from the past and using this to forecast the future. If the option-implied terminal density is very different from realised over the prior 1-month period, then it could be justified on the grounds that the market environment has changed. In this case, for given uncertainty in the realised returns information update, the greater the distance between prior and information, the more the posterior will move away from the prior, correct?</p>
+<p>Yes, broadly that is correct—but with several important qualifications.</p>
+<h2 id="basic-logic">Basic logic</h2>
+<p>At each as-of date, the procedure has:</p>
+<ol>
+<li>A current option-implied Q distribution, which is forward-looking.</li>
+<li>A physical-information estimate derived from historical returns.</li>
+<li>An uncertainty estimate for that physical information.</li>
+</ol>
+<p>The entropy update solves approximately:</p>
+\[
+\min_P
+D_{\mathrm{KL}}(P\|Q)
++
+\frac12
+\left(s(P)-\hat{s}\right)^\top
+\Sigma^{-1}
+\left(s(P)-\hat{s}\right),
+\]
+<p>subject to the hard forward constraint.</p>
+<p>Here:</p>
+<ul>
+<li>\(s(P)\) is the posterior scale/skew;</li>
+<li>\(\hat{s}\) is the historical physical scale/skew estimate;</li>
+<li>\(\Sigma\) is the uncertainty covariance;</li>
+<li>\(D_{\mathrm{KL}}(P\|Q)\) penalizes moving away from Q.</li>
+</ul>
+<p>Therefore, if the physical information is farther from the Q statistics, then—holding uncertainty fixed—the optimizer generally has to move P further from Q to reduce the view mismatch.</p>
+<p>Equivalently, the relevant discrepancy is not simply:</p>
+\[
+\hat{s}-s(Q),
+\]
+<p>but the uncertainty-adjusted discrepancy:</p>
+\[
+\left(\hat{s}-s(Q)\right)^\top
+\Sigma^{-1}
+\left(\hat{s}-s(Q)\right).
+\]
+<p>This is a Mahalanobis distance.</p>
+<p>So:</p>
+<ul>
+<li>larger discrepancy → stronger pressure to move;</li>
+<li>greater uncertainty → weaker pressure to move;</li>
+<li>smaller uncertainty → stronger pressure to move.</li>
+</ul>
+<h2 id="coin-analogy">Coin analogy</h2>
+<p>Suppose Q says the coin’s head probability is around \(0.50\), while historical observations suggest \(0.70\).</p>
+<p>If the historical estimate is precise:</p>
+\[
+p_{\text{physical}} = 0.70 \pm 0.02,
+\]
+<p>then P should move substantially above Q.</p>
+<p>If the estimate is uncertain:</p>
+\[
+p_{\text{physical}} = 0.70 \pm 0.20,
+\]
+<p>then P should remain much closer to Q.</p>
+<p>Thus, your statement is right:</p>
+<blockquote>
+<p>For a fixed level of uncertainty, a larger difference between the Q-implied statistics and the physical-information statistics creates more pressure for the posterior to move away from Q.</p>
+</blockquote>
+<h2 id="important-qualification-one-realized-month-is-not-a-density">Important qualification: one realized month is not a density</h2>
+<p>It is worth distinguishing between:</p>
+<ul>
+<li>comparing the Q density with a physical distribution estimated from many historical observations; and</li>
+<li>comparing the Q density with one realized monthly return.</li>
+</ul>
+<p>A single realized return cannot identify a realized density. It is only one draw from whatever physical distribution prevailed.</p>
+<p>The Phase 2 procedure uses overlapping historical one-month returns to estimate scale and skew. That is more informative than one observation, but those returns are highly dependent and may still represent several different regimes.</p>
+<p>So the correct statement is:</p>
+<blockquote>
+<p>If the historical physical scale/skew estimates differ materially from the corresponding Q-implied scale/skew, then the entropy update will tend to move P away from Q, subject to the uncertainty and support constraints.</p>
+</blockquote>
+<p>It is not quite:</p>
+<blockquote>
+<p>The last realized month differed from Q, therefore the future distribution should be changed by the same amount.</p>
+</blockquote>
+<h2 id="the-regime-change-interpretation">The regime-change interpretation</h2>
+<p>Your proposed interpretation is plausible:</p>
+<blockquote>
+<p>The market environment may have changed, so recent realized behavior may be more relevant to the future than the current Q prior.</p>
+</blockquote>
+<p>But the current procedure does not explicitly identify regime changes. It simply treats the historical physical statistics as information about the future.</p>
+<p>That creates two possible interpretations:</p>
+<h3 id="regime-change-interpretation">Regime-change interpretation</h3>
+<p>The historical sample is revealing a new environment:</p>
+<ul>
+<li>volatility has risen;</li>
+<li>skew has changed;</li>
+<li>tail behavior has shifted;</li>
+<li>Q has not yet fully adjusted.</li>
+</ul>
+<p>In that case, moving from Q toward P may be desirable.</p>
+<h3 id="noise-or-stale-sample-interpretation">Noise or stale-sample interpretation</h3>
+<p>The historical difference is temporary or sampling noise:</p>
+<ul>
+<li>a short-lived shock occurred;</li>
+<li>overlapping observations exaggerate the effective sample size;</li>
+<li>the lookback contains mixed regimes;</li>
+<li>the option market is correctly pricing forward risk that differs from past realized risk.</li>
+</ul>
+<p>In that case, moving too far from Q would be harmful.</p>
+<p>The entropy framework does not decide between these interpretations automatically. It only provides a controlled way to combine them.</p>
+<h2 id="why-the-forward-constraint-matters">Why the forward constraint matters</h2>
+<p>The posterior cannot move arbitrarily toward the physical distribution because it must preserve:</p>
+<p>\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]0</p>
+<p>Therefore, even if the physical scale/skew estimates are far from Q, the update can only modify the probability weights on the existing Q support while retaining the forward.</p>
+<p>If the physical target is inconsistent with the available Q support, P will be the closest feasible distribution rather than an exact match.</p>
+<h2 id="why-more-distant-does-not-always-mean-proportionally-more-movement">Why “more distant” does not always mean proportionally more movement</h2>
+<p>The relationship is generally monotonic in the simple local case, but not necessarily linear or strictly monotonic in every practical run because:</p>
+<ol>
+<li>Scale and skew are estimated jointly.</li>
+<li>Their covariance matters.</li>
+<li>The support is fixed and may limit feasible distributions.</li>
+<li>The forward constraint couples all probability changes.</li>
+<li>The entropy objective is nonlinear.</li>
+<li>Probability weights cannot become negative.</li>
+<li>The optimizer may hit multiplier or numerical bounds.</li>
+<li>GH3/GH5 reprojection adds a second approximation step.</li>
+</ol>
+<p>So greater Q–physical discrepancy creates stronger pressure, but the actual KL movement depends on the geometry of the support and the uncertainty covariance.</p>
+<h2 id="the-key-concern-for-the-current-procedure">The key concern for the current procedure</h2>
+<p>Your concern is valid: the current update is a form of <strong>historical-to-forward extrapolation</strong>.</p>
+<p>It implicitly assumes that the recent physical return characteristics contain useful information about the next month. That may be reasonable, but it is not guaranteed.</p>
+<p>The main risk is:</p>
+<blockquote>
+<p>The entropy update may interpret a temporary past regime as a persistent future regime.</p>
+</blockquote>
+<p>The opposite risk also exists:</p>
+<blockquote>
+<p>The option-implied Q distribution may be slow to reflect a genuine regime change, and the physical update may provide useful early information.</p>
+</blockquote>
+<p>This is exactly why the update should be evaluated out of sample rather than judged only by how well P matches the historical physical views.</p>
+<h2 id="what-should-be-added-next">What should be added next</h2>
+<p>The most useful extension would be to make the historical information explicitly regime-aware:</p>
+<h3 id="1-recency-weighting">1. Recency weighting</h3>
+<p>Estimate physical scale/skew using multiple lookbacks:</p>
+<pre><code class="language-text">1 month
+3 months
+6 months
+12 months
+</code></pre>
+<p>Then compare their predictive performance.</p>
+<h3 id="2-a-dynamic-physicalq-blend">2. A dynamic physical/Q blend</h3>
+<p>Instead of immediately using the full physical update, define:</p>
+<p>\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]1</p>
+<p>or equivalently damp the entropy tilt:</p>
+<p>\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]2</p>
+<p>Here:</p>
+<ul>
+<li>\(\alpha=0\): retain Q;</li>
+<li>\(\alpha=1\): use the full entropy update;</li>
+<li>intermediate values: partial adjustment.</li>
+</ul>
+<h3 id="3-predictive-calibration">3. Predictive calibration</h3>
+<p>For each date, compare Q, P, GH3, and GH5 against the <strong>following</strong> one-month return, not the historical data used to form the physical views.</p>
+<p>This tells us whether moving away from Q actually improves:</p>
+<ul>
+<li>quantile coverage;</li>
+<li>interval width;</li>
+<li>log score;</li>
+<li>CRPS;</li>
+<li>tail calibration.</li>
+</ul>
+<h3 id="4-regime-diagnostics">4. Regime diagnostics</h3>
+<p>Track whether large Q-to-physical discrepancies occur during:</p>
+<ul>
+<li>volatility spikes;</li>
+<li>trend reversals;</li>
+<li>rate shocks;</li>
+<li>liquidity events;</li>
+<li>changes in option skew.</li>
+</ul>
+<h2 id="bottom-line">Bottom line</h2>
+<p>Your reasoning is correct:</p>
+<blockquote>
+<p>For fixed uncertainty, a larger statistically measured difference between Q and the physical information creates greater pressure for P to move away from Q.</p>
+</blockquote>
+<p>But the procedure does not itself prove that the past regime will persist. It is a disciplined way of expressing the hypothesis that it might.</p>
+<p>The next important question is therefore not merely:</p>
+<blockquote>
+<p>Did P move away from Q?</p>
+</blockquote>
+<p>but:</p>
+<blockquote>
+<p>When P moved away from Q because recent physical behavior differed, did that improve the distributional forecast of the subsequent month?</p>
+</blockquote>
+</body>
+</html>

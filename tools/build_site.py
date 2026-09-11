@@ -30,6 +30,7 @@ INTERNAL_FILES = (
     "model/logs.html",
     "JUP/model.html",
     "TIP_v_TLT/model.html",
+    "TIP_v_TLT/research_notes.html",
 )
 INTERNAL_DATA_FILES = (
     "softs_diagnostics.json",
