@@ -1,12 +1,68 @@
 {
-  "generated_at_utc": "2026-09-10T07:11:33.332077Z",
+  "generated_at_utc": "2026-09-11T07:11:42.270871Z",
   "source": "/home/mark/trading_env/data",
   "symbols": [
     "TIP",
     "TLT"
   ],
-  "event_count": 4884,
+  "event_count": 4888,
   "rows": [
+    {
+      "symbol": "TLT",
+      "date": "2026-09-10",
+      "status": "fit written",
+      "event": "GH5_WRITTEN",
+      "model_version": "gh5_v1",
+      "timestamp_utc": "2026-09-11T02:04:51+00:00",
+      "rows": 19,
+      "mad_err": 0.00402057850769917,
+      "error": null,
+      "stage": null,
+      "uri": "gs://systematicpositiveskew/options_data/ticker=TLT_UP/year=2026/month=09/data.parquet",
+      "strike_references": null
+    },
+    {
+      "symbol": "TIP",
+      "date": "2026-09-10",
+      "status": "fit written",
+      "event": "GH5_WRITTEN",
+      "model_version": "gh5_v1",
+      "timestamp_utc": "2026-09-11T02:04:03+00:00",
+      "rows": 19,
+      "mad_err": 0.013481184476759863,
+      "error": null,
+      "stage": null,
+      "uri": "gs://systematicpositiveskew/options_data/ticker=TIP_UP/year=2026/month=09/data.parquet",
+      "strike_references": null
+    },
+    {
+      "symbol": "TLT",
+      "date": "2026-09-09",
+      "status": "fit written",
+      "event": "GH5_WRITTEN",
+      "model_version": "gh5_v1",
+      "timestamp_utc": "2026-09-10T11:28:21+00:00",
+      "rows": 19,
+      "mad_err": 0.0064455108553914085,
+      "error": null,
+      "stage": null,
+      "uri": "gs://systematicpositiveskew/options_data/symbol=TLT_UP/opt_expiry=1m/year=2026/month=9/data.parquet",
+      "strike_references": null
+    },
+    {
+      "symbol": "TIP",
+      "date": "2026-09-09",
+      "status": "fit written",
+      "event": "GH5_WRITTEN",
+      "model_version": "gh5_v1",
+      "timestamp_utc": "2026-09-10T11:28:04+00:00",
+      "rows": 19,
+      "mad_err": 0.01196646062883104,
+      "error": null,
+      "stage": null,
+      "uri": "gs://systematicpositiveskew/options_data/symbol=TIP_UP/opt_expiry=1m/year=2026/month=9/data.parquet",
+      "strike_references": null
+    },
     {
       "symbol": "TLT",
       "date": "2026-09-08",
