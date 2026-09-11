@@ -1,15 +1,15 @@
 
 # Delta Gamma Vega Website — Setup
 
-This is the ordinary project documentation for `www.deltagammavega.com`. The website source of truth is `/home/mark/inflation_uk`; this note is not Kiro steering configuration.
+This is the ordinary project documentation for `www.deltagammavega.com`. The website source of truth is `/home/mark/deltagammavega`; this note is not Kiro steering configuration.
 
 ## Hosting and DNS
 
 - Firebase project: `deltagammavega-46877`.
-- Firebase Hosting config: `/home/mark/inflation_uk/firebase.json`.
-- Firebase Hosting deploys only the generated `/home/mark/inflation_uk/build/public` directory (`public: "build/public"`). The repository root and `build/internal` are not Hosting inputs.
+- Firebase Hosting config: `/home/mark/deltagammavega/firebase.json`.
+- Firebase Hosting deploys only the generated `/home/mark/deltagammavega/build/public` directory (`public: "build/public"`). The repository root and `build/internal` are not Hosting inputs.
 - `.firebaserc` maps the repository's default project to `deltagammavega-46877`.
-- `/home/mark/inflation_uk/site/shared/CNAME` contains `www.deltagammavega.com`.
+- `/home/mark/deltagammavega/site/shared/CNAME` contains `www.deltagammavega.com`.
 - Verified DNS: `www.deltagammavega.com` CNAMEs to `deltagammavega-46877.web.app`; authoritative nameservers are Gandi, not Cloudflare.
 - The direct Firebase hostname is independently reachable. Treat it as an origin bypass when evaluating any front-door proxy or access gate.
 
@@ -27,13 +27,13 @@ There is no authentication, token gate, Cloudflare configuration, Firebase rewri
 
 ## Two-build workflow
 
-The repository keeps common page source in `/home/mark/inflation_uk/site/shared`. The source pages retain their deployed layout when assembled, so existing relative links and data URLs continue to work.
+The repository keeps common page source in `/home/mark/deltagammavega/site/shared`. The source pages retain their deployed layout when assembled, so existing relative links and data URLs continue to work.
 
 The logs hub and its two category pages are copied only into `build/internal`, together with their JSON payloads. The public build removes the landing-page logs anchor as well as those HTML and JSON resources, so Firebase Hosting does not expose this section.
 
 ### Routine build steps
 
-Run these commands from `/home/mark/inflation_uk`:
+Run these commands from `/home/mark/deltagammavega`:
 
 1. Build both variants. This removes and recreates the generated directories, so stale files cannot remain in the public artifact:
 
@@ -70,7 +70,7 @@ Run these commands from `/home/mark/inflation_uk`:
 
    Open `http://127.0.0.1:8000`. Stop the server with `Ctrl-C`. Put local-only resources in the ignored `site/internal/` directory before rebuilding; they will be copied only to `build/internal`.
 
-5. Deploy only the validated public artifact. Firebase uses `build/public` because `/home/mark/inflation_uk/firebase.json` sets `hosting.public` to that directory:
+5. Deploy only the validated public artifact. Firebase uses `build/public` because `/home/mark/deltagammavega/firebase.json` sets `hosting.public` to that directory:
 
    ```bash
    firebase deploy --only hosting
@@ -136,7 +136,7 @@ This command:
 5. Requires you to type `DEPLOY` explicitly.
 6. Runs `firebase deploy --only hosting` only after confirmation.
 
-Any response other than exactly `DEPLOY` cancels the deployment. The underlying script is `/home/mark/inflation_uk/deploy_public_site.sh`.
+Any response other than exactly `DEPLOY` cancels the deployment. The underlying script is `/home/mark/deltagammavega/deploy_public_site.sh`.
 
 
 - The repository contains static HTML, JavaScript, and generated public data; no application package manifest is required for the site.
@@ -203,7 +203,7 @@ The existing pages use relative data URLs, so preserving their current paths sho
 
 ## Working rules
 
-1. Read the relevant files in `/home/mark/inflation_uk` before proposing changes.
+1. Read the relevant files in `/home/mark/deltagammavega` before proposing changes.
 2. Verify live DNS and both the custom and `web.app` hostnames when investigating hosting or access behavior.
 3. Distinguish verified facts from assumptions about Cloudflare account ownership, DNS control, and Firebase deployment state.
 4. Keep private resources outside `build/public`; use the build and validation commands before deployment.

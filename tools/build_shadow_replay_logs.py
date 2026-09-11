@@ -7,7 +7,7 @@ import sys
 
 DEFAULT_REPLAY = Path('/home/mark/trading_env/artifacts/uscpi_long_shadow_history_v4_median_maturity_2026')
 DEFAULT_SHORT_REPLAY = Path('/home/mark/trading_env/artifacts/uscpi_six_driver/shadow/replay_june12_aug28_median_maturity_2026')
-LIVE_SHORT_SNAPSHOT_DIR = Path('/home/mark/inflation_uk/data/cpurnsa_snapshots')
+LIVE_SHORT_SNAPSHOT_DIR = Path('/home/mark/deltagammavega/data/cpurnsa_snapshots')
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / 'site/internal/data/uscpi_shadow_replay_history.json'
 POST_BROKER_START = '2026-06-12'
 

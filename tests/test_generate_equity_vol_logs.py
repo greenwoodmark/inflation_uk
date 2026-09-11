@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path("/home/mark/inflation_uk/tools")))
+sys.path.insert(0, str(Path("/home/mark/deltagammavega/tools")))
 
 from generate_equity_vol_logs import GH5_EVENTS, generate_report  # noqa: E402
 

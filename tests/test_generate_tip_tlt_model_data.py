@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, str(Path("/home/mark/inflation_uk/tools")))
+sys.path.insert(0, str(Path("/home/mark/deltagammavega/tools")))
 from generate_tip_tlt_model_data import (  # noqa: E402
     _comparison_points,
     _exclude_dividend_points,

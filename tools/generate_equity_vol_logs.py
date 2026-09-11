@@ -16,7 +16,7 @@ except ImportError:  # pragma: no cover - the website build environment may be l
 
 SYMBOLS = ("TIP", "TLT")
 DEFAULT_LOG_DIR = Path(os.environ.get("EQUITY_VOL_LOG_DIR", "/home/mark/trading_env/data"))
-WEBSITE_ROOT = Path(os.environ.get("ETF_WEBSITE_ROOT", "/home/mark/inflation_uk"))
+WEBSITE_ROOT = Path(os.environ.get("ETF_WEBSITE_ROOT", "/home/mark/deltagammavega"))
 OUTPUT_PATH = WEBSITE_ROOT / "data" / "equity_vol_logs.json"
 FIT_BASE = "gs://systematicpositiveskew/options_data"
 ACTIVE_MODEL_VERSION = "gh5_v1"
