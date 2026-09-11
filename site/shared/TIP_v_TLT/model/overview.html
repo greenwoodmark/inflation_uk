@@ -75,7 +75,9 @@ E_Q[e^X] &= \frac{F}{S_0}
 <p>The point estimates are calculated directly from all valid overlapping terminal returns:</p>
 <ul>
 <li>Scale: interquartile range divided by <code>1.349</code>.</li>
-<li>Skew: Tukey medcouple, using <code>statsmodels.stats.stattools.medcouple</code>.</li>
+<li>Skew: <strong>Bowley skewness</strong> by default, using the weighted-quartile-compatible formula
+  <code>(Q75 + Q25 - 2 Q50) / (Q75 - Q25)</code> for posterior support statistics.</li>
+<li>The original Tukey medcouple remains available as an explicitly selected benchmark statistic.</li>
 </ul>
 <p>No ordinary third standardized moment is used in this phase.</p>
 <h3 id="dependence-aware-uncertainty">Dependence-aware uncertainty</h3>
@@ -88,9 +90,9 @@ E_Q[e^X] &= \frac{F}{S_0}
 <li>Sample circular contiguous blocks, with a default block length of 24 observed hourly returns.</li>
 <li>Reconstruct a synthetic log-price path from each sampled hourly-return sequence.</li>
 <li>Recalculate the same overlapping one-month terminal-return windows, preserving their observed window lengths and endpoint policy.</li>
-<li>Recalculate IQR scale and medcouple skew for each bootstrap path.</li>
+<li>Recalculate IQR scale and the selected skew statistic for each bootstrap path.</li>
 </ol>
-<p>The covariance of the bootstrap statistic pairs <code>[IQR scale, medcouple skew]</code> is used directly, without additional ESS inflation because dependence is already represented by the blocks. The result also records marginal standard errors and percentile 95% confidence intervals. The block length is configurable and is capped at the number of available hourly returns.</p>
+<p>The covariance of the bootstrap statistic pairs <code>[IQR scale, selected skew]</code> is used directly, without additional ESS inflation because dependence is already represented by the blocks. The production statistic is Bowley skewness; <code>skew_statistic="medcouple"</code> reproduces the matched benchmark path. The result records the selected statistic, marginal standard errors, covariance components, and percentile 95% confidence intervals. The block length is configurable and is capped at the number of available hourly returns.</p>
 <p>The former iid terminal-window bootstrap remains available explicitly as <code>bootstrap_method="iid"</code>; only that legacy method applies the <code>n / n_eff</code> covariance inflation. This permits controlled comparison but is no longer the default.</p>
 <p>The result records:</p>
 <ul>
@@ -133,7 +135,7 @@ D_{\mathrm{KL}}(P\|Q)
 \left(\operatorname{statistics}(P)-\operatorname{targets}\right)
 \end{aligned}
 \]
-<p>The physical targets are the phase-2 IQR scale and medcouple skew. They are evaluated as probability-weighted statistics on the fixed support. The phase-2 covariance is regularized only numerically before inversion; the original covariance is retained in the result.</p>
+<p>The physical targets are the phase-2 IQR scale and selected skew statistic, with Bowley as the production default. They are evaluated as probability-weighted statistics on the fixed support. The phase-2 covariance is regularized only numerically before inversion; the original covariance is retained in the result.</p>
 <p>The support-statistics implementation uses weighted empirical quantiles and a probability-weighted medcouple. The latter is a discrete-support extension of the phase-2 <code>statsmodels</code> medcouple and is deliberately exposed for testing.</p>
 <h3 id="diagnostics-and-failure-behavior">Diagnostics and failure behavior</h3>
 <p>The result records posterior probabilities, weighted target statistics, residuals, KL divergence, forward residual, exponential-tilt multipliers, optimizer status, and effective posterior node count (<code>1 / sum(p_i^2)</code>). Non-finite inputs, invalid covariance, non-positive Q probabilities, infeasible forward support, invalid probabilities, or a non-finite optimizer result fail explicitly.</p>
@@ -174,9 +176,9 @@ F = 1.010, S0 = 1.0
 <ul>
 <li>The core runner accepts fits and hourly bars in memory; <code>run_tlt_research_from_storage()</code> is a separate local/GCS read wrapper. Phase 5 writes only an optional local CSV artifact and does not schedule jobs or mutate GCS.</li>
 <li>Fit dates are evaluated with <code>as_of = fit_date + 1 UTC calendar day</code>, so the fit-date session is available while later observations are excluded. Fits are de-duplicated by date, and the latest <code>fit_datetime</code> is retained by the storage loader.</li>
-<li>Physical views use one year of overlapping hourly one-month returns and the phase-2 IQR scale/medcouple skew diagnostics. The runner defaults to <code>endpoint_policy="next"</code> for irregular ETF sessions; exact endpoints remain available through settings.</li>
+<li>Physical views use one year of overlapping hourly one-month returns and the selected phase-2 IQR/skew statistic; Bowley is the production default and medcouple is retained for matched benchmarking. The runner defaults to <code>endpoint_policy="next"</code> for irregular ETF sessions; exact endpoints remain available through settings.</li>
 <li>The realized diagnostic uses the first available hourly observation at or after the one-month target from the selected spot timestamp. It is reported only when future bars exist.</li>
-<li>Every successful row records physical effective sample size, entropy KL, forward errors, GH3/GH5 quantile projection losses, the preferred projection, Q/P/GH quantiles, and realized terminal-return fields. <code>summarize_tlt_research()</code> reports medians, GH5's lower-loss fraction, forward-error bounds, and empirical quantile coverage.</li>
+<li>Every successful row records the skew-statistic identity, physical bootstrap covariance components, physical effective sample size, entropy KL/residuals, optimizer and boundary diagnostics, GH3/GH5 quantile projection losses, the preferred projection, Q/P/GH quantiles, and realized terminal-return fields. <code>summarize_tlt_research()</code> reports medians, GH5's lower-loss fraction, forward-error bounds, and empirical quantile coverage.</li>
 <li>GH5's lower projection loss is interpreted as additional in-sample deformation capacity, not out-of-sample superiority. Overlapping returns are dependent, the ESS-adjusted iid bootstrap is only a first uncertainty diagnostic, and endpoint policy plus dividend/price-adjustment conventions can materially affect results.</li>
 </ul>
 <h2 id="phase-5-block-length-selection-diagnostic">Phase 5 block-length selection diagnostic</h2>
@@ -187,6 +189,152 @@ block_length = clamp(block_length, 6, 120)
 <p>For the Q1 sample, raw-return lag-1 ACF was <code>-0.0080</code>, absolute-return lag-1 ACF was <code>0.0330</code>, positive absolute-return autocorrelation ended by lag 2, and the integrated absolute-return time was <code>1.089</code>. The rule therefore selected the six-hour floor. This is a research sensitivity rule, not a claim that six hours is a universal optimal block length.</p>
 <p>The selected-length Phase 5 run used 400 bootstrap replicates and produced the local artifact <code>artifacts/tlt_phase5_2025Q1_data_driven_6h_400rep.csv</code>. It attempted 60 dates, succeeded on 56, and retained the same four fit/support errors as the shorter sensitivity runs. The median entropy KL was <code>7.8694</code>, median GH3/GH5 projection losses were <code>0.11579</code>/<code>0.11554</code>, and GH5 had lower loss on <code>82.1%</code> of successful dates. The point physical scale/skew targets are unchanged by bootstrap replication count; covariance, confidence intervals, entropy movement, and projection diagnostics are not.</p>
 <p>The six-hour 20-replicate and 400-replicate runs differed materially in covariance-driven entropy results, so 400 replicates should be treated as a minimum for this diagnostic and the bootstrap covariance should be checked for stability with additional seeds and replicates before drawing model conclusions.</p>
+<h2 id="bowley-versus-medcouple-matched-experiment">Bowley versus medcouple matched experiment</h2>
+<p>The production entropy update now uses weighted Bowley skewness; medcouple remains available as a benchmark through the same statistic selector. Both statistic modes were rerun on the same Q1 2025 TLT dates with identical settings: 60 attempted dates, 400 circular moving-block bootstrap replicates, six-hour blocks, seed 42, the same Q fits, and the same GH projection settings. Each mode succeeded on 56 dates and produced the same four support/projection errors.</p>
+<p>Artifacts:</p>
+<ul>
+<li><code>artifacts/tlt_phase5_2025Q1_bowley_6h_400rep_seed42.csv</code></li>
+<li><code>artifacts/tlt_phase5_2025Q1_medcouple_6h_400rep_seed42.csv</code></li>
+<li><code>artifacts/tlt_phase5_2025Q1_bowley_vs_medcouple_matched.csv</code></li>
+<li><code>artifacts/tlt_phase5_2025Q1_bowley_vs_medcouple_summary.json</code></li>
+</ul>
+<p>The matched results were:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Bowley</th>
+<th style="text-align: right;">Medcouple</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median entropy KL</td>
+<td style="text-align: right;">7.8047</td>
+<td style="text-align: right;">7.8694</td>
+</tr>
+<tr>
+<td>Median absolute scale residual</td>
+<td style="text-align: right;">0.01158</td>
+<td style="text-align: right;">0.00468</td>
+</tr>
+<tr>
+<td>Median absolute skew residual</td>
+<td style="text-align: right;">0.3074</td>
+<td style="text-align: right;">0.5745</td>
+</tr>
+<tr>
+<td>Median GH3 projection loss</td>
+<td style="text-align: right;">0.12046</td>
+<td style="text-align: right;">0.11044</td>
+</tr>
+<tr>
+<td>Median GH5 projection loss</td>
+<td style="text-align: right;">0.11998</td>
+<td style="text-align: right;">0.10991</td>
+</tr>
+<tr>
+<td>GH5 lower-loss fraction</td>
+<td style="text-align: right;">73.2%</td>
+<td style="text-align: right;">82.1%</td>
+</tr>
+<tr>
+<td>Entropy optimizer failure rate</td>
+<td style="text-align: right;">0%</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td>Entropy boundary-hit rate</td>
+<td style="text-align: right;">0%</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td>GH5 boundary-hit rate</td>
+<td style="text-align: right;">91.1%</td>
+<td style="text-align: right;">91.1%</td>
+</tr>
+<tr>
+<td>P central 90% realized coverage</td>
+<td style="text-align: right;">98.2%</td>
+<td style="text-align: right;">98.2%</td>
+</tr>
+<tr>
+<td>P mean interval width</td>
+<td style="text-align: right;">0.6438</td>
+<td style="text-align: right;">0.6370</td>
+</tr>
+<tr>
+<td>P mean absolute median error</td>
+<td style="text-align: right;">0.1629</td>
+<td style="text-align: right;">0.1532</td>
+</tr>
+</tbody>
+</table>
+<p>All entropy and GH forward errors remained below approximately <code>2e-11</code> and <code>3e-16</code>, respectively. Q and GH3/GH5 central-90% coverage was 100% in this sample. Bowley therefore does not improve the realized one-month forecast in this first Q1 sample: its P interval was slightly wider, while its median forecast error was slightly worse. The result is descriptive rather than decisive because the realized sample contains only 56 successful, overlapping one-month observations and the P distribution is subsequently compressed by the GH reprojection.</p>
+<p>The four failed dates were identical across modes: 2025-01-10, 2025-01-13, 2025-01-15, and 2025-01-21. The first three failed because the persisted Q support contained non-positive normalized terminal prices; 2025-01-21 failed during GH posterior projection. These are support/projection failures, not skew-statistic optimizer failures.</p>
+<h2 id="additional-rolling-period-predictive-score-evaluation">Additional rolling-period predictive-score evaluation</h2>
+<p>To test whether the Bowley posterior is a good estimate of the subsequent return distribution rather than merely a good match to the historical views, the production Bowley pipeline was evaluated over five quarterly periods: 2024Q1 through 2025Q1. Each run used the same 400-replicate, seed-42, six-hour circular block bootstrap and the same GH projection settings. There were 312 attempted rows, 298 successful scored rows, and 14 errors.</p>
+<p>CRPS was calculated exactly for each weighted discrete support:</p>
+\[
+\operatorname{CRPS}(F,y)=E_F[|X-y|]-\frac{1}{2}E_F[|X-X'|].
+\]
+<p>The log score was calculated as the log density of a Gaussian kernel mixture over the weighted support, using a fixed bandwidth of <code>0.01</code> log-return units. This smoothing is necessary because a raw discrete support assigns zero density to almost every continuous realized return; the bandwidth is therefore part of the scoring specification and should be sensitivity-tested.</p>
+<p>Overall results were:</p>
+<table>
+<thead>
+<tr>
+<th>Forecast</th>
+<th style="text-align: right;">Log score, higher better</th>
+<th style="text-align: right;">CRPS, lower better</th>
+<th style="text-align: right;">Central 90% coverage</th>
+<th style="text-align: right;">Mean 90% width</th>
+<th style="text-align: right;">Mean absolute median error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q</td>
+<td style="text-align: right;">1.8269</td>
+<td style="text-align: right;">0.02137</td>
+<td style="text-align: right;">89.6%</td>
+<td style="text-align: right;">0.1357</td>
+<td style="text-align: right;">0.02984</td>
+</tr>
+<tr>
+<td>Bowley P</td>
+<td style="text-align: right;">-19.3641</td>
+<td style="text-align: right;">0.09757</td>
+<td style="text-align: right;">96.6%</td>
+<td style="text-align: right;">0.5768</td>
+<td style="text-align: right;">0.13151</td>
+</tr>
+<tr>
+<td>GH3 projection</td>
+<td style="text-align: right;">1.8239</td>
+<td style="text-align: right;">0.02146</td>
+<td style="text-align: right;">89.3%</td>
+<td style="text-align: right;">0.1345</td>
+<td style="text-align: right;">0.02996</td>
+</tr>
+<tr>
+<td>GH5 projection</td>
+<td style="text-align: right;">1.8269</td>
+<td style="text-align: right;">0.02137</td>
+<td style="text-align: right;">89.6%</td>
+<td style="text-align: right;">0.1357</td>
+<td style="text-align: right;">0.02984</td>
+</tr>
+</tbody>
+</table>
+<p>The result is consistent across the additional periods: Bowley P often improves interval coverage during stressed periods by becoming much wider, but its proper scores are substantially worse. For example, in 2024Q3 Q central-90% coverage was 76.2% while Bowley P coverage was 93.7%; however, Q had log score <code>1.5103</code> and CRPS <code>0.02905</code>, versus Bowley P log score <code>-30.8570</code> and CRPS <code>0.13185</code>. The wider interval improved coverage but did not produce a better full-distribution forecast.</p>
+<p>The GH projections mostly compress the Bowley P distribution back toward Q. Their log scores, CRPS values, widths, and median errors are consequently close to Q rather than to the wide P posterior. This indicates that the current GH reprojection is not retaining much of the entropy posterior's dispersion change.</p>
+<p>The conclusion is that the current Bowley posterior is not yet a good estimate of the full subsequent-return distribution. It is satisfying the hard forward constraint and providing a scale/skew information update, but matching two robust statistics is not sufficient for full distributional calibration. In particular, the posterior's location is not freely estimated: the hard constraint fixes</p>
+\[
+E_P[U]=1,
+\qquad U=\frac{P_T}{F},
+\]
+<p>which fixes the forward-normalized arithmetic terminal-price mean. It does <strong>not</strong> fix the mean of log returns, nor does it guarantee that the posterior median, tails, or density near the realized return are correct. Scale and Bowley skew are therefore necessary diagnostic targets in this design, but not sufficient conditions for a good posterior forecast.</p>
+<p>The next research step should be score-based calibration rather than simply increasing the entropy tilt: test log-score bandwidth sensitivity, add additional tail or quantile information if justified, evaluate recency/regime weighting, and compare the raw P posterior separately from its GH3/GH5 reprojections.</p>
 <h1 id="analogy-for-this-procedure-using-a-biased-coin">analogy for this procedure using a biased coin</h1>
 <p>One thing that worries me about the procedure we have in place for the prior GH3 based on Q-measure to be updated to posterior P-measure is that we are taking out evidence from the past and using this to forecast the future. If the option-implied terminal density is very different from realised over the prior 1-month period, then it could be justified on the grounds that the market environment has changed. In this case, for given uncertainty in the realised returns information update, the greater the distance between prior and information, the more the posterior will move away from the prior, correct?</p>
 <p>Yes, broadly that is correct—but with several important qualifications.</p>
@@ -236,14 +384,20 @@ D_{\mathrm{KL}}(P\|Q)
 <h2 id="coin-analogy">Coin analogy</h2>
 <p>Suppose Q says the coin’s head probability is around \(0.50\), while historical observations suggest \(0.70\).</p>
 <p>If the historical estimate is precise:</p>
-\[
-p_{\text{physical}} = 0.70 \pm 0.02,
-\]
+<p>\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]0</p>
 <p>then P should move substantially above Q.</p>
 <p>If the estimate is uncertain:</p>
-\[
-p_{\text{physical}} = 0.70 \pm 0.20,
-\]
+<p>\[
+\begin{aligned}
+E_Q[U] &= 1 \\
+E_Q[e^X] &= \frac{F}{S_0}
+\end{aligned}
+\]1</p>
 <p>then P should remain much closer to Q.</p>
 <p>Thus, your statement is right:</p>
 <blockquote>
@@ -298,7 +452,7 @@ p_{\text{physical}} = 0.70 \pm 0.20,
 E_Q[U] &= 1 \\
 E_Q[e^X] &= \frac{F}{S_0}
 \end{aligned}
-\]0</p>
+\]2</p>
 <p>Therefore, even if the physical scale/skew estimates are far from Q, the update can only modify the probability weights on the existing Q support while retaining the forward.</p>
 <p>If the physical target is inconsistent with the available Q support, P will be the closest feasible distribution rather than an exact match.</p>
 <h2 id="why-more-distant-does-not-always-mean-proportionally-more-movement">Why “more distant” does not always mean proportionally more movement</h2>
@@ -343,14 +497,14 @@ E_Q[e^X] &= \frac{F}{S_0}
 E_Q[U] &= 1 \\
 E_Q[e^X] &= \frac{F}{S_0}
 \end{aligned}
-\]1</p>
+\]3</p>
 <p>or equivalently damp the entropy tilt:</p>
 <p>\[
 \begin{aligned}
 E_Q[U] &= 1 \\
 E_Q[e^X] &= \frac{F}{S_0}
 \end{aligned}
-\]2</p>
+\]4</p>
 <p>Here:</p>
 <ul>
 <li>\(\alpha=0\): retain Q;</li>
